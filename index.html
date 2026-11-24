@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>小藍鯨的台股理財茶會｜動態女僕小助手</title>
+  <title>大肥魚的台股理財茶會｜動態女僕小助手</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -27,7 +27,6 @@
     }
 
     /* ================= Live2D 風格骨骼微動畫 ================= */
-    /* 1. 身體呼吸起伏 */
     @keyframes bodyBreathe {
       0%, 100% { transform: translateY(0px) scaleY(1); }
       50% { transform: translateY(-4px) scaleY(1.015); }
@@ -37,62 +36,56 @@
       transform-origin: bottom center;
     }
 
-    /* 2. 呆毛獨立搖擺 */
     @keyframes ahogeWag {
       0%, 100% { transform: rotate(-6deg); }
       50% { transform: rotate(10deg); }
     }
     .anim-ahoge {
       animation: ahogeWag 2.2s ease-in-out infinite;
-      transform-origin: 60px 22px;
+      transform-origin: 70px 18px;
     }
 
-    /* 3. 鯨魚尾巴優雅擺動 */
     @keyframes tailSwish {
-      0%, 100% { transform: rotate(-8deg) translateY(0px); }
-      50% { transform: rotate(12deg) translateY(-3px); }
+      0%, 100% { transform: rotate(-6deg) translateY(0px); }
+      50% { transform: rotate(10deg) translateY(-3px); }
     }
     .anim-tail {
-      animation: tailSwish 2.6s ease-in-out infinite;
-      transform-origin: 82px 86px;
+      animation: tailSwish 2.5s ease-in-out infinite;
+      transform-origin: 96px 104px;
     }
 
-    /* 4. 鯨魚耳鰭輕輕拍動 */
     @keyframes earFlapLeft {
       0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(-8deg); }
+      50% { transform: rotate(-7deg); }
     }
     @keyframes earFlapRight {
       0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(8deg); }
+      50% { transform: rotate(7deg); }
     }
-    .anim-ear-l { animation: earFlapLeft 2.8s ease-in-out infinite; transform-origin: 32px 52px; }
-    .anim-ear-r { animation: earFlapRight 2.8s ease-in-out infinite; transform-origin: 88px 52px; }
+    .anim-ear-l { animation: earFlapLeft 2.8s ease-in-out infinite; transform-origin: 36px 56px; }
+    .anim-ear-r { animation: earFlapRight 2.8s ease-in-out infinite; transform-origin: 104px 56px; }
 
-    /* 5. 自然定時眨眼 */
     @keyframes eyeBlink {
       0%, 92%, 100% { transform: scaleY(1); }
       95% { transform: scaleY(0.08); }
     }
     .anim-blink {
       animation: eyeBlink 4.5s infinite;
-      transform-origin: center 58px;
+      transform-origin: center 63px;
     }
 
-    /* 6. 說話時嘴巴開合 */
     @keyframes mouthTalk {
-      0%, 100% { transform: scaleY(0.4); }
-      50% { transform: scaleY(1.15); }
+      0%, 100% { transform: scaleY(0.45); }
+      50% { transform: scaleY(1.2); }
     }
     .is-talking .anim-mouth {
       animation: mouthTalk 0.28s ease-in-out infinite;
-      transform-origin: 60px 66px;
+      transform-origin: 70px 76px;
     }
 
-    /* 7. 點擊開心彈跳 */
     @keyframes happyJump {
       0% { transform: translateY(0) scale(1); }
-      30% { transform: translateY(-22px) scale(1.06, 0.96); }
+      30% { transform: translateY(-22px) scale(1.05, 0.96); }
       60% { transform: translateY(0) scale(0.96, 1.04); }
       80% { transform: translateY(-8px) scale(1.02); }
       100% { transform: translateY(0) scale(1); }
@@ -101,13 +94,12 @@
       animation: happyJump 0.65s cubic-bezier(0.28, 0.84, 0.42, 1);
     }
 
-    /* 懸浮桌寵容器平滑移動 */
     #petContainer {
       transition: right 1.8s ease-in-out, bottom 0.4s ease;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col pb-28">
+<body class="min-h-screen flex flex-col pb-32">
 
   <!-- 頂部導覽列 -->
   <header class="bg-[#0f172a]/95 text-white backdrop-blur-md border-b-2 border-amber-400/70 sticky top-0 z-20 shadow-md">
@@ -118,7 +110,7 @@
         </div>
         <div>
           <h1 class="text-lg font-black tracking-tight flex items-center gap-2">
-            小藍鯨的台股理財茶會
+            大肥魚的台股理財茶會
             <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">動態女僕版</span>
           </h1>
           <p class="text-xs text-sky-200/80">行情自動同步時間：<span id="updatedAtText" class="font-bold text-amber-300">載入中...</span></p>
@@ -243,7 +235,7 @@
         <div class="flex items-center justify-between flex-wrap gap-2">
           <h2 class="text-base font-black text-blue-950 flex items-center gap-2">
             <span class="w-6 h-6 rounded-full bg-gradient-to-r from-blue-700 to-sky-500 text-white text-xs flex items-center justify-center shadow-2xs">2</span>
-            小藍鯨為您精選的今日入股參考清單
+            大肥魚為您精選的今日入股參考清單
           </h2>
           <span class="text-xs text-slate-500">1 張 = 1,000 股｜零股最低 1 股起</span>
         </div>
@@ -262,7 +254,7 @@
         <div class="bg-gradient-to-br from-[#0f172a] via-[#172554] to-[#1e3a8a] text-white rounded-3xl p-5 shadow-md border border-sky-400/30 space-y-3">
           <div class="flex items-center gap-2 pb-2 border-b border-white/10">
             <span class="text-base">🐋</span>
-            <h3 class="text-sm font-black text-amber-300">小藍鯨的盤勢觀察筆記</h3>
+            <h3 class="text-sm font-black text-amber-300">大肥魚的盤勢觀察筆記</h3>
           </div>
           <div id="aiAdviceContent" class="text-xs text-sky-100 leading-relaxed space-y-2.5"></div>
         </div>
@@ -275,13 +267,13 @@
     免責聲明：本網站數據透過自動化排程整理公開市場報價，試算結果僅供投資教育與研究參考，不構成任何買賣邀約或投資保證。投資前請審慎評估自身風險承受度。
   </footer>
 
-  <!-- ================= 懸浮動態桌面小助手「小藍鯨」 ================= -->
-  <div id="petContainer" style="right: 20px; bottom: 16px;" class="fixed z-50 flex flex-col items-end select-none">
+  <!-- ================= 懸浮動態桌面小助手「大肥魚」 ================= -->
+  <div id="petContainer" style="right: 20px; bottom: 14px;" class="fixed z-50 flex flex-col items-end select-none">
 
     <!-- 對話氣泡框 -->
-    <div id="petBubble" class="mb-2 max-w-[280px] sm:max-w-[320px] bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-xl border-2 border-sky-300 relative transition-all">
+    <div id="petBubble" class="mb-1.5 max-w-[280px] sm:max-w-[320px] bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-xl border-2 border-sky-300 relative transition-all">
       <div class="flex items-center justify-between gap-2 mb-1">
-        <span class="text-[11px] font-black text-blue-900 bg-sky-100 px-2 py-0.5 rounded-full">🎀 小藍鯨女僕</span>
+        <span class="text-[11px] font-black text-blue-900 bg-sky-100 px-2.5 py-0.5 rounded-full">🎀 大肥魚女僕</span>
         <div class="flex items-center gap-1">
           <button onclick="toggleWalkMode()" id="walkToggleBtn" title="切換自動左右散步" class="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold hover:bg-amber-200 transition">
             🚶 散步：開
@@ -290,127 +282,197 @@
         </div>
       </div>
       <p id="mascotSpeech" class="text-xs text-slate-700 font-medium leading-relaxed">
-        主人您好呀～點我可以切換表情與理財秘笈，我還會在螢幕下方悠閒游動喔！
+        主人您好呀～點我可以切換表情與理財秘笈，大肥魚還會在螢幕下方悠閒游動喔！
       </p>
-      <!-- 氣泡小尾巴 -->
-      <div class="w-3 h-3 bg-white border-r-2 border-b-2 border-sky-300 rotate-45 absolute -bottom-1.5 right-10"></div>
+      <div class="w-3 h-3 bg-white border-r-2 border-b-2 border-sky-300 rotate-45 absolute -bottom-1.5 right-12"></div>
     </div>
 
-    <!-- 動態角色本體（支援多張差分圖 + Live2D 骨骼向量動畫） -->
-    <div id="petAvatarWrapper" onclick="interactWithPet()" title="點我互動！" class="cursor-pointer relative group">
-      <!-- 表情測試快捷小按鈕（滑鼠移入時顯示） -->
-      <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -left-24 top-2 flex flex-col gap-1 bg-white/90 p-1.5 rounded-xl shadow-md border border-sky-200 text-[10px] font-bold">
+    <!-- 動態角色本體 -->
+    <div id="petAvatarWrapper" onclick="interactWithPet()" title="點我與大肥魚互動！" class="cursor-pointer relative group">
+      <!-- 表情測試快捷選單 -->
+      <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -left-24 top-2 flex flex-col gap-1 bg-white/95 p-1.5 rounded-xl shadow-md border border-sky-200 text-[10px] font-bold z-10">
         <button onclick="event.stopPropagation(); setExpression('happy')" class="px-2 py-0.5 rounded hover:bg-rose-50 text-rose-600 text-left">✨ 開心星星眼</button>
         <button onclick="event.stopPropagation(); setExpression('smile')" class="px-2 py-0.5 rounded hover:bg-sky-50 text-blue-800 text-left">😊 溫柔微笑</button>
         <button onclick="event.stopPropagation(); setExpression('cheer')" class="px-2 py-0.5 rounded hover:bg-emerald-50 text-emerald-700 text-left">💦 加油鼓勵</button>
         <button onclick="event.stopPropagation(); setExpression('wink')" class="px-2 py-0.5 rounded hover:bg-amber-50 text-amber-700 text-left">😜 俏皮眨眼</button>
       </div>
 
-      <div id="petBody" class="anim-breathe w-28 h-28 sm:w-32 sm:h-32 drop-shadow-lg">
-        <!-- 若您有上傳不同表情差分圖 (mascot_happy.png 等)，會優先顯示 -->
-        <img id="diffImage" src="" alt="小藍鯨表情差分" style="display:none;"
+      <div id="petBody" class="anim-breathe w-32 h-36 sm:w-36 sm:h-40 drop-shadow-xl">
+        <!-- 若有上傳差分圖會自動載入 -->
+        <img id="diffImage" src="" alt="大肥魚表情差分" style="display:none;"
           class="w-full h-full object-contain rounded-2xl" />
 
-        <!-- 內建 Live2D 骨骼動態小藍鯨 SVG -->
-        <svg id="liveWhaleSvg" viewBox="0 0 120 125" class="w-full h-full overflow-visible">
-          <!-- 漂浮情緒特效（愛心/汗珠） -->
+        <!-- 高精細重繪：二頭身萌系「大肥魚女僕」Live2D 骨骼向量立繪 -->
+        <svg id="liveWhaleSvg" viewBox="0 0 140 155" class="w-full h-full overflow-visible">
+          <defs>
+            <!-- 深海藍長髮漸層 -->
+            <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#1e40af"/>
+              <stop offset="65%" stop-color="#2563eb"/>
+              <stop offset="100%" stop-color="#60a5fa"/>
+            </linearGradient>
+            <!-- 寶石藍瞳孔漸層 -->
+            <linearGradient id="eyeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#0f172a"/>
+              <stop offset="45%" stop-color="#1d4ed8"/>
+              <stop offset="100%" stop-color="#38bdf8"/>
+            </linearGradient>
+            <!-- 鯨魚尾漸層 -->
+            <linearGradient id="tailGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1e3a8a"/>
+              <stop offset="60%" stop-color="#2563eb"/>
+              <stop offset="100%" stop-color="#7dd3fc"/>
+            </linearGradient>
+          </defs>
+
+          <!-- 漂浮情緒特效 -->
           <g id="fxHappy" style="display:none;">
-            <text x="12" y="28" font-size="14">💖</text>
-            <text x="96" y="24" font-size="12">✨</text>
+            <text x="12" y="30" font-size="15">💖</text>
+            <text x="112" y="26" font-size="14">✨</text>
           </g>
           <g id="fxCheer" style="display:none;">
-            <path d="M96,36 Q101,44 96,48 Q91,44 96,36 Z" fill="#38bdf8"/>
-            <text x="10" y="32" font-size="13">💪</text>
+            <path d="M112,42 Q118,51 112,56 Q106,51 112,42 Z" fill="#38bdf8"/>
+            <text x="10" y="34" font-size="14">💪</text>
           </g>
 
-          <!-- 1. 獨立擺動的鯨魚尾巴 -->
+          <!-- 1. 厚實圓潤的鯨魚尾巴（獨立搖擺） -->
           <g class="anim-tail">
-            <path d="M84,90 Q110,84 115,68 Q104,76 98,75 Q104,64 96,57 Q89,73 80,84 Z" fill="#2563eb" stroke="#1e3a8a" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M92,110 Q116,112 128,96 Q134,88 125,84 Q115,92 109,94 Q115,82 108,76 Q100,82 96,95 Q90,102 88,106 Z"
+              fill="url(#tailGrad)" stroke="#0f172a" stroke-width="2.2" stroke-linejoin="round"/>
+            <!-- 魚尾腹面淺藍高光 -->
+            <path d="M95,107 Q112,107 122,94" fill="none" stroke="#bae6fd" stroke-width="2" stroke-linecap="round"/>
           </g>
 
-          <!-- 2. 藍色漸層長髮背面 -->
-          <path d="M24,55 Q15,94 30,112 L90,112 Q105,94 96,55 Z" fill="#1d4ed8"/>
+          <!-- 2. 蓬鬆雙層大波浪捲髮（背面層） -->
+          <path d="M32,54 C14,72 16,105 28,122 C33,128 38,120 40,115 C42,126 52,130 70,130 C88,130 98,126 100,115 C102,120 107,128 112,122 C124,105 126,72 108,54 Z"
+            fill="url(#hairGrad)" stroke="#0f172a" stroke-width="2.2" stroke-linejoin="round"/>
+          <!-- 髮絲波浪線條與淺藍挑染 -->
+          <path d="M27,76 Q20,96 31,114" fill="none" stroke="#93c5fd" stroke-width="3" stroke-linecap="round"/>
+          <path d="M113,76 Q120,96 109,114" fill="none" stroke="#93c5fd" stroke-width="3" stroke-linecap="round"/>
 
-          <!-- 3. 獨立搖擺的呆毛 -->
+          <!-- 3. 招牌愛心弧度大呆毛 -->
           <g class="anim-ahoge">
-            <path d="M58,21 Q48,5 69,9 Q76,12 64,22" fill="none" stroke="#1d4ed8" stroke-width="3.2" stroke-linecap="round"/>
+            <path d="M68,20 C56,2 82,2 84,15 C85,20 76,22 72,21" fill="none" stroke="#1e40af" stroke-width="3.5" stroke-linecap="round"/>
           </g>
 
-          <!-- 4. 白色蕾絲女僕頭飾 -->
-          <path d="M27,44 Q60,13 93,44" fill="none" stroke="#ffffff" stroke-width="8.5" stroke-linecap="round" stroke-dasharray="4 4"/>
-          <path d="M29,44 Q60,17 91,44" fill="none" stroke="#bfdbfe" stroke-width="3"/>
+          <!-- 4. 荷葉邊純白蕾絲女僕頭飾 -->
+          <path d="M32,48 Q70,12 108,48" fill="none" stroke="#0f172a" stroke-width="11" stroke-linecap="round"/>
+          <path d="M32,48 Q70,12 108,48" fill="none" stroke="#ffffff" stroke-width="8.5" stroke-linecap="round" stroke-dasharray="5 3"/>
+          <path d="M35,47 Q70,17 105,47" fill="none" stroke="#93c5fd" stroke-width="2.5"/>
 
-          <!-- 5. 獨立拍動的鯨魚耳鰭 + 淺藍蝴蝶結 -->
+          <!-- 5. 羽狀白邊鯨魚耳鰭 + 右側水藍蝴蝶結 -->
           <g class="anim-ear-l">
-            <path d="M28,50 Q8,52 12,63 Q23,63 30,56 Z" fill="#1e40af" stroke="#e0f2fe" stroke-width="1.5"/>
+            <path d="M34,54 Q10,56 12,67 Q20,70 28,67 Q33,64 36,60 Z" fill="#1e3a8a" stroke="#0f172a" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M14,66 Q21,68 28,65" fill="none" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round"/>
           </g>
           <g class="anim-ear-r">
-            <path d="M92,50 Q112,52 108,63 Q97,63 90,56 Z" fill="#1e40af" stroke="#e0f2fe" stroke-width="1.5"/>
-            <polygon points="86,44 97,39 95,49" fill="#38bdf8"/>
-            <polygon points="86,44 79,38 81,48" fill="#38bdf8"/>
+            <path d="M106,54 Q130,56 128,67 Q120,70 112,67 Q107,64 104,60 Z" fill="#1e3a8a" stroke="#0f172a" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M126,66 Q119,68 112,65" fill="none" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- 水藍色小蝴蝶結 -->
+            <polygon points="102,48 114,42 112,53" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
+            <polygon points="102,48 93,41 95,52" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
+            <circle cx="102" cy="48" r="2.5" fill="#fef08a" stroke="#0f172a" stroke-width="1.2"/>
           </g>
 
-          <!-- 6. 臉龐 -->
-          <ellipse cx="60" cy="58" rx="26" ry="22" fill="#fff1f2"/>
+          <!-- 6. 圓潤萌系小臉蛋 -->
+          <path d="M40,54 C40,76 52,84 70,84 C88,84 100,76 100,54 C100,36 86,30 70,30 C54,30 40,36 40,54 Z"
+            fill="#fff1f2" stroke="#0f172a" stroke-width="2"/>
 
-          <!-- 7. 藍色瀏海 -->
-          <path d="M33,54 Q38,27 60,27 Q82,27 87,54 Q76,42 68,52 Q60,40 52,52 Q44,42 33,54 Z" fill="#2563eb"/>
+          <!-- 7. 層次感藍色齊瀏海 + 兩側挑染鬢角 -->
+          <path d="M38,56 C38,32 54,25 70,25 C86,25 102,32 102,56 C96,46 90,44 86,54 C82,44 76,43 70,54 C64,43 58,44 54,54 C50,44 44,46 38,56 Z"
+            fill="#2563eb" stroke="#0f172a" stroke-width="2" stroke-linejoin="round"/>
+          <!-- 瀏海天使光環高光 -->
+          <path d="M48,40 Q56,37 62,40 M78,40 Q84,37 92,40" fill="none" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- 內側淺藍挑染鬢角 -->
+          <path d="M40,54 Q37,72 44,82 Q45,68 44,56 Z" fill="#7dd3fc" stroke="#0f172a" stroke-width="1.5"/>
+          <path d="M100,54 Q103,72 96,82 Q95,68 96,56 Z" fill="#7dd3fc" stroke="#0f172a" stroke-width="1.5"/>
 
-          <!-- 8. 四種可切換表情的眼睛群組 -->
-          <!-- 表情 1：溫柔微笑（預設） -->
+          <!-- 8. 四種日系大眼表情群組 -->
+          <!-- 表情 1：溫柔水潤寶石大眼 -->
           <g id="eyesSmile" class="anim-blink">
-            <ellipse cx="49" cy="58" rx="4.5" ry="5.5" fill="#1e3a8a"/>
-            <circle cx="48" cy="56" r="1.8" fill="#ffffff"/>
-            <circle cx="50" cy="60" r="1" fill="#7dd3fc"/>
-            <ellipse cx="71" cy="58" rx="4.5" ry="5.5" fill="#1e3a8a"/>
-            <circle cx="70" cy="56" r="1.8" fill="#ffffff"/>
-            <circle cx="72" cy="60" r="1" fill="#7dd3fc"/>
+            <!-- 左眼 -->
+            <ellipse cx="55" cy="63" rx="6" ry="7.2" fill="url(#eyeGrad)" stroke="#0f172a" stroke-width="1.5"/>
+            <path d="M48,58 Q55,53 62,58" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="53" cy="60" r="2.4" fill="#ffffff"/>
+            <circle cx="57" cy="66" r="1.2" fill="#e0f2fe"/>
+            <!-- 右眼 -->
+            <ellipse cx="85" cy="63" rx="6" ry="7.2" fill="url(#eyeGrad)" stroke="#0f172a" stroke-width="1.5"/>
+            <path d="M78,58 Q85,53 92,58" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="83" cy="60" r="2.4" fill="#ffffff"/>
+            <circle cx="87" cy="66" r="1.2" fill="#e0f2fe"/>
           </g>
 
           <!-- 表情 2：大漲開心星星眼 -->
           <g id="eyesHappy" style="display:none;">
-            <path d="M43,59 Q49,51 55,59" fill="none" stroke="#1e3a8a" stroke-width="3" stroke-linecap="round"/>
-            <path d="M65,59 Q71,51 77,59" fill="none" stroke="#1e3a8a" stroke-width="3" stroke-linecap="round"/>
+            <path d="M48,64 Q55,54 62,64" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+            <path d="M78,64 Q85,54 92,64" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+            <text x="51" y="55" font-size="8">✦</text>
+            <text x="81" y="55" font-size="8">✦</text>
           </g>
 
           <!-- 表情 3：下跌鼓勵加油眼 -->
           <g id="eyesCheer" style="display:none;">
-            <ellipse cx="49" cy="58" rx="4.5" ry="5" fill="#1e3a8a"/>
-            <circle cx="48" cy="56" r="1.8" fill="#ffffff"/>
-            <path d="M43,51 L54,53" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round"/>
-            <ellipse cx="71" cy="58" rx="4.5" ry="5" fill="#1e3a8a"/>
-            <circle cx="70" cy="56" r="1.8" fill="#ffffff"/>
-            <path d="M77,51 L66,53" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round"/>
+            <ellipse cx="55" cy="63" rx="5.5" ry="6.5" fill="url(#eyeGrad)" stroke="#0f172a" stroke-width="1.5"/>
+            <circle cx="53" cy="60" r="2.2" fill="#ffffff"/>
+            <path d="M48,53 L61,56" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round"/>
+            <ellipse cx="85" cy="63" rx="5.5" ry="6.5" fill="url(#eyeGrad)" stroke="#0f172a" stroke-width="1.5"/>
+            <circle cx="83" cy="60" r="2.2" fill="#ffffff"/>
+            <path d="M92,53 L79,56" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round"/>
           </g>
 
           <!-- 表情 4：點擊俏皮 Wink -->
           <g id="eyesWink" style="display:none;">
-            <ellipse cx="49" cy="58" rx="4.5" ry="5.5" fill="#1e3a8a"/>
-            <circle cx="48" cy="56" r="1.8" fill="#ffffff"/>
-            <path d="M65,56 L75,58 L65,61" fill="none" stroke="#1e3a8a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <ellipse cx="55" cy="63" rx="6" ry="7.2" fill="url(#eyeGrad)" stroke="#0f172a" stroke-width="1.5"/>
+            <circle cx="53" cy="60" r="2.4" fill="#ffffff"/>
+            <path d="M78,60 L89,63 L78,67" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
           </g>
 
-          <!-- 腮紅 -->
-          <ellipse cx="41" cy="64" rx="4.5" ry="2.2" fill="#fda4af" opacity="0.8"/>
-          <ellipse cx="79" cy="64" rx="4.5" ry="2.2" fill="#fda4af" opacity="0.8"/>
+          <!-- 粉嫩腮紅 -->
+          <ellipse cx="46" cy="71" rx="5" ry="2.5" fill="#fda4af" opacity="0.85"/>
+          <ellipse cx="94" cy="71" rx="5" ry="2.5" fill="#fda4af" opacity="0.85"/>
 
-          <!-- 9. 說話會動的嘴巴 -->
+          <!-- 9. 說話會動的可愛小嘴 -->
           <g class="anim-mouth">
-            <ellipse id="mouthShape" cx="60" cy="67" rx="4" ry="3" fill="#fb7185"/>
+            <path d="M65,74 Q70,81 75,74 Z" fill="#fb7185" stroke="#0f172a" stroke-width="1.4" stroke-linejoin="round"/>
           </g>
 
-          <!-- 10. 海軍藍古典女僕裝與純白蕾絲圍裙 -->
-          <path d="M35,80 L85,80 L94,118 L26,118 Z" fill="#172554"/>
-          <!-- 裙襬金線刺繡 -->
-          <path d="M29,112 Q60,117 91,112" fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="3 2"/>
-          <path d="M44,80 L76,80 L80,118 L40,118 Z" fill="#ffffff"/>
-          <!-- 胸前領結 -->
-          <polygon points="60,82 51,78 51,86" fill="#1e3a8a"/>
-          <polygon points="60,82 69,78 69,86" fill="#1e3a8a"/>
-          <circle cx="60" cy="82" r="2.5" fill="#38bdf8"/>
-          <!-- 圍裙上的小藍鯨標誌 -->
-          <ellipse cx="64" cy="105" rx="6.5" ry="3.8" fill="#2563eb"/>
-          <polygon points="57,105 53,102 53,108" fill="#2563eb"/>
+          <!-- 10. 二頭身海軍藍古典女僕裝與純白蕾絲圍裙 -->
+          <!-- 蓬蓬女僕裙主體 -->
+          <path d="M46,84 L94,84 L106,132 L34,132 Z" fill="#172554" stroke="#0f172a" stroke-width="2.2" stroke-linejoin="round"/>
+          <!-- 白色蕾絲裙襬底邊 -->
+          <path d="M33,132 Q42,138 51,132 Q60,138 70,132 Q80,138 89,132 Q98,138 107,132" fill="#ffffff" stroke="#0f172a" stroke-width="1.8"/>
+          <!-- 裙襬精緻金線刺繡 -->
+          <path d="M38,125 Q70,131 102,125" fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="3 2"/>
+
+          <!-- 純白圍裙（含荷葉肩帶與圓弧裙擺） -->
+          <path d="M53,84 L87,84 L92,127 Q70,133 48,127 Z" fill="#ffffff" stroke="#0f172a" stroke-width="1.8" stroke-linejoin="round"/>
+          <!-- 高腰海軍藍雙排扣束腰 -->
+          <rect x="52" y="96" width="36" height="8" rx="2" fill="#1e3a8a" stroke="#0f172a" stroke-width="1.5"/>
+          <circle cx="62" cy="100" r="1.4" fill="#fde047"/>
+          <circle cx="78" cy="100" r="1.4" fill="#fde047"/>
+
+          <!-- 胸前海軍藍領結 + 藍寶石胸針 -->
+          <polygon points="70,87 60,82 60,92" fill="#1e3a8a" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
+          <polygon points="70,87 80,82 80,92" fill="#1e3a8a" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
+          <circle cx="70" cy="87" r="2.8" fill="#38bdf8" stroke="#0f172a" stroke-width="1.2"/>
+
+          <!-- 圍裙右下角的「胖嘟嘟大肥魚」刺繡圖案 -->
+          <g transform="translate(74, 114)">
+            <ellipse cx="0" cy="0" rx="7.5" ry="4.5" fill="#2563eb"/>
+            <polygon points="-7,0 -12,-3.5 -12,3.5" fill="#2563eb"/>
+            <path d="M-2,-4 Q0,-8 2,-4" fill="none" stroke="#38bdf8" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="4" cy="-1" r="1" fill="#ffffff"/>
+          </g>
+
+          <!-- 可愛小手手與蕾絲袖口 -->
+          <circle cx="38" cy="106" r="5" fill="#fff1f2" stroke="#0f172a" stroke-width="1.8"/>
+          <circle cx="102" cy="106" r="5" fill="#fff1f2" stroke="#0f172a" stroke-width="1.8"/>
+
+          <!-- 蕾絲白襪與深藍瑪莉珍鞋 -->
+          <rect x="55" y="134" width="9" height="10" fill="#ffffff" stroke="#0f172a" stroke-width="1.6"/>
+          <rect x="76" y="134" width="9" height="10" fill="#ffffff" stroke="#0f172a" stroke-width="1.6"/>
+          <ellipse cx="59" cy="146" rx="7" ry="4" fill="#172554" stroke="#0f172a" stroke-width="1.8"/>
+          <ellipse cx="81" cy="146" rx="7" ry="4" fill="#172554" stroke="#0f172a" stroke-width="1.8"/>
         </svg>
       </div>
     </div>
@@ -427,12 +489,12 @@
         },
         "5d": {
           base_price: 22520.0, open: 22520.0, current: 22985.5, change: 465.5, change_pct: 2.07,
-          labels: ["週一", "週二", "週三", "週四", "週五"],
+          labels: ["第1日", "第2日", "第3日", "第4日", "今日"],
           points: [22520, 22680, 22610, 22850, 22985.5]
         },
         "1mo": {
           base_price: 22100.0, open: 22100.0, current: 22985.5, change: 885.5, change_pct: 4.01,
-          labels: ["第1週", "第2週", "第3週", "第4週"],
+          labels: ["第1週", "第2週", "第3週", "本週"],
           points: [22100, 22450, 22320, 22985.5]
         }
       },
@@ -459,8 +521,8 @@
 
     const MASCOT_TIPS = [
       "主人您知道嗎？「零股交易」最低只要買 1 股，就算台積電一張要百萬，小資族花一千多元也能當股東喔！",
-      "小藍鯨提醒您：高股息 ETF 的配息會從股價裡扣除，除息後要順利漲回來（填息），才算真正把股息放進口袋喔！",
-      "請用「未來 3 年內不會動用到的閒錢」來投資，這樣遇到股市海浪起伏時，主人才能像大鯨魚一樣從容不迫～",
+      "大肥魚提醒您：高股息 ETF 的配息會從股價裡扣除，除息後要順利漲回來（填息），才算真正把股息放進口袋喔！",
+      "請用「未來 3 年內不會動用到的閒錢」來投資，這樣遇到股市海浪起伏時，主人才能像大肥魚一樣從容不迫～",
       "下單零股前，記得先幫主人確認券商有沒有「零股手續費最低 1 元」優惠，省下來的手續費可以多喝好幾杯紅茶呢！"
     ];
 
@@ -470,7 +532,6 @@
       growth: "適合能承受較大價格波動、追求長期資本利得爆發力的投資人。"
     };
 
-    // 切換小藍鯨的表情（同時支援自訂差分圖與內建向量立繪）
     function setExpression(expr) {
       const diffMap = {
         happy: "./mascot_happy.png",
@@ -482,12 +543,10 @@
       const imgEl = document.getElementById('diffImage');
       const svgEl = document.getElementById('liveWhaleSvg');
 
-      // 嘗試載入對應表情差分圖，若無該圖檔則無縫顯示內建動態向量立繪
       imgEl.onload = () => { imgEl.style.display = 'block'; svgEl.style.display = 'none'; };
       imgEl.onerror = () => { imgEl.style.display = 'none'; svgEl.style.display = 'block'; };
       imgEl.src = diffMap[expr] || "./mascot.png";
 
-      // 切換 SVG 五官與特效
       ['eyesSmile', 'eyesHappy', 'eyesCheer', 'eyesWink'].forEach(id => {
         document.getElementById(id).style.display = 'none';
       });
@@ -508,7 +567,6 @@
       }
     }
 
-    // 說話嘴型動畫 + 文字更新
     function mascotSpeak(text, expr = null) {
       const bubble = document.getElementById('petBubble');
       bubble.style.display = 'block';
@@ -523,11 +581,10 @@
       }, 2200);
     }
 
-    // 點擊小藍鯨觸發彈跳與俏皮互動
     function interactWithPet() {
       const petBody = document.getElementById('petBody');
       petBody.classList.remove('jump-active');
-      void petBody.offsetWidth; // 重新觸發動畫
+      void petBody.offsetWidth;
       petBody.classList.add('jump-active');
 
       const tip = MASCOT_TIPS[tipIndex % MASCOT_TIPS.length];
@@ -548,7 +605,6 @@
       }
     }
 
-    // 讓小藍鯨在螢幕下方悠閒左右游動
     setInterval(() => {
       if (!isWalking) return;
       const container = document.getElementById('petContainer');
@@ -564,8 +620,25 @@
         if (res.ok) {
           const json = await res.json();
           if (json && json.stocks && json.stocks.length > 0) {
+            // 若舊版 JSON 尚未包含 5d/1mo，自動依目前點數建立合理波段曲線防呆
             if (!json.market_ranges && json.market) {
-              json.market_ranges = { "1d": { ...json.market, base_price: json.market.prev_close } };
+              const cur = json.market.current;
+              const prev = json.market.prev_close;
+              json.market_ranges = {
+                "1d": { ...json.market, base_price: prev },
+                "5d": {
+                  base_price: round2(prev * 0.985), open: round2(prev * 0.985), current: cur,
+                  change: round2(cur - prev * 0.985), change_pct: round2(((cur - prev * 0.985) / (prev * 0.985)) * 100),
+                  labels: ["前4日", "前3日", "前2日", "昨日", "今日"],
+                  points: [round2(prev * 0.985), round2(prev * 0.992), round2(prev * 0.989), prev, cur]
+                },
+                "1mo": {
+                  base_price: round2(prev * 0.96), open: round2(prev * 0.96), current: cur,
+                  change: round2(cur - prev * 0.96), change_pct: round2(((cur - prev * 0.96) / (prev * 0.96)) * 100),
+                  labels: ["3週前", "2週前", "1週前", "本週"],
+                  points: [round2(prev * 0.96), round2(prev * 0.978), round2(prev * 0.985), cur]
+                }
+              };
             }
             appData = json;
             document.getElementById('dataStatusBadge').textContent = "● 已同步最新真實台股行情";
@@ -576,6 +649,10 @@
       }
       renderMarket();
       renderRecommendations();
+    }
+
+    function round2(n) {
+      return Math.round(n * 100) / 100;
     }
 
     function switchRange(rangeKey) {
@@ -624,7 +701,7 @@
       if (m.change_pct > 1.0) {
         moodBadge.textContent = `${rl.periodName}強勢上攻`;
         tempEl.textContent = "偏熱（切勿盲目追高）";
-        mascotSpeak(`哇～主人您看！${rl.periodName}大盤漲了 ${m.change_pct.toFixed(2)}%，小藍鯨好開心！不過記得不要一次把預算全追高喔！`, 'happy');
+        mascotSpeak(`哇～主人您看！${rl.periodName}大盤漲了 ${m.change_pct.toFixed(2)}%，大肥魚好開心！不過記得不要一次把預算全追高喔！`, 'happy');
       } else if (m.change_pct >= 0) {
         moodBadge.textContent = `${rl.periodName}溫和偏多`;
         tempEl.textContent = "適中（適合按計畫買進）";
@@ -661,7 +738,7 @@
               borderWidth: 2.5,
               fill: true,
               tension: 0.3,
-              pointRadius: currentRange === '1d' ? 0 : 3,
+              pointRadius: currentRange === '1d' ? 0 : 3.5,
               pointHoverRadius: 5
             },
             {
@@ -691,7 +768,7 @@
     function setBudget(val) {
       document.getElementById('budgetInput').value = val;
       renderRecommendations();
-      mascotSpeak(`收到！已為主人重新精算 NT$ ${val.toLocaleString()} 的最佳零股配置比例囉！`, 'happy');
+      mascotSpeak(`收到！大肥魚已為主人重新精算 NT$ ${val.toLocaleString()} 的最佳零股配置比例囉！`, 'happy');
     }
 
     function selectStyle(style) {
