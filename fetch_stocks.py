@@ -66,7 +66,6 @@ def main():
         "stocks": []
     }
 
-    # 1. 抓取台灣加權指數 (^TWII) 的「當日 / 當週 / 當月」三種週期資料
     try:
         output["market_ranges"]["1d"] = parse_range_data("^TWII", "5m", "1d", "%H:%M")
         output["market_ranges"]["5d"] = parse_range_data("^TWII", "1h", "5d", "%m/%d %H:%M")
@@ -74,7 +73,6 @@ def main():
     except Exception as e:
         print(f"抓取大盤失敗: {e}")
 
-    # 2. 抓取 9 檔股票/ETF 最新報價
     for item in STOCKS:
         try:
             res = fetch_yahoo_chart(item["yahoo"], interval="1d", range_str="1d")
