@@ -3,10 +3,8 @@ import urllib.request
 import urllib.parse
 from datetime import datetime, timezone, timedelta
 
-# 台灣時間 (UTC+8)
 TW_TZ = timezone(timedelta(hours=8))
 
-# 9 檔台灣熱門 ETF 與個股清單（可隨時自行增減）
 STOCKS = [
     {"code": "0050",   "yahoo": "0050.TW",   "name": "元大台灣50",     "style": "steady",   "yield": 3.4, "tag": "市值型龍頭", "desc": "一次買進台灣前 50 大上市公司，跟著台灣經濟長期成長，最適合新手當作第一檔核心配置。"},
     {"code": "006208", "yahoo": "006208.TW", "name": "富邦台50",       "style": "steady",   "yield": 3.3, "tag": "低內扣市值型", "desc": "追蹤指數與 0050 相同，但內扣管理費更低、單價更親民，小資族定期定額首選。"},
@@ -27,50 +25,52 @@ def fetch_yahoo_chart(symbol, interval="5m", range_str="1d"):
         data = json.loads(resp.read().decode("utf-8"))
         return data["chart"]["result"][0]
 
+def parse_range_data(symbol, interval, range_str, time_fmt):
+    res = fetch_yahoo_chart(symbol, interval=interval, range_str=range_str)
+    meta = res["meta"]
+    timestamps = res.get("timestamp", [])
+    closes = res["indicators"]["quote"][0]["close"]
+
+    labels = []
+    points = []
+    for ts, val in zip(timestamps, closes):
+        if val is not None:
+            labels.append(datetime.fromtimestamp(ts, TW_TZ).strftime(time_fmt))
+            points.append(round(val, 2))
+
+    current_price = round(meta.get("regularMarketPrice") or (points[-1] if points else 0), 2)
+    if range_str == "1d":
+        base_price = round(meta.get("chartPreviousClose") or meta.get("previousClose") or (points[0] if points else current_price), 2)
+    else:
+        base_price = points[0] if points else current_price
+
+    open_price = points[0] if points else current_price
+    change = round(current_price - base_price, 2)
+    change_pct = round((change / base_price) * 100, 2) if base_price else 0
+
+    return {
+        "base_price": base_price,
+        "open": open_price,
+        "current": current_price,
+        "change": change,
+        "change_pct": change_pct,
+        "labels": labels,
+        "points": points
+    }
+
 def main():
     now_tw = datetime.now(TW_TZ)
     output = {
         "updated_at": now_tw.strftime("%Y-%m-%d %H:%M"),
-        "market": {},
+        "market_ranges": {},
         "stocks": []
     }
 
-    # 1. 抓取台灣加權指數 (^TWII) 盤中走勢與開盤/現價
+    # 1. 抓取台灣加權指數 (^TWII) 的「當日 / 當週 / 當月」三種週期資料
     try:
-        twii = fetch_yahoo_chart("^TWII", interval="5m", range_str="1d")
-        meta = twii["meta"]
-        timestamps = twii.get("timestamp", [])
-        closes = twii["indicators"]["quote"][0]["close"]
-
-        prev_close = meta.get("chartPreviousClose") or meta.get("previousClose")
-        current_price = meta.get("regularMarketPrice")
-        open_price = None
-
-        labels = []
-        points = []
-        for ts, val in zip(timestamps, closes):
-            if val is not None:
-                if open_price is None:
-                    open_price = round(val, 2)
-                t_str = datetime.fromtimestamp(ts, TW_TZ).strftime("%H:%M")
-                labels.append(t_str)
-                points.append(round(val, 2))
-
-        if open_price is None:
-            open_price = current_price
-
-        change = round(current_price - prev_close, 2)
-        change_pct = round((change / prev_close) * 100, 2) if prev_close else 0
-
-        output["market"] = {
-            "prev_close": round(prev_close, 2),
-            "open": open_price,
-            "current": round(current_price, 2),
-            "change": change,
-            "change_pct": change_pct,
-            "labels": labels,
-            "points": points
-        }
+        output["market_ranges"]["1d"] = parse_range_data("^TWII", "5m", "1d", "%H:%M")
+        output["market_ranges"]["5d"] = parse_range_data("^TWII", "1h", "5d", "%m/%d %H:%M")
+        output["market_ranges"]["1mo"] = parse_range_data("^TWII", "1d", "1mo", "%m/%d")
     except Exception as e:
         print(f"抓取大盤失敗: {e}")
 
@@ -98,7 +98,7 @@ def main():
 
     with open("stock_data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("stock_data.json 更新完成！")
+    print("stock_data.json 多週期資料更新完成！")
 
 if __name__ == "__main__":
     main()
