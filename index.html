@@ -1,1 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>台股每日行情與小資入股參考儀表板</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; color: #1e293b; }
+    .tw-up { color: #dc2626; }
+    .tw-up-bg { background-color: #fef2f2; color: #dc2626; border-color: #fecaca; }
+    .tw-down { color: #16a34a; }
+    .tw-down-bg { background-color: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
 
+  <!-- 頂部導覽列 -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-20">
+    <div class="max-w-6xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-lg">台</div>
+        <div>
+          <h1 class="text-lg font-bold text-slate-900 leading-tight">台股每日行情與小資入股參考</h1>
+          <p class="text-xs text-slate-500">資料自動更新時間：<span id="updatedAtText" class="font-medium text-slate-700">載入中...</span></p>
+        </div>
+      </div>
+      <span id="dataStatusBadge" class="text-xs px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
+        ● 每日自動同步台股報價
+      </span>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto w-full px-4 py-6 space-y-6 flex-1">
+
+    <!-- 區塊 1：加權指數真實開盤與波動看板 -->
+    <section class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">加權指數 (^TWII)</span>
+            <span id="marketMoodBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full border">--</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-3 flex-wrap">
+            <span id="indexPrice" class="text-3xl md:text-4xl font-black tracking-tight">--</span>
+            <span id="indexChange" class="text-lg font-bold">--</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-4 bg-slate-50 p-3.5 rounded-xl border border-slate-100 text-sm">
+          <div>
+            <div class="text-xs text-slate-500">今日開盤</div>
+            <div id="indexOpen" class="font-bold text-slate-800 mt-0.5">--</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500">昨日收盤</div>
+            <div id="indexPrevClose" class="font-bold text-slate-800 mt-0.5">--</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500">盤勢溫度計</div>
+            <div id="marketTemp" class="font-bold mt-0.5">--</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
+          <span>當日走勢圖（虛線為昨日收盤平盤線）</span>
+          <span>紅漲綠跌（台灣股市標準）</span>
+        </div>
+        <div class="h-56 w-full">
+          <canvas id="marketChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- 區塊 2：小資預算輸入與策略選擇 -->
+    <section class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+      <h2 class="text-base font-bold text-slate-900 mb-4">1. 輸入本次打算投入的金額與偏好</h2>
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-end">
+        <div class="md:col-span-6">
+          <label class="block text-xs font-bold text-slate-600 mb-1.5">投入預算（新台幣元）</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">NT$</span>
+            <input id="budgetInput" type="number" min="1000" step="500" value="10000"
+              class="w-full pl-12 pr-4 py-2.5 text-lg font-bold border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900" />
+          </div>
+          <div class="flex flex-wrap gap-2 mt-2.5">
+            <button type="button" onclick="setBudget(3000)" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">3,000 元</button>
+            <button type="button" onclick="setBudget(5000)" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">5,000 元</button>
+            <button type="button" onclick="setBudget(10000)" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">10,000 元</button>
+            <button type="button" onclick="setBudget(30000)" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">30,000 元</button>
+            <button type="button" onclick="setBudget(100000)" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">100,000 元</button>
+          </div>
+        </div>
+
+        <div class="md:col-span-6">
+          <label class="block text-xs font-bold text-slate-600 mb-1.5">選擇你的投資風格</label>
+          <div class="grid grid-cols-3 gap-2" id="styleButtons">
+            <button type="button" data-style="steady" onclick="selectStyle('steady')"
+              class="style-btn py-2.5 px-3 rounded-xl border-2 border-slate-900 bg-slate-900 text-white text-xs font-bold text-center">
+              🛡️ 穩健大盤型
+            </button>
+            <button type="button" data-style="dividend" onclick="selectStyle('dividend')"
+              class="style-btn py-2.5 px-3 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold text-center">
+              💰 領息存股型
+            </button>
+            <button type="button" data-style="growth" onclick="selectStyle('growth')"
+              class="style-btn py-2.5 px-3 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold text-center">
+              🚀 積極成長型
+            </button>
+          </div>
+          <p class="text-xs text-slate-500 mt-2.5" id="styleHint">適合剛入門、希望分散風險並跟著台灣整體經濟成長的小白。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 區塊 3：推薦標的與零股/整張試算 -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-8 space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-bold text-slate-900">2. 今日推薦入股參考清單（依最新真實收盤/盤中價換算）</h2>
+          <span class="text-xs text-slate-500">1 張 = 1,000 股｜零股最低 1 股起</span>
+        </div>
+        <div id="recommendationCards" class="space-y-3.5"></div>
+      </div>
+
+      <!-- 右側：資金配置圖與白話分析 -->
+      <div class="lg:col-span-4 space-y-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <h3 class="text-sm font-bold text-slate-900 mb-3">建議資金配置比例</h3>
+          <div class="h-44 flex items-center justify-center">
+            <canvas id="allocChart"></canvas>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 text-white rounded-2xl p-5 shadow-sm space-y-3">
+          <div class="flex items-center gap-2">
+            <span class="text-base">💡</span>
+            <h3 class="text-sm font-bold">給新手的今日操作分析</h3>
+          </div>
+          <div id="aiAdviceContent" class="text-xs text-slate-200 leading-relaxed space-y-2.5"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="max-w-6xl mx-auto w-full px-4 py-6 text-center text-xs text-slate-400 border-t border-slate-200 mt-8">
+    免責聲明：本網站數據透過自動化排程整理公開市場報價，試算結果僅供投資教育與研究參考，不構成任何買賣邀約或投資保證。投資前請審慎評估自身風險承受度。
+  </footer>
+
+  <script>
+    // 備用初始資料（在 GitHub Actions 首次產出 stock_data.json 前自動顯示）
+    const FALLBACK_DATA = {
+      updated_at: "預設範例資料（等待首次排程同步）",
+      market: {
+        prev_close: 22850.0,
+        open: 22910.0,
+        current: 22985.5,
+        change: 135.5,
+        change_pct: 0.59,
+        labels: ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30"],
+        points: [22910, 22940, 22920, 22960, 22990, 22975, 23010, 22995, 22980, 22985.5]
+      },
+      stocks: [
+        { code: "006208", name: "富邦台50", style: "steady", price: 112.5, change_pct: 0.62, yield: 3.3, tag: "低內扣市值型", desc: "追蹤指數與 0050 相同，內扣管理費更低、單價更親民，小資族定期定額首選。" },
+        { code: "0050", name: "元大台灣50", style: "steady", price: 196.0, change_pct: 0.67, yield: 3.4, tag: "市值型龍頭", desc: "一次買進台灣前 50 大上市公司，跟著台灣經濟長期成長。" },
+        { code: "00713", name: "元大台灣高息低波", style: "steady", price: 54.8, change_pct: 0.18, yield: 6.1, tag: "抗跌低波動", desc: "兼具高股息與低波動特性，大盤下跌時通常較抗跌。" },
+        { code: "00878", name: "國泰永續高股息", style: "dividend", price: 22.6, change_pct: 0.44, yield: 6.8, tag: "季配息人氣王", desc: "結合 ESG 與高股息選股，每季穩定配息，適合建立現金流。" },
+        { code: "00919", name: "群益台灣精選高息", style: "dividend", price: 23.8, change_pct: 0.51, yield: 8.5, tag: "高殖利率季配", desc: "鎖定已宣告高股利之企業，近年配息表現亮眼。" },
+        { code: "2884", name: "玉山金", style: "dividend", price: 28.4, change_pct: -0.35, yield: 4.8, tag: "存股族愛用金融", desc: "經營穩健且股利政策透明，單價親民，適合每月存零股。" },
+        { code: "2330", name: "台積電", style: "growth", price: 1045.0, change_pct: 1.46, yield: 1.6, tag: "護國神山", desc: "全球晶圓代工龍頭，受惠 AI 長期趨勢，建議用零股分批買進。" },
+        { code: "00679B", name: "元大美債20年", style: "steady", price: 29.5, change_pct: -0.20, yield: 4.3, tag: "避險資產配置", desc: "投資美國政府長天期公債，適合用來平衡股票波動風險。" }
+      ]
+    };
+
+    let appData = FALLBACK_DATA;
+    let currentStyle = 'steady';
+    let marketChartInstance = null;
+    let allocChartInstance = null;
+
+    const STYLE_HINTS = {
+      steady: "適合剛入門、希望分散風險並跟著台灣整體經濟成長的小白。",
+      dividend: "適合喜歡每季或每月看到現金股利入帳、追求穩定息收的存股族。",
+      growth: "適合能承受較大價格波動、追求長期資本利得爆發力的投資人。"
+    };
+
+    // 載入 GitHub Actions 產出的真實 JSON 資料
+    async function loadRealData() {
+      try {
+        // 加上時間戳避免瀏覽器讀取舊快取
+        const res = await fetch(`./stock_data.json?t=${Date.now()}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.market && json.stocks && json.stocks.length > 0) {
+            appData = json;
+            document.getElementById('dataStatusBadge').textContent = "● 已同步最新真實台股行情";
+          }
+        }
+      } catch (e) {
+        console.log("目前使用預設資料，等待首次排程執行:", e);
+      }
+      renderMarket();
+      renderRecommendations();
+    }
+
+    function renderMarket() {
+      const m = appData.market;
+      const isUp = m.change >= 0;
+      const sign = isUp ? "+" : "";
+      const colorClass = isUp ? "tw-up" : "tw-down";
+      const badgeClass = isUp ? "tw-up-bg" : "tw-down-bg";
+
+      document.getElementById('updatedAtText').textContent = appData.updated_at;
+      document.getElementById('indexPrice').textContent = m.current.toLocaleString('zh-TW', { minimumFractionDigits: 2 });
+      document.getElementById('indexPrice').className = `text-3xl md:text-4xl font-black tracking-tight ${colorClass}`;
+
+      document.getElementById('indexChange').textContent = `${isUp ? '▲' : '▼'} ${sign}${m.change.toFixed(2)} (${sign}${m.change_pct.toFixed(2)}%)`;
+      document.getElementById('indexChange').className = `text-lg font-bold ${colorClass}`;
+
+      document.getElementById('indexOpen').textContent = m.open.toLocaleString('zh-TW', { minimumFractionDigits: 2 });
+      document.getElementById('indexPrevClose').textContent = m.prev_close.toLocaleString('zh-TW', { minimumFractionDigits: 2 });
+
+      const moodBadge = document.getElementById('marketMoodBadge');
+      const tempEl = document.getElementById('marketTemp');
+      if (m.change_pct > 1.0) {
+        moodBadge.textContent = "多頭強勢上攻";
+        tempEl.textContent = "偏熱（切勿盲目追高）";
+      } else if (m.change_pct >= 0) {
+        moodBadge.textContent = "溫和偏多整理";
+        tempEl.textContent = "適中（適合按計畫買進）";
+      } else if (m.change_pct > -1.0) {
+        moodBadge.textContent = "小幅拉回修正";
+        tempEl.textContent = "微涼（適合逢低撿零股）";
+      } else {
+        moodBadge.textContent = "明顯回檔震盪";
+        tempEl.textContent = "偏冷（分批承接好時機）";
+      }
+      moodBadge.className = `text-xs font-bold px-2.5 py-0.5 rounded-full border ${badgeClass}`;
+      tempEl.className = `font-bold mt-0.5 ${colorClass}`;
+
+      // 繪製走勢圖
+      const ctx = document.getElementById('marketChart').getContext('2d');
+      if (marketChartInstance) marketChartInstance.destroy();
+
+      const lineColor = isUp ? '#dc2626' : '#16a34a';
+      const fillColor = isUp ? 'rgba(220, 38, 38, 0.08)' : 'rgba(22, 163, 74, 0.08)';
+      const prevLine = m.labels.map(() => m.prev_close);
+
+      marketChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: m.labels,
+          datasets: [
+            {
+              label: '加權指數',
+              data: m.points,
+              borderColor: lineColor,
+              backgroundColor: fillColor,
+              borderWidth: 2.5,
+              fill: true,
+              tension: 0.25,
+              pointRadius: 0,
+              pointHoverRadius: 4
+            },
+            {
+              label: '昨日收盤',
+              data: prevLine,
+              borderColor: '#94a3b8',
+              borderWidth: 1.2,
+              borderDash: [5, 5],
+              pointRadius: 0,
+              fill: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { maxTicksLimit: 8, font: { size: 11 } } },
+            y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 11 } } }
+          }
+        }
+      });
+    }
+
+    function setBudget(val) {
+      document.getElementById('budgetInput').value = val;
+      renderRecommendations();
+    }
+
+    function selectStyle(style) {
+      currentStyle = style;
+      document.getElementById('styleHint').textContent = STYLE_HINTS[style];
+      document.querySelectorAll('.style-btn').forEach(btn => {
+        if (btn.dataset.style === style) {
+          btn.className = "style-btn py-2.5 px-3 rounded-xl border-2 border-slate-900 bg-slate-900 text-white text-xs font-bold text-center";
+        } else {
+          btn.className = "style-btn py-2.5 px-3 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold text-center";
+        }
+      });
+      renderRecommendations();
+    }
+
+    function formatShares(shares) {
+      if (shares <= 0) return "預算不足 1 股";
+      const lots = Math.floor(shares / 1000);
+      const odd = shares % 1000;
+      if (lots > 0 && odd > 0) return `${lots} 張 + ${odd} 股`;
+      if (lots > 0) return `${lots} 張（${shares.toLocaleString()} 股）`;
+      return `${odd} 股（零股）`;
+    }
+
+    function renderRecommendations() {
+      const budget = Math.max(0, Number(document.getElementById('budgetInput').value) || 0);
+      const allStocks = appData.stocks;
+
+      // 優先挑出符合風格的標的，若不足 3 檔則從穩健型補齊
+      let matched = allStocks.filter(s => s.style === currentStyle);
+      if (matched.length < 3) {
+        const others = allStocks.filter(s => s.style !== currentStyle);
+        matched = matched.concat(others).slice(0, 3);
+      } else {
+        matched = matched.slice(0, 3);
+      }
+
+      // 資金配置權重：50% / 30% / 20%
+      const weights = [0.5, 0.3, 0.2];
+      const container = document.getElementById('recommendationCards');
+      container.innerHTML = '';
+
+      const chartLabels = [];
+      const chartAmounts = [];
+
+      matched.forEach((stock, idx) => {
+        const allocBudget = Math.floor(budget * weights[idx]);
+        const shares = stock.price > 0 ? Math.floor(allocBudget / stock.price) : 0;
+        const actualCost = Math.round(shares * stock.price);
+        const isUp = stock.change_pct >= 0;
+        const chgColor = isUp ? 'tw-up' : 'tw-down';
+        const chgSign = isUp ? '+' : '';
+
+        chartLabels.push(`${stock.code} ${stock.name}`);
+        chartAmounts.push(allocBudget);
+
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-2xl border border-slate-200 p-4 shadow-sm hover:border-slate-300 transition";
+        card.innerHTML = `
+          <div class="flex flex-wrap items-start justify-between gap-2">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-900 text-white">配置 ${weights[idx] * 100}%</span>
+                <span class="text-base font-black text-slate-900">${stock.code} ${stock.name}</span>
+                <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">${stock.tag}</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">${stock.desc}</p>
+            </div>
+            <div class="text-right">
+              <div class="text-lg font-black text-slate-900">NT$ ${stock.price.toFixed(2)}</div>
+              <div class="text-xs font-bold ${chgColor}">${isUp ? '▲' : '▼'} ${chgSign}${stock.change_pct.toFixed(2)}% ｜ 參考殖利率 ${stock.yield}%</div>
+            </div>
+          </div>
+          <div class="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span class="text-slate-500">分配預算：<strong class="text-slate-800">NT$ ${allocBudget.toLocaleString()}</strong></span>
+            <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 font-bold border border-amber-200">
+              約可買進：${formatShares(shares)}（約 NT$ ${actualCost.toLocaleString()}）
+            </span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      // 更新配置圓餅圖
+      const allocCtx = document.getElementById('allocChart').getContext('2d');
+      if (allocChartInstance) allocChartInstance.destroy();
+      allocChartInstance = new Chart(allocCtx, {
+        type: 'doughnut',
+        data: {
+          labels: chartLabels,
+          datasets: [{
+            data: chartAmounts,
+            backgroundColor: ['#0f172a', '#475569', '#94a3b8'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } }
+          }
+        }
+      });
+
+      // 更新白話分析
+      const m = appData.market;
+      const adviceEl = document.getElementById('aiAdviceContent');
+      const marketComment = m.change_pct < -0.5
+        ? `今日大盤下跌 ${Math.abs(m.change_pct).toFixed(2)}%，屬於回檔日，非常適合用「盤中零股」分批承接優質 ETF，能有效降低平均持有成本。`
+        : m.change_pct > 1.0
+        ? `今日大盤大漲 ${m.change_pct.toFixed(2)}%，市場情緒偏熱，建議不要一次把預算全部砸進去，可先買一半，留一半等拉回再補。`
+        : `今日大盤波動溫和（${m.change_pct >= 0 ? '+' : ''}${m.change_pct.toFixed(2)}%），照著既定的定期定額或分批計畫執行即可。`;
+
+      const feeTip = budget < 10000
+        ? `你的單筆預算在 1 萬元以下，下單前請確認券商是否有「零股手續費最低 1 元」優惠，避免被收取 20 元基本手續費吃掉報酬。`
+        : `你的預算充足，建議拆成 2～3 筆於不同交易日買進，分散單日買在最高點的風險。`;
+
+      adviceEl.innerHTML = `
+        <p>• <strong>今日盤勢解讀：</strong>${marketComment}</p>
+        <p>• <strong>小資下單提醒：</strong>${feeTip}</p>
+        <p>• <strong>新手心法：</strong>ETF 本身已經幫你買進一籃子股票，不需要每天盯盤殺進殺出，長期持有並把股息再投入效果最好。</p>
+      `;
+    }
+
+    document.getElementById('budgetInput').addEventListener('input', renderRecommendations);
+    loadRealData();
+  </script>
+</body>
+</html>
