@@ -1,0 +1,36 @@
+name: 每日自動更新台股資料
+
+on:
+  schedule:
+    # 週一至週五 台灣時間 09:15 (UTC 01:15) 開盤後更新
+    - cron: '15 1 * * 1-5'
+    # 週一至週五 台灣時間 13:40 (UTC 05:40) 收盤後更新
+    - cron: '40 5 * * 1-5'
+  # 允許在 GitHub 網頁上手動點擊按鈕立即測試執行
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-stock-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. 取得專案程式碼
+        uses: actions/checkout@v4
+
+      - name: 2. 設定 Python 環境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 3. 執行抓台股腳本
+        run: python fetch_stocks.py
+
+      - name: 4. 將最新資料存回倉庫
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add stock_data.json
+          git commit -m "chore: 自動更新台股行情資料" || exit 0
+          git push
