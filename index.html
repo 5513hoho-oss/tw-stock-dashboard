@@ -3,44 +3,143 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>台股每日行情與小資入股參考儀表板</title>
+  <title>小藍鯨的台股理財茶會｜動態女僕小助手</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; color: #1e293b; }
-    .tw-up { color: #dc2626; }
-    .tw-up-bg { background-color: #fef2f2; color: #dc2626; border-color: #fecaca; }
-    .tw-down { color: #16a34a; }
-    .tw-down-bg { background-color: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: radial-gradient(circle at top right, #e0f2fe 0%, #f0f9ff 45%, #f8fafc 100%);
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+    .tw-up { color: #e11d48; }
+    .tw-up-bg { background-color: #fff1f2; color: #e11d48; border-color: #fecdd3; }
+    .tw-down { color: #059669; }
+    .tw-down-bg { background-color: #ecfdf5; color: #059669; border-color: #a7f3d0; }
+
+    .maid-card {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border: 1.5px solid #bae6fd;
+      box-shadow: 0 8px 24px -6px rgba(14, 116, 144, 0.08);
+    }
+
+    /* ================= Live2D 風格骨骼微動畫 ================= */
+    /* 1. 身體呼吸起伏 */
+    @keyframes bodyBreathe {
+      0%, 100% { transform: translateY(0px) scaleY(1); }
+      50% { transform: translateY(-4px) scaleY(1.015); }
+    }
+    .anim-breathe {
+      animation: bodyBreathe 3s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    /* 2. 呆毛獨立搖擺 */
+    @keyframes ahogeWag {
+      0%, 100% { transform: rotate(-6deg); }
+      50% { transform: rotate(10deg); }
+    }
+    .anim-ahoge {
+      animation: ahogeWag 2.2s ease-in-out infinite;
+      transform-origin: 60px 22px;
+    }
+
+    /* 3. 鯨魚尾巴優雅擺動 */
+    @keyframes tailSwish {
+      0%, 100% { transform: rotate(-8deg) translateY(0px); }
+      50% { transform: rotate(12deg) translateY(-3px); }
+    }
+    .anim-tail {
+      animation: tailSwish 2.6s ease-in-out infinite;
+      transform-origin: 82px 86px;
+    }
+
+    /* 4. 鯨魚耳鰭輕輕拍動 */
+    @keyframes earFlapLeft {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(-8deg); }
+    }
+    @keyframes earFlapRight {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(8deg); }
+    }
+    .anim-ear-l { animation: earFlapLeft 2.8s ease-in-out infinite; transform-origin: 32px 52px; }
+    .anim-ear-r { animation: earFlapRight 2.8s ease-in-out infinite; transform-origin: 88px 52px; }
+
+    /* 5. 自然定時眨眼 */
+    @keyframes eyeBlink {
+      0%, 92%, 100% { transform: scaleY(1); }
+      95% { transform: scaleY(0.08); }
+    }
+    .anim-blink {
+      animation: eyeBlink 4.5s infinite;
+      transform-origin: center 58px;
+    }
+
+    /* 6. 說話時嘴巴開合 */
+    @keyframes mouthTalk {
+      0%, 100% { transform: scaleY(0.4); }
+      50% { transform: scaleY(1.15); }
+    }
+    .is-talking .anim-mouth {
+      animation: mouthTalk 0.28s ease-in-out infinite;
+      transform-origin: 60px 66px;
+    }
+
+    /* 7. 點擊開心彈跳 */
+    @keyframes happyJump {
+      0% { transform: translateY(0) scale(1); }
+      30% { transform: translateY(-22px) scale(1.06, 0.96); }
+      60% { transform: translateY(0) scale(0.96, 1.04); }
+      80% { transform: translateY(-8px) scale(1.02); }
+      100% { transform: translateY(0) scale(1); }
+    }
+    .jump-active {
+      animation: happyJump 0.65s cubic-bezier(0.28, 0.84, 0.42, 1);
+    }
+
+    /* 懸浮桌寵容器平滑移動 */
+    #petContainer {
+      transition: right 1.8s ease-in-out, bottom 0.4s ease;
+    }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col pb-28">
 
   <!-- 頂部導覽列 -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-20">
+  <header class="bg-[#0f172a]/95 text-white backdrop-blur-md border-b-2 border-amber-400/70 sticky top-0 z-20 shadow-md">
     <div class="max-w-6xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-lg">台</div>
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-700 border-2 border-white/80 text-white flex items-center justify-center font-black text-xl shadow-sm">
+          🐋
+        </div>
         <div>
-          <h1 class="text-lg font-bold text-slate-900 leading-tight">台股每日行情與小資入股參考</h1>
-          <p class="text-xs text-slate-500">資料自動更新時間：<span id="updatedAtText" class="font-medium text-slate-700">載入中...</span></p>
+          <h1 class="text-lg font-black tracking-tight flex items-center gap-2">
+            小藍鯨的台股理財茶會
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">動態女僕版</span>
+          </h1>
+          <p class="text-xs text-sky-200/80">行情自動同步時間：<span id="updatedAtText" class="font-bold text-amber-300">載入中...</span></p>
         </div>
       </div>
-      <span id="dataStatusBadge" class="text-xs px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
-        ● 每日自動同步台股報價
-      </span>
+      <div class="flex items-center gap-2">
+        <span id="dataStatusBadge" class="text-xs px-3 py-1.5 rounded-full bg-sky-900/80 text-sky-200 border border-sky-400/50 font-bold">
+          ● 每日自動同步台股報價
+        </span>
+      </div>
     </div>
   </header>
 
   <main class="max-w-6xl mx-auto w-full px-4 py-6 space-y-6 flex-1">
 
-    <!-- 區塊 1：加權指數真實開盤與波動看板 -->
-    <section class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+    <!-- 區塊 1：加權指數多週期波動看板（日 / 週 / 月切換） -->
+    <section class="maid-card rounded-3xl p-5 md:p-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-sky-100">
         <div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">加權指數 (^TWII)</span>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-blue-950 text-white">台灣加權指數 (^TWII)</span>
             <span id="marketMoodBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full border">--</span>
           </div>
           <div class="mt-2 flex items-baseline gap-3 flex-wrap">
@@ -48,66 +147,88 @@
             <span id="indexChange" class="text-lg font-bold">--</span>
           </div>
         </div>
-        <div class="grid grid-cols-3 gap-4 bg-slate-50 p-3.5 rounded-xl border border-slate-100 text-sm">
-          <div>
-            <div class="text-xs text-slate-500">今日開盤</div>
-            <div id="indexOpen" class="font-bold text-slate-800 mt-0.5">--</div>
+
+        <!-- 日 / 週 / 月 切換按鈕組 -->
+        <div class="flex flex-col sm:items-end gap-3">
+          <div class="inline-flex p-1 rounded-xl bg-sky-100/80 border border-sky-200">
+            <button type="button" data-range="1d" onclick="switchRange('1d')"
+              class="range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-900 text-white shadow-xs transition">
+              當日走勢
+            </button>
+            <button type="button" data-range="5d" onclick="switchRange('5d')"
+              class="range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold text-blue-900 hover:bg-white/60 transition">
+              本週 (5日)
+            </button>
+            <button type="button" data-range="1mo" onclick="switchRange('1mo')"
+              class="range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold text-blue-900 hover:bg-white/60 transition">
+              本月 (30日)
+            </button>
           </div>
-          <div>
-            <div class="text-xs text-slate-500">昨日收盤</div>
-            <div id="indexPrevClose" class="font-bold text-slate-800 mt-0.5">--</div>
-          </div>
-          <div>
-            <div class="text-xs text-slate-500">盤勢溫度計</div>
-            <div id="marketTemp" class="font-bold mt-0.5">--</div>
+
+          <div class="grid grid-cols-3 gap-3 bg-sky-50/90 px-3.5 py-2.5 rounded-2xl border border-sky-100 text-xs">
+            <div>
+              <div id="labelOpen" class="text-slate-500">今日開盤</div>
+              <div id="indexOpen" class="font-bold text-slate-900 mt-0.5">--</div>
+            </div>
+            <div>
+              <div id="labelBase" class="text-slate-500">昨日收盤</div>
+              <div id="indexPrevClose" class="font-bold text-slate-900 mt-0.5">--</div>
+            </div>
+            <div>
+              <div class="text-slate-500">海象溫度計</div>
+              <div id="marketTemp" class="font-bold mt-0.5">--</div>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="mt-4">
         <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
-          <span>當日走勢圖（虛線為昨日收盤平盤線）</span>
-          <span>紅漲綠跌（台灣股市標準）</span>
+          <span id="chartSubtitle">當日盤中走勢圖（虛線為基準平盤線）</span>
+          <span class="font-medium text-blue-900">紅漲綠跌（台灣股市標準）</span>
         </div>
-        <div class="h-56 w-full">
+        <div class="h-60 w-full">
           <canvas id="marketChart"></canvas>
         </div>
       </div>
     </section>
 
     <!-- 區塊 2：小資預算輸入與策略選擇 -->
-    <section class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-      <h2 class="text-base font-bold text-slate-900 mb-4">1. 輸入本次打算投入的金額與偏好</h2>
+    <section class="maid-card rounded-3xl p-5 md:p-6">
+      <h2 class="text-base font-black text-blue-950 mb-4 flex items-center gap-2">
+        <span class="w-6 h-6 rounded-full bg-gradient-to-r from-blue-700 to-sky-500 text-white text-xs flex items-center justify-center shadow-2xs">1</span>
+        請輸入主人本次打算投入的金額與偏好
+      </h2>
       <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-end">
         <div class="md:col-span-6">
           <label class="block text-xs font-bold text-slate-600 mb-1.5">投入預算（新台幣元）</label>
           <div class="relative">
-            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">NT$</span>
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-700 font-bold">NT$</span>
             <input id="budgetInput" type="number" min="1000" step="500" value="10000"
-              class="w-full pl-12 pr-4 py-2.5 text-lg font-bold border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900" />
+              class="w-full pl-12 pr-4 py-2.5 text-lg font-black border-2 border-sky-200 rounded-2xl bg-white focus:outline-none focus:border-blue-600 transition" />
           </div>
           <div class="flex flex-wrap gap-2 mt-2.5">
-            <button type="button" onclick="setBudget(3000)" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">3,000 元</button>
-            <button type="button" onclick="setBudget(5000)" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">5,000 元</button>
-            <button type="button" onclick="setBudget(10000)" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">10,000 元</button>
-            <button type="button" onclick="setBudget(30000)" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">30,000 元</button>
-            <button type="button" onclick="setBudget(100000)" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium">100,000 元</button>
+            <button type="button" onclick="setBudget(3000)" class="text-xs px-3 py-1 rounded-xl bg-sky-50 hover:bg-sky-100 text-blue-900 border border-sky-200 font-bold transition">3,000 元</button>
+            <button type="button" onclick="setBudget(5000)" class="text-xs px-3 py-1 rounded-xl bg-sky-50 hover:bg-sky-100 text-blue-900 border border-sky-200 font-bold transition">5,000 元</button>
+            <button type="button" onclick="setBudget(10000)" class="text-xs px-3 py-1 rounded-xl bg-sky-50 hover:bg-sky-100 text-blue-900 border border-sky-200 font-bold transition">10,000 元</button>
+            <button type="button" onclick="setBudget(30000)" class="text-xs px-3 py-1 rounded-xl bg-sky-50 hover:bg-sky-100 text-blue-900 border border-sky-200 font-bold transition">30,000 元</button>
+            <button type="button" onclick="setBudget(100000)" class="text-xs px-3 py-1 rounded-xl bg-sky-50 hover:bg-sky-100 text-blue-900 border border-sky-200 font-bold transition">100,000 元</button>
           </div>
         </div>
 
         <div class="md:col-span-6">
-          <label class="block text-xs font-bold text-slate-600 mb-1.5">選擇你的投資風格</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1.5">選擇您的投資航線風格</label>
           <div class="grid grid-cols-3 gap-2" id="styleButtons">
             <button type="button" data-style="steady" onclick="selectStyle('steady')"
-              class="style-btn py-2.5 px-3 rounded-xl border-2 border-slate-900 bg-slate-900 text-white text-xs font-bold text-center">
+              class="style-btn py-2.5 px-3 rounded-2xl border-2 border-blue-900 bg-blue-950 text-white text-xs font-bold text-center shadow-xs">
               🛡️ 穩健大盤型
             </button>
             <button type="button" data-style="dividend" onclick="selectStyle('dividend')"
-              class="style-btn py-2.5 px-3 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold text-center">
+              class="style-btn py-2.5 px-3 rounded-2xl border border-sky-200 bg-white text-slate-700 hover:bg-sky-50 text-xs font-bold text-center">
               💰 領息存股型
             </button>
             <button type="button" data-style="growth" onclick="selectStyle('growth')"
-              class="style-btn py-2.5 px-3 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold text-center">
+              class="style-btn py-2.5 px-3 rounded-2xl border border-sky-200 bg-white text-slate-700 hover:bg-sky-50 text-xs font-bold text-center">
               🚀 積極成長型
             </button>
           </div>
@@ -119,50 +240,201 @@
     <!-- 區塊 3：推薦標的與零股/整張試算 -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       <div class="lg:col-span-8 space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-base font-bold text-slate-900">2. 今日推薦入股參考清單（依最新真實收盤/盤中價換算）</h2>
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <h2 class="text-base font-black text-blue-950 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-gradient-to-r from-blue-700 to-sky-500 text-white text-xs flex items-center justify-center shadow-2xs">2</span>
+            小藍鯨為您精選的今日入股參考清單
+          </h2>
           <span class="text-xs text-slate-500">1 張 = 1,000 股｜零股最低 1 股起</span>
         </div>
         <div id="recommendationCards" class="space-y-3.5"></div>
       </div>
 
-      <!-- 右側：資金配置圖與白話分析 -->
+      <!-- 右側：資金配置圖與女僕分析筆記 -->
       <div class="lg:col-span-4 space-y-4">
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-900 mb-3">建議資金配置比例</h3>
+        <div class="maid-card rounded-3xl p-5">
+          <h3 class="text-sm font-black text-blue-950 mb-3">建議資金配置比例</h3>
           <div class="h-44 flex items-center justify-center">
             <canvas id="allocChart"></canvas>
           </div>
         </div>
 
-        <div class="bg-slate-900 text-white rounded-2xl p-5 shadow-sm space-y-3">
-          <div class="flex items-center gap-2">
-            <span class="text-base">💡</span>
-            <h3 class="text-sm font-bold">給新手的今日操作分析</h3>
+        <div class="bg-gradient-to-br from-[#0f172a] via-[#172554] to-[#1e3a8a] text-white rounded-3xl p-5 shadow-md border border-sky-400/30 space-y-3">
+          <div class="flex items-center gap-2 pb-2 border-b border-white/10">
+            <span class="text-base">🐋</span>
+            <h3 class="text-sm font-black text-amber-300">小藍鯨的盤勢觀察筆記</h3>
           </div>
-          <div id="aiAdviceContent" class="text-xs text-slate-200 leading-relaxed space-y-2.5"></div>
+          <div id="aiAdviceContent" class="text-xs text-sky-100 leading-relaxed space-y-2.5"></div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <footer class="max-w-6xl mx-auto w-full px-4 py-6 text-center text-xs text-slate-400 border-t border-slate-200 mt-8">
+  <footer class="max-w-6xl mx-auto w-full px-4 py-6 text-center text-xs text-slate-500 border-t border-sky-200/60 mt-8">
     免責聲明：本網站數據透過自動化排程整理公開市場報價，試算結果僅供投資教育與研究參考，不構成任何買賣邀約或投資保證。投資前請審慎評估自身風險承受度。
   </footer>
 
+  <!-- ================= 懸浮動態桌面小助手「小藍鯨」 ================= -->
+  <div id="petContainer" style="right: 20px; bottom: 16px;" class="fixed z-50 flex flex-col items-end select-none">
+
+    <!-- 對話氣泡框 -->
+    <div id="petBubble" class="mb-2 max-w-[280px] sm:max-w-[320px] bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-xl border-2 border-sky-300 relative transition-all">
+      <div class="flex items-center justify-between gap-2 mb-1">
+        <span class="text-[11px] font-black text-blue-900 bg-sky-100 px-2 py-0.5 rounded-full">🎀 小藍鯨女僕</span>
+        <div class="flex items-center gap-1">
+          <button onclick="toggleWalkMode()" id="walkToggleBtn" title="切換自動左右散步" class="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold hover:bg-amber-200 transition">
+            🚶 散步：開
+          </button>
+          <button onclick="toggleBubble()" title="收合對話框" class="text-xs text-slate-400 hover:text-slate-700 px-1 font-bold">✕</button>
+        </div>
+      </div>
+      <p id="mascotSpeech" class="text-xs text-slate-700 font-medium leading-relaxed">
+        主人您好呀～點我可以切換表情與理財秘笈，我還會在螢幕下方悠閒游動喔！
+      </p>
+      <!-- 氣泡小尾巴 -->
+      <div class="w-3 h-3 bg-white border-r-2 border-b-2 border-sky-300 rotate-45 absolute -bottom-1.5 right-10"></div>
+    </div>
+
+    <!-- 動態角色本體（支援多張差分圖 + Live2D 骨骼向量動畫） -->
+    <div id="petAvatarWrapper" onclick="interactWithPet()" title="點我互動！" class="cursor-pointer relative group">
+      <!-- 表情測試快捷小按鈕（滑鼠移入時顯示） -->
+      <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -left-24 top-2 flex flex-col gap-1 bg-white/90 p-1.5 rounded-xl shadow-md border border-sky-200 text-[10px] font-bold">
+        <button onclick="event.stopPropagation(); setExpression('happy')" class="px-2 py-0.5 rounded hover:bg-rose-50 text-rose-600 text-left">✨ 開心星星眼</button>
+        <button onclick="event.stopPropagation(); setExpression('smile')" class="px-2 py-0.5 rounded hover:bg-sky-50 text-blue-800 text-left">😊 溫柔微笑</button>
+        <button onclick="event.stopPropagation(); setExpression('cheer')" class="px-2 py-0.5 rounded hover:bg-emerald-50 text-emerald-700 text-left">💦 加油鼓勵</button>
+        <button onclick="event.stopPropagation(); setExpression('wink')" class="px-2 py-0.5 rounded hover:bg-amber-50 text-amber-700 text-left">😜 俏皮眨眼</button>
+      </div>
+
+      <div id="petBody" class="anim-breathe w-28 h-28 sm:w-32 sm:h-32 drop-shadow-lg">
+        <!-- 若您有上傳不同表情差分圖 (mascot_happy.png 等)，會優先顯示 -->
+        <img id="diffImage" src="" alt="小藍鯨表情差分" style="display:none;"
+          class="w-full h-full object-contain rounded-2xl" />
+
+        <!-- 內建 Live2D 骨骼動態小藍鯨 SVG -->
+        <svg id="liveWhaleSvg" viewBox="0 0 120 125" class="w-full h-full overflow-visible">
+          <!-- 漂浮情緒特效（愛心/汗珠） -->
+          <g id="fxHappy" style="display:none;">
+            <text x="12" y="28" font-size="14">💖</text>
+            <text x="96" y="24" font-size="12">✨</text>
+          </g>
+          <g id="fxCheer" style="display:none;">
+            <path d="M96,36 Q101,44 96,48 Q91,44 96,36 Z" fill="#38bdf8"/>
+            <text x="10" y="32" font-size="13">💪</text>
+          </g>
+
+          <!-- 1. 獨立擺動的鯨魚尾巴 -->
+          <g class="anim-tail">
+            <path d="M84,90 Q110,84 115,68 Q104,76 98,75 Q104,64 96,57 Q89,73 80,84 Z" fill="#2563eb" stroke="#1e3a8a" stroke-width="2" stroke-linejoin="round"/>
+          </g>
+
+          <!-- 2. 藍色漸層長髮背面 -->
+          <path d="M24,55 Q15,94 30,112 L90,112 Q105,94 96,55 Z" fill="#1d4ed8"/>
+
+          <!-- 3. 獨立搖擺的呆毛 -->
+          <g class="anim-ahoge">
+            <path d="M58,21 Q48,5 69,9 Q76,12 64,22" fill="none" stroke="#1d4ed8" stroke-width="3.2" stroke-linecap="round"/>
+          </g>
+
+          <!-- 4. 白色蕾絲女僕頭飾 -->
+          <path d="M27,44 Q60,13 93,44" fill="none" stroke="#ffffff" stroke-width="8.5" stroke-linecap="round" stroke-dasharray="4 4"/>
+          <path d="M29,44 Q60,17 91,44" fill="none" stroke="#bfdbfe" stroke-width="3"/>
+
+          <!-- 5. 獨立拍動的鯨魚耳鰭 + 淺藍蝴蝶結 -->
+          <g class="anim-ear-l">
+            <path d="M28,50 Q8,52 12,63 Q23,63 30,56 Z" fill="#1e40af" stroke="#e0f2fe" stroke-width="1.5"/>
+          </g>
+          <g class="anim-ear-r">
+            <path d="M92,50 Q112,52 108,63 Q97,63 90,56 Z" fill="#1e40af" stroke="#e0f2fe" stroke-width="1.5"/>
+            <polygon points="86,44 97,39 95,49" fill="#38bdf8"/>
+            <polygon points="86,44 79,38 81,48" fill="#38bdf8"/>
+          </g>
+
+          <!-- 6. 臉龐 -->
+          <ellipse cx="60" cy="58" rx="26" ry="22" fill="#fff1f2"/>
+
+          <!-- 7. 藍色瀏海 -->
+          <path d="M33,54 Q38,27 60,27 Q82,27 87,54 Q76,42 68,52 Q60,40 52,52 Q44,42 33,54 Z" fill="#2563eb"/>
+
+          <!-- 8. 四種可切換表情的眼睛群組 -->
+          <!-- 表情 1：溫柔微笑（預設） -->
+          <g id="eyesSmile" class="anim-blink">
+            <ellipse cx="49" cy="58" rx="4.5" ry="5.5" fill="#1e3a8a"/>
+            <circle cx="48" cy="56" r="1.8" fill="#ffffff"/>
+            <circle cx="50" cy="60" r="1" fill="#7dd3fc"/>
+            <ellipse cx="71" cy="58" rx="4.5" ry="5.5" fill="#1e3a8a"/>
+            <circle cx="70" cy="56" r="1.8" fill="#ffffff"/>
+            <circle cx="72" cy="60" r="1" fill="#7dd3fc"/>
+          </g>
+
+          <!-- 表情 2：大漲開心星星眼 -->
+          <g id="eyesHappy" style="display:none;">
+            <path d="M43,59 Q49,51 55,59" fill="none" stroke="#1e3a8a" stroke-width="3" stroke-linecap="round"/>
+            <path d="M65,59 Q71,51 77,59" fill="none" stroke="#1e3a8a" stroke-width="3" stroke-linecap="round"/>
+          </g>
+
+          <!-- 表情 3：下跌鼓勵加油眼 -->
+          <g id="eyesCheer" style="display:none;">
+            <ellipse cx="49" cy="58" rx="4.5" ry="5" fill="#1e3a8a"/>
+            <circle cx="48" cy="56" r="1.8" fill="#ffffff"/>
+            <path d="M43,51 L54,53" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round"/>
+            <ellipse cx="71" cy="58" rx="4.5" ry="5" fill="#1e3a8a"/>
+            <circle cx="70" cy="56" r="1.8" fill="#ffffff"/>
+            <path d="M77,51 L66,53" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round"/>
+          </g>
+
+          <!-- 表情 4：點擊俏皮 Wink -->
+          <g id="eyesWink" style="display:none;">
+            <ellipse cx="49" cy="58" rx="4.5" ry="5.5" fill="#1e3a8a"/>
+            <circle cx="48" cy="56" r="1.8" fill="#ffffff"/>
+            <path d="M65,56 L75,58 L65,61" fill="none" stroke="#1e3a8a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+
+          <!-- 腮紅 -->
+          <ellipse cx="41" cy="64" rx="4.5" ry="2.2" fill="#fda4af" opacity="0.8"/>
+          <ellipse cx="79" cy="64" rx="4.5" ry="2.2" fill="#fda4af" opacity="0.8"/>
+
+          <!-- 9. 說話會動的嘴巴 -->
+          <g class="anim-mouth">
+            <ellipse id="mouthShape" cx="60" cy="67" rx="4" ry="3" fill="#fb7185"/>
+          </g>
+
+          <!-- 10. 海軍藍古典女僕裝與純白蕾絲圍裙 -->
+          <path d="M35,80 L85,80 L94,118 L26,118 Z" fill="#172554"/>
+          <!-- 裙襬金線刺繡 -->
+          <path d="M29,112 Q60,117 91,112" fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="3 2"/>
+          <path d="M44,80 L76,80 L80,118 L40,118 Z" fill="#ffffff"/>
+          <!-- 胸前領結 -->
+          <polygon points="60,82 51,78 51,86" fill="#1e3a8a"/>
+          <polygon points="60,82 69,78 69,86" fill="#1e3a8a"/>
+          <circle cx="60" cy="82" r="2.5" fill="#38bdf8"/>
+          <!-- 圍裙上的小藍鯨標誌 -->
+          <ellipse cx="64" cy="105" rx="6.5" ry="3.8" fill="#2563eb"/>
+          <polygon points="57,105 53,102 53,108" fill="#2563eb"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // 備用初始資料（在 GitHub Actions 首次產出 stock_data.json 前自動顯示）
     const FALLBACK_DATA = {
-      updated_at: "預設範例資料（等待首次排程同步）",
-      market: {
-        prev_close: 22850.0,
-        open: 22910.0,
-        current: 22985.5,
-        change: 135.5,
-        change_pct: 0.59,
-        labels: ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30"],
-        points: [22910, 22940, 22920, 22960, 22990, 22975, 23010, 22995, 22980, 22985.5]
+      updated_at: "預設範例資料（等待排程同步）",
+      market_ranges: {
+        "1d": {
+          base_price: 22850.0, open: 22910.0, current: 22985.5, change: 135.5, change_pct: 0.59,
+          labels: ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30"],
+          points: [22910, 22940, 22920, 22960, 22990, 22975, 23010, 22995, 22980, 22985.5]
+        },
+        "5d": {
+          base_price: 22520.0, open: 22520.0, current: 22985.5, change: 465.5, change_pct: 2.07,
+          labels: ["週一", "週二", "週三", "週四", "週五"],
+          points: [22520, 22680, 22610, 22850, 22985.5]
+        },
+        "1mo": {
+          base_price: 22100.0, open: 22100.0, current: 22985.5, change: 885.5, change_pct: 4.01,
+          labels: ["第1週", "第2週", "第3週", "第4週"],
+          points: [22100, 22450, 22320, 22985.5]
+        }
       },
       stocks: [
         { code: "006208", name: "富邦台50", style: "steady", price: 112.5, change_pct: 0.62, yield: 3.3, tag: "低內扣市值型", desc: "追蹤指數與 0050 相同，內扣管理費更低、單價更親民，小資族定期定額首選。" },
@@ -177,9 +449,20 @@
     };
 
     let appData = FALLBACK_DATA;
+    let currentRange = '1d';
     let currentStyle = 'steady';
     let marketChartInstance = null;
     let allocChartInstance = null;
+    let tipIndex = 0;
+    let isWalking = true;
+    let talkTimer = null;
+
+    const MASCOT_TIPS = [
+      "主人您知道嗎？「零股交易」最低只要買 1 股，就算台積電一張要百萬，小資族花一千多元也能當股東喔！",
+      "小藍鯨提醒您：高股息 ETF 的配息會從股價裡扣除，除息後要順利漲回來（填息），才算真正把股息放進口袋喔！",
+      "請用「未來 3 年內不會動用到的閒錢」來投資，這樣遇到股市海浪起伏時，主人才能像大鯨魚一樣從容不迫～",
+      "下單零股前，記得先幫主人確認券商有沒有「零股手續費最低 1 元」優惠，省下來的手續費可以多喝好幾杯紅茶呢！"
+    ];
 
     const STYLE_HINTS = {
       steady: "適合剛入門、希望分散風險並跟著台灣整體經濟成長的小白。",
@@ -187,31 +470,143 @@
       growth: "適合能承受較大價格波動、追求長期資本利得爆發力的投資人。"
     };
 
-    // 載入 GitHub Actions 產出的真實 JSON 資料
+    // 切換小藍鯨的表情（同時支援自訂差分圖與內建向量立繪）
+    function setExpression(expr) {
+      const diffMap = {
+        happy: "./mascot_happy.png",
+        smile: "./mascot.png",
+        cheer: "./mascot_cheer.png",
+        wink:  "./mascot_wink.png"
+      };
+
+      const imgEl = document.getElementById('diffImage');
+      const svgEl = document.getElementById('liveWhaleSvg');
+
+      // 嘗試載入對應表情差分圖，若無該圖檔則無縫顯示內建動態向量立繪
+      imgEl.onload = () => { imgEl.style.display = 'block'; svgEl.style.display = 'none'; };
+      imgEl.onerror = () => { imgEl.style.display = 'none'; svgEl.style.display = 'block'; };
+      imgEl.src = diffMap[expr] || "./mascot.png";
+
+      // 切換 SVG 五官與特效
+      ['eyesSmile', 'eyesHappy', 'eyesCheer', 'eyesWink'].forEach(id => {
+        document.getElementById(id).style.display = 'none';
+      });
+      document.getElementById('fxHappy').style.display = 'none';
+      document.getElementById('fxCheer').style.display = 'none';
+
+      if (expr === 'happy') {
+        document.getElementById('eyesHappy').style.display = 'block';
+        document.getElementById('fxHappy').style.display = 'block';
+      } else if (expr === 'cheer') {
+        document.getElementById('eyesCheer').style.display = 'block';
+        document.getElementById('fxCheer').style.display = 'block';
+      } else if (expr === 'wink') {
+        document.getElementById('eyesWink').style.display = 'block';
+        document.getElementById('fxHappy').style.display = 'block';
+      } else {
+        document.getElementById('eyesSmile').style.display = 'block';
+      }
+    }
+
+    // 說話嘴型動畫 + 文字更新
+    function mascotSpeak(text, expr = null) {
+      const bubble = document.getElementById('petBubble');
+      bubble.style.display = 'block';
+      document.getElementById('mascotSpeech').textContent = text;
+      if (expr) setExpression(expr);
+
+      const petBody = document.getElementById('petBody');
+      petBody.classList.add('is-talking');
+      clearTimeout(talkTimer);
+      talkTimer = setTimeout(() => {
+        petBody.classList.remove('is-talking');
+      }, 2200);
+    }
+
+    // 點擊小藍鯨觸發彈跳與俏皮互動
+    function interactWithPet() {
+      const petBody = document.getElementById('petBody');
+      petBody.classList.remove('jump-active');
+      void petBody.offsetWidth; // 重新觸發動畫
+      petBody.classList.add('jump-active');
+
+      const tip = MASCOT_TIPS[tipIndex % MASCOT_TIPS.length];
+      tipIndex++;
+      mascotSpeak(tip, 'wink');
+    }
+
+    function toggleBubble() {
+      const bubble = document.getElementById('petBubble');
+      bubble.style.display = bubble.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function toggleWalkMode() {
+      isWalking = !isWalking;
+      document.getElementById('walkToggleBtn').textContent = isWalking ? '🚶 散步：開' : '🚶 散步：關';
+      if (!isWalking) {
+        document.getElementById('petContainer').style.right = '20px';
+      }
+    }
+
+    // 讓小藍鯨在螢幕下方悠閒左右游動
+    setInterval(() => {
+      if (!isWalking) return;
+      const container = document.getElementById('petContainer');
+      const maxOffset = Math.min(window.innerWidth - 220, 480);
+      if (maxOffset <= 40) return;
+      const randomRight = Math.floor(Math.random() * maxOffset) + 20;
+      container.style.right = `${randomRight}px`;
+    }, 5500);
+
     async function loadRealData() {
       try {
-        // 加上時間戳避免瀏覽器讀取舊快取
         const res = await fetch(`./stock_data.json?t=${Date.now()}`);
         if (res.ok) {
           const json = await res.json();
-          if (json && json.market && json.stocks && json.stocks.length > 0) {
+          if (json && json.stocks && json.stocks.length > 0) {
+            if (!json.market_ranges && json.market) {
+              json.market_ranges = { "1d": { ...json.market, base_price: json.market.prev_close } };
+            }
             appData = json;
             document.getElementById('dataStatusBadge').textContent = "● 已同步最新真實台股行情";
           }
         }
       } catch (e) {
-        console.log("目前使用預設資料，等待首次排程執行:", e);
+        console.log("目前使用預設資料:", e);
       }
       renderMarket();
       renderRecommendations();
     }
 
+    function switchRange(rangeKey) {
+      currentRange = rangeKey;
+      document.querySelectorAll('.range-btn').forEach(btn => {
+        if (btn.dataset.range === rangeKey) {
+          btn.className = "range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-900 text-white shadow-xs transition";
+        } else {
+          btn.className = "range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold text-blue-900 hover:bg-white/60 transition";
+        }
+      });
+      renderMarket();
+    }
+
     function renderMarket() {
-      const m = appData.market;
+      const ranges = appData.market_ranges || FALLBACK_DATA.market_ranges;
+      const m = ranges[currentRange] || ranges["1d"];
       const isUp = m.change >= 0;
       const sign = isUp ? "+" : "";
       const colorClass = isUp ? "tw-up" : "tw-down";
       const badgeClass = isUp ? "tw-up-bg" : "tw-down-bg";
+
+      const rangeLabels = {
+        "1d": { open: "今日開盤", base: "昨日收盤", sub: "當日盤中走勢圖（虛線為昨日收盤基準線）", periodName: "今日" },
+        "5d": { open: "本週起點", base: "5日前基準", sub: "近 5 個交易日波動走勢圖（虛線為週初基準線）", periodName: "本週" },
+        "1mo": { open: "月初起點", base: "30日前基準", sub: "近 1 個月波段走勢圖（虛線為月初基準線）", periodName: "本月" }
+      };
+      const rl = rangeLabels[currentRange];
+      document.getElementById('labelOpen').textContent = rl.open;
+      document.getElementById('labelBase').textContent = rl.base;
+      document.getElementById('chartSubtitle').textContent = rl.sub;
 
       document.getElementById('updatedAtText').textContent = appData.updated_at;
       document.getElementById('indexPrice').textContent = m.current.toLocaleString('zh-TW', { minimumFractionDigits: 2 });
@@ -221,33 +616,37 @@
       document.getElementById('indexChange').className = `text-lg font-bold ${colorClass}`;
 
       document.getElementById('indexOpen').textContent = m.open.toLocaleString('zh-TW', { minimumFractionDigits: 2 });
-      document.getElementById('indexPrevClose').textContent = m.prev_close.toLocaleString('zh-TW', { minimumFractionDigits: 2 });
+      document.getElementById('indexPrevClose').textContent = m.base_price.toLocaleString('zh-TW', { minimumFractionDigits: 2 });
 
       const moodBadge = document.getElementById('marketMoodBadge');
       const tempEl = document.getElementById('marketTemp');
+
       if (m.change_pct > 1.0) {
-        moodBadge.textContent = "多頭強勢上攻";
+        moodBadge.textContent = `${rl.periodName}強勢上攻`;
         tempEl.textContent = "偏熱（切勿盲目追高）";
+        mascotSpeak(`哇～主人您看！${rl.periodName}大盤漲了 ${m.change_pct.toFixed(2)}%，小藍鯨好開心！不過記得不要一次把預算全追高喔！`, 'happy');
       } else if (m.change_pct >= 0) {
-        moodBadge.textContent = "溫和偏多整理";
+        moodBadge.textContent = `${rl.periodName}溫和偏多`;
         tempEl.textContent = "適中（適合按計畫買進）";
+        mascotSpeak(`主人您好～${rl.periodName}大盤走勢平穩（${sign}${m.change_pct.toFixed(2)}%），最適合照著您的定期定額計畫慢慢累積持股了！`, 'smile');
       } else if (m.change_pct > -1.0) {
-        moodBadge.textContent = "小幅拉回修正";
+        moodBadge.textContent = `${rl.periodName}小幅拉回`;
         tempEl.textContent = "微涼（適合逢低撿零股）";
+        mascotSpeak(`唔～${rl.periodName}大盤稍微退潮了一點（${m.change_pct.toFixed(2)}%），對存股的主人來說，這反而是用優惠價撿零股的好機會喔！`, 'cheer');
       } else {
-        moodBadge.textContent = "明顯回檔震盪";
+        moodBadge.textContent = `${rl.periodName}明顯回檔`;
         tempEl.textContent = "偏冷（分批承接好時機）";
+        mascotSpeak(`主人別擔心！${rl.periodName}大盤雖然跌了 ${Math.abs(m.change_pct).toFixed(2)}%，但這正是優質 ETF 辦特賣會的時候，我們分批承接就好！`, 'cheer');
       }
       moodBadge.className = `text-xs font-bold px-2.5 py-0.5 rounded-full border ${badgeClass}`;
       tempEl.className = `font-bold mt-0.5 ${colorClass}`;
 
-      // 繪製走勢圖
       const ctx = document.getElementById('marketChart').getContext('2d');
       if (marketChartInstance) marketChartInstance.destroy();
 
-      const lineColor = isUp ? '#dc2626' : '#16a34a';
-      const fillColor = isUp ? 'rgba(220, 38, 38, 0.08)' : 'rgba(22, 163, 74, 0.08)';
-      const prevLine = m.labels.map(() => m.prev_close);
+      const lineColor = isUp ? '#e11d48' : '#059669';
+      const fillColor = isUp ? 'rgba(225, 29, 72, 0.10)' : 'rgba(5, 150, 105, 0.10)';
+      const baseLine = m.labels.map(() => m.base_price);
 
       marketChartInstance = new Chart(ctx, {
         type: 'line',
@@ -261,14 +660,14 @@
               backgroundColor: fillColor,
               borderWidth: 2.5,
               fill: true,
-              tension: 0.25,
-              pointRadius: 0,
-              pointHoverRadius: 4
+              tension: 0.3,
+              pointRadius: currentRange === '1d' ? 0 : 3,
+              pointHoverRadius: 5
             },
             {
-              label: '昨日收盤',
-              data: prevLine,
-              borderColor: '#94a3b8',
+              label: '基準線',
+              data: baseLine,
+              borderColor: '#64748b',
               borderWidth: 1.2,
               borderDash: [5, 5],
               pointRadius: 0,
@@ -283,7 +682,7 @@
           plugins: { legend: { display: false } },
           scales: {
             x: { grid: { display: false }, ticks: { maxTicksLimit: 8, font: { size: 11 } } },
-            y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 11 } } }
+            y: { grid: { color: '#e0f2fe' }, ticks: { font: { size: 11 } } }
           }
         }
       });
@@ -292,6 +691,7 @@
     function setBudget(val) {
       document.getElementById('budgetInput').value = val;
       renderRecommendations();
+      mascotSpeak(`收到！已為主人重新精算 NT$ ${val.toLocaleString()} 的最佳零股配置比例囉！`, 'happy');
     }
 
     function selectStyle(style) {
@@ -299,9 +699,9 @@
       document.getElementById('styleHint').textContent = STYLE_HINTS[style];
       document.querySelectorAll('.style-btn').forEach(btn => {
         if (btn.dataset.style === style) {
-          btn.className = "style-btn py-2.5 px-3 rounded-xl border-2 border-slate-900 bg-slate-900 text-white text-xs font-bold text-center";
+          btn.className = "style-btn py-2.5 px-3 rounded-2xl border-2 border-blue-900 bg-blue-950 text-white text-xs font-bold text-center shadow-xs";
         } else {
-          btn.className = "style-btn py-2.5 px-3 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold text-center";
+          btn.className = "style-btn py-2.5 px-3 rounded-2xl border border-sky-200 bg-white text-slate-700 hover:bg-sky-50 text-xs font-bold text-center";
         }
       });
       renderRecommendations();
@@ -320,7 +720,6 @@
       const budget = Math.max(0, Number(document.getElementById('budgetInput').value) || 0);
       const allStocks = appData.stocks;
 
-      // 優先挑出符合風格的標的，若不足 3 檔則從穩健型補齊
       let matched = allStocks.filter(s => s.style === currentStyle);
       if (matched.length < 3) {
         const others = allStocks.filter(s => s.style !== currentStyle);
@@ -329,7 +728,6 @@
         matched = matched.slice(0, 3);
       }
 
-      // 資金配置權重：50% / 30% / 20%
       const weights = [0.5, 0.3, 0.2];
       const container = document.getElementById('recommendationCards');
       container.innerHTML = '';
@@ -349,25 +747,25 @@
         chartAmounts.push(allocBudget);
 
         const card = document.createElement('div');
-        card.className = "bg-white rounded-2xl border border-slate-200 p-4 shadow-sm hover:border-slate-300 transition";
+        card.className = "maid-card rounded-3xl p-4 md:p-5 hover:border-blue-400 hover:shadow-md transition";
         card.innerHTML = `
           <div class="flex flex-wrap items-start justify-between gap-2">
             <div>
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-900 text-white">配置 ${weights[idx] * 100}%</span>
-                <span class="text-base font-black text-slate-900">${stock.code} ${stock.name}</span>
-                <span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">${stock.tag}</span>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-xs font-black px-2.5 py-0.5 rounded-lg bg-gradient-to-r from-blue-800 to-sky-600 text-white">配置 ${weights[idx] * 100}%</span>
+                <span class="text-base font-black text-blue-950">${stock.code} ${stock.name}</span>
+                <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-100 text-blue-900 font-medium">${stock.tag}</span>
               </div>
-              <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">${stock.desc}</p>
+              <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">${stock.desc}</p>
             </div>
             <div class="text-right">
               <div class="text-lg font-black text-slate-900">NT$ ${stock.price.toFixed(2)}</div>
               <div class="text-xs font-bold ${chgColor}">${isUp ? '▲' : '▼'} ${chgSign}${stock.change_pct.toFixed(2)}% ｜ 參考殖利率 ${stock.yield}%</div>
             </div>
           </div>
-          <div class="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
-            <span class="text-slate-500">分配預算：<strong class="text-slate-800">NT$ ${allocBudget.toLocaleString()}</strong></span>
-            <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 font-bold border border-amber-200">
+          <div class="mt-3.5 pt-3 border-t border-sky-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span class="text-slate-600">分配預算：<strong class="text-blue-950">NT$ ${allocBudget.toLocaleString()}</strong></span>
+            <span class="px-3 py-1 rounded-xl bg-amber-50 text-amber-900 font-bold border border-amber-300/80">
               約可買進：${formatShares(shares)}（約 NT$ ${actualCost.toLocaleString()}）
             </span>
           </div>
@@ -375,7 +773,6 @@
         container.appendChild(card);
       });
 
-      // 更新配置圓餅圖
       const allocCtx = document.getElementById('allocChart').getContext('2d');
       if (allocChartInstance) allocChartInstance.destroy();
       allocChartInstance = new Chart(allocCtx, {
@@ -384,8 +781,9 @@
           labels: chartLabels,
           datasets: [{
             data: chartAmounts,
-            backgroundColor: ['#0f172a', '#475569', '#94a3b8'],
-            borderWidth: 0
+            backgroundColor: ['#1e3a8a', '#0284c7', '#eab308'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
           }]
         },
         options: {
@@ -397,23 +795,23 @@
         }
       });
 
-      // 更新白話分析
-      const m = appData.market;
+      const ranges = appData.market_ranges || FALLBACK_DATA.market_ranges;
+      const m = ranges["1d"] || FALLBACK_DATA.market_ranges["1d"];
       const adviceEl = document.getElementById('aiAdviceContent');
       const marketComment = m.change_pct < -0.5
         ? `今日大盤下跌 ${Math.abs(m.change_pct).toFixed(2)}%，屬於回檔日，非常適合用「盤中零股」分批承接優質 ETF，能有效降低平均持有成本。`
         : m.change_pct > 1.0
-        ? `今日大盤大漲 ${m.change_pct.toFixed(2)}%，市場情緒偏熱，建議不要一次把預算全部砸進去，可先買一半，留一半等拉回再補。`
-        : `今日大盤波動溫和（${m.change_pct >= 0 ? '+' : ''}${m.change_pct.toFixed(2)}%），照著既定的定期定額或分批計畫執行即可。`;
+        ? `今日大盤大漲 ${m.change_pct.toFixed(2)}%，市場情緒偏熱，建議主人不要一次把預算全部投入，可先買一半，留一半等拉回再補。`
+        : `今日大盤波動溫和（${m.change_pct >= 0 ? '+' : ''}${m.change_pct.toFixed(2)}%），主人照著既定的定期定額或分批計畫執行即可。`;
 
       const feeTip = budget < 10000
-        ? `你的單筆預算在 1 萬元以下，下單前請確認券商是否有「零股手續費最低 1 元」優惠，避免被收取 20 元基本手續費吃掉報酬。`
-        : `你的預算充足，建議拆成 2～3 筆於不同交易日買進，分散單日買在最高點的風險。`;
+        ? `主人的單筆預算在 1 萬元以下，下單前請確認券商是否有「零股手續費最低 1 元」優惠，避免被收取 20 元基本手續費吃掉報酬。`
+        : `主人的預算充足，建議拆成 2～3 筆於不同交易日買進，分散單日買在最高點的風險。`;
 
       adviceEl.innerHTML = `
-        <p>• <strong>今日盤勢解讀：</strong>${marketComment}</p>
-        <p>• <strong>小資下單提醒：</strong>${feeTip}</p>
-        <p>• <strong>新手心法：</strong>ETF 本身已經幫你買進一籃子股票，不需要每天盯盤殺進殺出，長期持有並把股息再投入效果最好。</p>
+        <p>• <strong class="text-amber-200">今日盤勢解讀：</strong>${marketComment}</p>
+        <p>• <strong class="text-amber-200">小資下單提醒：</strong>${feeTip}</p>
+        <p>• <strong class="text-amber-200">新手心法：</strong>ETF 本身已經幫主人買進一籃子股票，不需要每天盯盤殺進殺出，長期持有並把股息再投入效果最好喔！</p>
       `;
     }
 
