@@ -7,7 +7,7 @@ TW_TZ = timezone(timedelta(hours=8))
 
 STOCKS = [
     {"code": "0050",   "yahoo": "0050.TW",   "name": "元大台灣50",     "style": "steady",   "yield": 3.4, "tag": "市值型龍頭", "desc": "一次買進台灣前 50 大上市公司，跟著台灣經濟長期成長，最適合新手當作第一檔核心配置。"},
-    {"code": "006208", "yahoo": "006208.TW", "name": "富邦台50",       "style": "steady",   "yield": 3.3, "tag": "低內扣市值型", "desc": "追蹤指數與 0050 相同，但內扣管理費更低、單價更親民，小資族定期定額首選。"},
+    {"code": "006208", "yahoo": "006208.TW", "name": "富邦台50",       "style": "steady",   "yield": 3.3, "tag": "低內扣市值型", "desc": "追蹤指數與 0050 相同，內扣管理費更低、單價更親民，小資族定期定額首選。"},
     {"code": "00878",  "yahoo": "00878.TW",  "name": "國泰永續高股息", "style": "dividend", "yield": 6.8, "tag": "季配息人氣王", "desc": "結合 ESG 與高股息選股，波動度相對溫和，每季穩定配息，適合想建立現金流的新手。"},
     {"code": "0056",   "yahoo": "0056.TW",   "name": "元大高股息",     "style": "dividend", "yield": 7.2, "tag": "老牌高股息", "desc": "台灣歷史最悠久的高股息 ETF，預測未來一年殖利率最高的 50 檔成分股。"},
     {"code": "00919",  "yahoo": "00919.TW",  "name": "群益台灣精選高息", "style": "dividend", "yield": 8.5, "tag": "高殖利率季配", "desc": "精準鎖定已宣告高股利之企業，近年配息表現亮眼，適合追求較高息收的族群。"},
@@ -73,30 +73,44 @@ def main():
     except Exception as e:
         print(f"抓取大盤失敗: {e}")
 
+    # 抓取 9 檔股票/ETF 最新報價與近 30 日歷史走勢
     for item in STOCKS:
         try:
-            res = fetch_yahoo_chart(item["yahoo"], interval="1d", range_str="1d")
+            res = fetch_yahoo_chart(item["yahoo"], interval="1d", range_str="1mo")
             meta = res["meta"]
-            price = round(meta.get("regularMarketPrice", 0), 2)
-            prev = meta.get("chartPreviousClose") or meta.get("previousClose") or price
+            timestamps = res.get("timestamp", [])
+            closes = res["indicators"]["quote"][0]["close"]
+
+            hist_labels = []
+            hist_points = []
+            for ts, val in zip(timestamps, closes):
+                if val is not None:
+                    hist_labels.append(datetime.fromtimestamp(ts, TW_TZ).strftime("%m/%d"))
+                    hist_points.append(round(val, 2))
+
+            price = round(meta.get("regularMarketPrice") or (hist_points[-1] if hist_points else 0), 2)
+            prev = meta.get("chartPreviousClose") or meta.get("previousClose") or (hist_points[-2] if len(hist_points) >= 2 else price)
             chg_pct = round(((price - prev) / prev) * 100, 2) if prev else 0
 
             output["stocks"].append({
                 "code": item["code"],
+                "yahoo": item["yahoo"],
                 "name": item["name"],
                 "style": item["style"],
                 "price": price,
                 "change_pct": chg_pct,
                 "yield": item["yield"],
                 "tag": item["tag"],
-                "desc": item["desc"]
+                "desc": item["desc"],
+                "history_labels": hist_labels,
+                "history_points": hist_points
             })
         except Exception as e:
             print(f"抓取 {item['code']} 失敗: {e}")
 
     with open("stock_data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("stock_data.json 多週期資料更新完成！")
+    print("stock_data.json 含個股走勢更新完成！")
 
 if __name__ == "__main__":
     main()
