@@ -3,17 +3,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>大肥魚的台股理財茶會｜動態女僕小助手</title>
+  <title>雙看板娘台股理財茶會｜大肥魚 & 哈基米</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
+    /* ================= 雙角色動態主題 CSS 變數 ================= */
+    :root {
+      --bg-grad-start: #e0f2fe;
+      --bg-grad-mid: #f0f9ff;
+      --bg-grad-end: #f8fafc;
+      --header-bg: rgba(15, 23, 42, 0.95);
+      --header-border: rgba(251, 191, 36, 0.7);
+      --card-border: #bae6fd;
+      --card-shadow: rgba(14, 116, 144, 0.08);
+      --primary-dark: #172554;
+      --primary-main: #1e3a8a;
+      --primary-accent: #0284c7;
+      --soft-bg: #f0f9ff;
+      --soft-border: #e0f2fe;
+      --bubble-border: #7dd3fc;
+      --note-grad-1: #0f172a;
+      --note-grad-2: #172554;
+      --note-grad-3: #1e3a8a;
+    }
+
+    body.theme-hakimi {
+      --bg-grad-start: #f3e8ff;
+      --bg-grad-mid: #eef2ff;
+      --bg-grad-end: #fdf4ff;
+      --header-bg: rgba(30, 27, 75, 0.96);
+      --header-border: rgba(232, 121, 249, 0.75);
+      --card-border: #e9d5ff;
+      --card-shadow: rgba(126, 34, 206, 0.09);
+      --primary-dark: #3b0764;
+      --primary-main: #581c87;
+      --primary-accent: #7c3aed;
+      --soft-bg: #faf5ff;
+      --soft-border: #f3e8ff;
+      --bubble-border: #d8b4fe;
+      --note-grad-1: #1e1b4b;
+      --note-grad-2: #3b0764;
+      --note-grad-3: #581c87;
+    }
+
     body {
       font-family: 'Noto Sans TC', sans-serif;
-      background: radial-gradient(circle at top right, #e0f2fe 0%, #f0f9ff 45%, #f8fafc 100%);
+      background: radial-gradient(circle at top right, var(--bg-grad-start) 0%, var(--bg-grad-mid) 45%, var(--bg-grad-end) 100%);
       color: #0f172a;
       overflow-x: hidden;
+      transition: background 0.6s ease;
     }
+
+    .theme-header {
+      background-color: var(--header-bg);
+      border-bottom-color: var(--header-border);
+      transition: background-color 0.5s ease, border-color 0.5s ease;
+    }
+
     .tw-up { color: #e11d48; }
     .tw-up-bg { background-color: #fff1f2; color: #e11d48; border-color: #fecdd3; }
     .tw-down { color: #059669; }
@@ -22,8 +69,49 @@
     .maid-card {
       background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(12px);
-      border: 1.5px solid #bae6fd;
-      box-shadow: 0 8px 24px -6px rgba(14, 116, 144, 0.08);
+      border: 1.5px solid var(--card-border);
+      box-shadow: 0 8px 24px -6px var(--card-shadow);
+      transition: border-color 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .theme-soft-box {
+      background-color: var(--soft-bg);
+      border-color: var(--soft-border);
+      transition: background-color 0.5s ease, border-color 0.5s ease;
+    }
+
+    .theme-primary-badge {
+      background-color: var(--primary-dark);
+      color: #ffffff;
+      transition: background-color 0.5s ease;
+    }
+
+    .theme-gradient-badge {
+      background: linear-gradient(to right, var(--primary-main), var(--primary-accent));
+      color: #ffffff;
+    }
+
+    .theme-text-main {
+      color: var(--primary-dark);
+      transition: color 0.5s ease;
+    }
+
+    .theme-note-card {
+      background: linear-gradient(135deg, var(--note-grad-1), var(--note-grad-2), var(--note-grad-3));
+      transition: background 0.5s ease;
+    }
+
+    /* 哈基米模式下的星空微光裝飾 */
+    body.theme-hakimi::before {
+      content: "✦ ✧ ✦";
+      position: fixed;
+      top: 76px;
+      left: 24px;
+      font-size: 14px;
+      color: rgba(168, 85, 247, 0.35);
+      pointer-events: none;
+      letter-spacing: 8px;
+      z-index: 1;
     }
 
     /* 活潑呼吸與左右微搖擺動畫 */
@@ -68,31 +156,68 @@
       animation: badgePop 1.8s ease-in-out infinite;
     }
 
+    /* ================= 交接班互動小劇場動畫 ================= */
+    @keyframes outgoingHighFive {
+      0%   { transform: translateX(0) translateY(0) scale(1); opacity: 1; }
+      30%  { transform: translateX(-35px) translateY(0) scale(1.03); opacity: 1; }
+      50%  { transform: translateX(-35px) translateY(-24px) rotate(8deg) scale(1.08); opacity: 1; }
+      70%  { transform: translateX(-45px) translateY(0) rotate(0deg) scale(1); opacity: 1; }
+      100% { transform: translateX(-140px) translateY(10px) scale(0.85); opacity: 0; }
+    }
+
+    @keyframes incomingHighFive {
+      0%   { transform: translateX(130px) translateY(0) scale(0.85); opacity: 0; }
+      30%  { transform: translateX(35px) translateY(0) scale(1.03); opacity: 1; }
+      50%  { transform: translateX(35px) translateY(-24px) rotate(-8deg) scale(1.08); opacity: 1; }
+      70%  { transform: translateX(25px) translateY(0) rotate(0deg) scale(1); opacity: 1; }
+      100% { transform: translateX(0px) translateY(0) scale(1); opacity: 1; }
+    }
+
+    @keyframes sparkBurst {
+      0%, 38% { transform: scale(0) rotate(-15deg); opacity: 0; }
+      50%     { transform: scale(1.25) rotate(0deg); opacity: 1; }
+      75%     { transform: scale(1.05) rotate(8deg); opacity: 1; }
+      100%    { transform: scale(0.8) rotate(15deg); opacity: 0; }
+    }
+
+    .anim-outgoing { animation: outgoingHighFive 1.55s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
+    .anim-incoming { animation: incomingHighFive 1.55s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
+    .anim-spark    { animation: sparkBurst 1.55s ease-out forwards; }
+
     #petContainer { transition: right 2.2s ease-in-out, bottom 0.4s ease; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col pb-36">
 
   <!-- 頂部導覽列 -->
-  <header class="bg-[#0f172a]/95 text-white backdrop-blur-md border-b-2 border-amber-400/70 sticky top-0 z-20 shadow-md">
-    <div class="max-w-6xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
+  <header class="theme-header text-white backdrop-blur-md border-b-2 sticky top-0 z-30 shadow-md">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-700 border-2 border-white/80 text-white flex items-center justify-center font-black text-xl shadow-sm">
+        <div id="brandIconBox" class="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-700 border-2 border-white/80 text-white flex items-center justify-center font-black text-xl shadow-sm transition-all">
           🐋
         </div>
         <div>
-          <h1 class="text-lg font-black tracking-tight flex items-center gap-2">
+          <h1 id="siteMainTitle" class="text-base sm:text-lg font-black tracking-tight flex items-center gap-2">
             大肥魚的台股理財茶會
-            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">女僕小助手版</span>
+            <span id="siteSubBadge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">深海女僕版</span>
           </h1>
-          <p class="text-xs text-sky-200/80">行情同步時間：<span id="updatedAtText" class="font-bold text-amber-300">載入中...</span></p>
+          <p class="text-xs text-white/75">行情同步時間：<span id="updatedAtText" class="font-bold text-amber-300">載入中...</span></p>
         </div>
       </div>
 
+      <!-- 雙角色一鍵切換器 + 即時刷新按鈕 -->
       <div class="flex items-center gap-2.5 flex-wrap">
-        <span id="dataStatusBadge" class="text-xs px-3 py-1.5 rounded-full bg-sky-900/80 text-sky-200 border border-sky-400/50 font-bold">
-          ● 已連線台股資料庫
-        </span>
+        <div class="inline-flex p-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-xs">
+          <button id="btnCharFish" onclick="switchCharacter('fish')"
+            class="px-3 py-1 rounded-full text-xs font-black bg-sky-400 text-slate-950 shadow-xs transition flex items-center gap-1 cursor-pointer">
+            🐋 大肥魚
+          </button>
+          <button id="btnCharHakimi" onclick="switchCharacter('hakimi')"
+            class="px-3 py-1 rounded-full text-xs font-bold text-white/80 hover:text-white transition flex items-center gap-1 cursor-pointer">
+            ✨ 哈基米
+          </button>
+        </div>
+
         <button id="liveRefreshBtn" onclick="fetchLiveFromBrowser(true)"
           class="text-xs px-3.5 py-1.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black shadow-sm transition flex items-center gap-1 cursor-pointer">
           <span id="refreshIcon">🔄</span> 立即抓取盤中最新價
@@ -101,14 +226,14 @@
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto w-full px-4 py-6 space-y-6 flex-1">
+  <main class="max-w-6xl mx-auto w-full px-4 py-6 space-y-6 flex-1 relative z-10">
 
     <!-- 區塊 1：加權指數多週期波動看板 -->
     <section class="maid-card rounded-3xl p-5 md:p-6">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-sky-100">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
         <div>
           <div class="flex items-center gap-2 flex-wrap">
-            <span class="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-blue-950 text-white">台灣加權指數 (^TWII)</span>
+            <span class="theme-primary-badge text-xs font-bold px-2.5 py-0.5 rounded-lg">台灣加權指數 (^TWII)</span>
             <span id="marketMoodBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full border">--</span>
           </div>
           <div class="mt-2 flex items-baseline gap-3 flex-wrap">
@@ -118,22 +243,22 @@
         </div>
 
         <div class="flex flex-col sm:items-end gap-3">
-          <div class="inline-flex p-1 rounded-xl bg-sky-100/80 border border-sky-200">
+          <div class="theme-soft-box inline-flex p-1 rounded-xl border">
             <button type="button" data-range="1d" onclick="switchRange('1d')"
-              class="range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-900 text-white shadow-xs transition">
+              class="range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition">
               當日走勢
             </button>
             <button type="button" data-range="5d" onclick="switchRange('5d')"
-              class="range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold text-blue-900 hover:bg-white/60 transition">
+              class="range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition">
               本週 (5日)
             </button>
             <button type="button" data-range="1mo" onclick="switchRange('1mo')"
-              class="range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold text-blue-900 hover:bg-white/60 transition">
+              class="range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition">
               本月 (30日)
             </button>
           </div>
 
-          <div class="grid grid-cols-3 gap-3 bg-sky-50/90 px-3.5 py-2.5 rounded-2xl border border-sky-100 text-xs">
+          <div class="theme-soft-box grid grid-cols-3 gap-3 px-3.5 py-2.5 rounded-2xl border text-xs">
             <div>
               <div id="labelOpen" class="text-slate-500">今日開盤</div>
               <div id="indexOpen" class="font-bold text-slate-900 mt-0.5">--</div>
@@ -143,7 +268,7 @@
               <div id="indexPrevClose" class="font-bold text-slate-900 mt-0.5">--</div>
             </div>
             <div>
-              <div class="text-slate-500">海象溫度計</div>
+              <div class="text-slate-500">市場溫度計</div>
               <div id="marketTemp" class="font-bold mt-0.5">--</div>
             </div>
           </div>
@@ -153,7 +278,7 @@
       <div class="mt-4">
         <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
           <span id="chartSubtitle">當日盤中走勢圖（虛線為基準平盤線）</span>
-          <span class="font-medium text-blue-900">紅漲綠跌（台灣股市標準）</span>
+          <span class="theme-text-main font-medium">紅漲綠跌（台灣股市標準）</span>
         </div>
         <div class="h-60 w-full">
           <canvas id="marketChart"></canvas>
@@ -163,24 +288,24 @@
 
     <!-- 區塊 2：小資預算輸入與策略選擇 -->
     <section class="maid-card rounded-3xl p-5 md:p-6">
-      <h2 class="text-base font-black text-blue-950 mb-4 flex items-center gap-2">
-        <span class="w-6 h-6 rounded-full bg-gradient-to-r from-blue-700 to-sky-500 text-white text-xs flex items-center justify-center shadow-2xs">1</span>
-        請輸入主人本次打算投入的金額與偏好
+      <h2 class="theme-text-main text-base font-black mb-4 flex items-center gap-2">
+        <span class="theme-gradient-badge w-6 h-6 rounded-full text-xs flex items-center justify-center shadow-2xs">1</span>
+        <span id="step1Title">請輸入主人本次打算投入的金額與偏好</span>
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-end">
         <div class="md:col-span-6">
           <label class="block text-xs font-bold text-slate-600 mb-1.5">投入預算（新台幣元）</label>
           <div class="relative">
-            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-700 font-bold">NT$</span>
+            <span class="theme-text-main absolute left-3.5 top-1/2 -translate-y-1/2 font-bold">NT$</span>
             <input id="budgetInput" type="number" min="1000" step="500" value="10000"
-              class="w-full pl-12 pr-4 py-2.5 text-lg font-black border-2 border-sky-200 rounded-2xl bg-white focus:outline-none focus:border-blue-600 transition" />
+              class="w-full pl-12 pr-4 py-2.5 text-lg font-black border-2 border-slate-200 rounded-2xl bg-white focus:outline-none focus:border-purple-500 transition" />
           </div>
           <div class="flex flex-wrap gap-2 mt-2.5">
-            <button type="button" onclick="setBudget(3000)" class="text-xs px-3 py-1 rounded-xl bg-sky-50 hover:bg-sky-100 text-blue-900 border border-sky-200 font-bold transition">3,000 元</button>
-            <button type="button" onclick="setBudget(5000)" class="text-xs px-3 py-1 rounded-xl bg-sky-50 hover:bg-sky-100 text-blue-900 border border-sky-200 font-bold transition">5,000 元</button>
-            <button type="button" onclick="setBudget(10000)" class="text-xs px-3 py-1 rounded-xl bg-sky-50 hover:bg-sky-100 text-blue-900 border border-sky-200 font-bold transition">10,000 元</button>
-            <button type="button" onclick="setBudget(30000)" class="text-xs px-3 py-1 rounded-xl bg-sky-50 hover:bg-sky-100 text-blue-900 border border-sky-200 font-bold transition">30,000 元</button>
-            <button type="button" onclick="setBudget(100000)" class="text-xs px-3 py-1 rounded-xl bg-sky-50 hover:bg-sky-100 text-blue-900 border border-sky-200 font-bold transition">100,000 元</button>
+            <button type="button" onclick="setBudget(3000)" class="theme-soft-box theme-text-main text-xs px-3 py-1 rounded-xl hover:opacity-80 border font-bold transition">3,000 元</button>
+            <button type="button" onclick="setBudget(5000)" class="theme-soft-box theme-text-main text-xs px-3 py-1 rounded-xl hover:opacity-80 border font-bold transition">5,000 元</button>
+            <button type="button" onclick="setBudget(10000)" class="theme-soft-box theme-text-main text-xs px-3 py-1 rounded-xl hover:opacity-80 border font-bold transition">10,000 元</button>
+            <button type="button" onclick="setBudget(30000)" class="theme-soft-box theme-text-main text-xs px-3 py-1 rounded-xl hover:opacity-80 border font-bold transition">30,000 元</button>
+            <button type="button" onclick="setBudget(100000)" class="theme-soft-box theme-text-main text-xs px-3 py-1 rounded-xl hover:opacity-80 border font-bold transition">100,000 元</button>
           </div>
         </div>
 
@@ -188,15 +313,15 @@
           <label class="block text-xs font-bold text-slate-600 mb-1.5">選擇您的投資航線風格</label>
           <div class="grid grid-cols-3 gap-2" id="styleButtons">
             <button type="button" data-style="steady" onclick="selectStyle('steady')"
-              class="style-btn py-2.5 px-3 rounded-2xl border-2 border-blue-900 bg-blue-950 text-white text-xs font-bold text-center shadow-xs">
+              class="style-btn py-2.5 px-3 rounded-2xl text-xs font-bold text-center transition">
               🛡️ 穩健大盤型
             </button>
             <button type="button" data-style="dividend" onclick="selectStyle('dividend')"
-              class="style-btn py-2.5 px-3 rounded-2xl border border-sky-200 bg-white text-slate-700 hover:bg-sky-50 text-xs font-bold text-center">
+              class="style-btn py-2.5 px-3 rounded-2xl text-xs font-bold text-center transition">
               💰 領息存股型
             </button>
             <button type="button" data-style="growth" onclick="selectStyle('growth')"
-              class="style-btn py-2.5 px-3 rounded-2xl border border-sky-200 bg-white text-slate-700 hover:bg-sky-50 text-xs font-bold text-center">
+              class="style-btn py-2.5 px-3 rounded-2xl text-xs font-bold text-center transition">
               🚀 積極成長型
             </button>
           </div>
@@ -209,9 +334,9 @@
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       <div class="lg:col-span-8 space-y-4">
         <div class="flex items-center justify-between flex-wrap gap-2">
-          <h2 class="text-base font-black text-blue-950 flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full bg-gradient-to-r from-blue-700 to-sky-500 text-white text-xs flex items-center justify-center shadow-2xs">2</span>
-            大肥魚為您精選的今日入股參考清單（附近 30 日走勢圖）
+          <h2 class="theme-text-main text-base font-black flex items-center gap-2">
+            <span class="theme-gradient-badge w-6 h-6 rounded-full text-xs flex items-center justify-center shadow-2xs">2</span>
+            <span id="step2Title">大肥魚為您精選的今日入股參考清單（附近 30 日走勢圖）</span>
           </h2>
           <span class="text-xs text-slate-500">1 張 = 1,000 股｜零股最低 1 股起</span>
         </div>
@@ -220,35 +345,48 @@
 
       <div class="lg:col-span-4 space-y-4">
         <div class="maid-card rounded-3xl p-5">
-          <h3 class="text-sm font-black text-blue-950 mb-3">建議資金配置比例</h3>
+          <h3 class="theme-text-main text-sm font-black mb-3">建議資金配置比例</h3>
           <div class="h-44 flex items-center justify-center">
             <canvas id="allocChart"></canvas>
           </div>
         </div>
 
-        <div class="bg-gradient-to-br from-[#0f172a] via-[#172554] to-[#1e3a8a] text-white rounded-3xl p-5 shadow-md border border-sky-400/30 space-y-3">
-          <div class="flex items-center gap-2 pb-2 border-b border-white/10">
-            <span class="text-base">🐋</span>
-            <h3 class="text-sm font-black text-amber-300">大肥魚的盤勢觀察筆記</h3>
+        <div class="theme-note-card text-white rounded-3xl p-5 shadow-md border border-white/20 space-y-3">
+          <div class="flex items-center gap-2 pb-2 border-b border-white/15">
+            <span id="noteIcon" class="text-base">🐋</span>
+            <h3 id="noteTitle" class="text-sm font-black text-amber-300">大肥魚的盤勢觀察筆記</h3>
           </div>
-          <div id="aiAdviceContent" class="text-xs text-sky-100 leading-relaxed space-y-2.5"></div>
+          <div id="aiAdviceContent" class="text-xs text-white/90 leading-relaxed space-y-2.5"></div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <footer class="max-w-6xl mx-auto w-full px-4 py-6 text-center text-xs text-slate-500 border-t border-sky-200/60 mt-8">
+  <footer class="max-w-6xl mx-auto w-full px-4 py-6 text-center text-xs text-slate-500 border-t border-slate-200/60 mt-8">
     免責聲明：本網站數據透過自動化排程與公開市場介面整理，試算結果僅供投資教育與研究參考，不構成任何買賣邀約或投資保證。投資前請審慎評估自身風險承受度。
   </footer>
 
-  <!-- ================= 懸浮動態桌面小助手「大肥魚 4 表情原畫差分版」 ================= -->
+  <!-- ================= 交接班雙角色擊掌互動舞台（切換角色時觸發） ================= -->
+  <div id="handoverStage" style="display:none;" class="fixed bottom-4 right-6 z-50 w-72 h-56 pointer-events-none flex items-end justify-center select-none">
+    <!-- 左側退場角色 -->
+    <img id="outgoingCharImg" src="" alt="退場夥伴" class="w-36 h-44 object-contain drop-shadow-lg" />
+    <!-- 中央擊掌閃光特效 -->
+    <div id="handoverSpark" class="absolute top-12 z-20 flex flex-col items-center">
+      <span class="text-3xl drop-shadow-md">🙌✨</span>
+      <span class="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-amber-300 text-slate-950 shadow-md border border-white mt-1">交接班擊掌！</span>
+    </div>
+    <!-- 右側進場接班角色 -->
+    <img id="incomingCharImg" src="" alt="進場夥伴" class="w-36 h-44 object-contain drop-shadow-lg" />
+  </div>
+
+  <!-- ================= 懸浮動態桌面小助手（支援雙角色切換） ================= -->
   <div id="petContainer" style="right: 24px; bottom: 12px;" class="fixed z-50 flex flex-col items-end select-none">
 
     <!-- 對話氣泡框 -->
-    <div id="petBubble" class="mb-1 max-w-[280px] sm:max-w-[320px] bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-xl border-2 border-sky-300 relative transition-all">
+    <div id="petBubble" style="border-color: var(--bubble-border);" class="mb-1 max-w-[280px] sm:max-w-[320px] bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-xl border-2 relative transition-all">
       <div class="flex items-center justify-between gap-2 mb-1">
-        <span class="text-[11px] font-black text-blue-900 bg-sky-100 px-2.5 py-0.5 rounded-full">🎀 大肥魚女僕</span>
+        <span id="mascotNameTag" class="theme-soft-box theme-text-main text-[11px] font-black px-2.5 py-0.5 rounded-full border">🎀 大肥魚女僕</span>
         <div class="flex items-center gap-1">
           <button onclick="toggleWalkMode()" id="walkToggleBtn" title="切換自動左右散步" class="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold hover:bg-amber-200 transition">
             🚶 散步：開
@@ -257,30 +395,34 @@
         </div>
       </div>
       <p id="mascotSpeech" class="text-xs text-slate-700 font-medium leading-relaxed">
-        主人您好呀～大肥魚換上全新表情組登場囉！點我可以切換表情動作與看理財秘笈喔！
+        主人您好呀～大肥魚正式報到！點我可以切換表情動作與看理財秘笈喔！
       </p>
-      <div class="w-3 h-3 bg-white border-r-2 border-b-2 border-sky-300 rotate-45 absolute -bottom-1.5 right-14"></div>
+      <div style="border-color: var(--bubble-border);" class="w-3 h-3 bg-white border-r-2 border-b-2 rotate-45 absolute -bottom-1.5 right-14"></div>
     </div>
 
-    <!-- 動態角色本體（純原畫差分切換 + 自動純白透明去背） -->
-    <div id="petAvatarWrapper" onclick="interactWithPet()" title="點我與大肥魚互動！" class="cursor-pointer relative group">
+    <!-- 動態角色本體 -->
+    <div id="petAvatarWrapper" onclick="interactWithPet()" title="點我與小助手互動！" class="cursor-pointer relative group">
 
-      <!-- 滑鼠移入時可手動切換 4 張原畫表情測試 -->
-      <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -left-28 top-3 flex flex-col gap-1 bg-white/95 p-2 rounded-xl shadow-md border border-sky-200 text-[10px] font-bold z-30">
+      <!-- 滑鼠移入時可手動切換 4 張原畫表情測試 + 快速交接班 -->
+      <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -left-32 top-2 flex flex-col gap-1 bg-white/95 p-2 rounded-xl shadow-md border border-slate-200 text-[10px] font-bold z-30">
         <button onclick="event.stopPropagation(); setMascotPose('happy')" class="px-2 py-0.5 rounded hover:bg-rose-50 text-rose-600 text-left">🙌 開心舉手大笑</button>
-        <button onclick="event.stopPropagation(); setMascotPose('smile')" class="px-2 py-0.5 rounded hover:bg-amber-50 text-amber-700 text-left">😊 閉眼溫柔微笑</button>
+        <button onclick="event.stopPropagation(); setMascotPose('smile')" class="px-2 py-0.5 rounded hover:bg-amber-50 text-amber-700 text-left">😊 溫柔得意微笑</button>
         <button onclick="event.stopPropagation(); setMascotPose('cheer')" class="px-2 py-0.5 rounded hover:bg-emerald-50 text-emerald-700 text-left">✊ 握拳加油打氣</button>
         <button onclick="event.stopPropagation(); setMascotPose('normal')" class="px-2 py-0.5 rounded hover:bg-sky-50 text-blue-800 text-left">🎀 乖巧待機姿勢</button>
+        <hr class="border-slate-100 my-0.5"/>
+        <button id="quickSwitchBtn" onclick="event.stopPropagation(); switchCharacter(currentChar === 'fish' ? 'hakimi' : 'fish')"
+          class="px-2 py-1 rounded bg-purple-100 hover:bg-purple-200 text-purple-900 text-left">
+          🔄 呼叫哈基米換班
+        </button>
       </div>
 
       <!-- 隨盤勢變換的頭頂動態情緒小氣泡 -->
-      <div id="moodBadgeBubble" class="anim-mood-badge absolute -top-1 left-1 z-30 bg-white/95 border-2 border-sky-300 rounded-full px-2 py-0.5 text-sm shadow-md">
+      <div id="moodBadgeBubble" style="border-color: var(--bubble-border);" class="anim-mood-badge absolute -top-1 left-1 z-30 bg-white/95 border-2 rounded-full px-2 py-0.5 text-sm shadow-md">
         🎵
       </div>
 
       <div id="petBody" class="anim-cute-sway relative w-40 h-48 sm:w-44 sm:h-52 flex items-center justify-center">
-        <!-- 直接顯示去背後的原畫差分圖 -->
-        <img id="mascotImg" src="./mascot.png" alt="大肥魚女僕"
+        <img id="mascotImg" src="./mascot.png" alt="看板娘小助手"
           class="w-full h-full object-contain drop-shadow-md pointer-events-none transition-transform duration-200" />
       </div>
     </div>
@@ -318,7 +460,80 @@
       ]
     };
 
+    // ================= 雙看板娘完整人設與主題設定檔 =================
+    const CHARACTERS = {
+      fish: {
+        id: "fish",
+        name: "大肥魚",
+        badgeTag: "🎀 大肥魚女僕",
+        icon: "🐋",
+        siteTitle: "大肥魚的台股理財茶會",
+        siteBadge: "深海女僕版",
+        step1Title: "請輸入主人本次打算投入的金額與偏好",
+        step2Title: "大肥魚為您精選的今日入股參考清單（附近 30 日走勢圖）",
+        noteTitle: "大肥魚的盤勢觀察筆記",
+        switchBtnLabel: "🔄 呼叫哈基米換班",
+        chartColors: ['#1e3a8a', '#0284c7', '#eab308'],
+        poses: {
+          normal: "./mascot.png",
+          happy:  "./mascot_happy.jpg",
+          smile:  "./mascot_smile.jpg",
+          cheer:  "./mascot_cheer.jpg"
+        },
+        handoverGreeting: "擊掌成功！大肥魚回來繼續服侍主人喝茶看盤囉～哈基米辛苦啦！",
+        budgetReply: (val) => `收到！大肥魚已為主人重新精算 NT$ ${val.toLocaleString()} 的最佳零股配置比例囉！`,
+        tips: [
+          "主人您知道嗎？「零股交易」最低只要買 1 股，就算台積電一張要百萬，小資族花一千多元也能當股東喔！",
+          "大肥魚提醒您：觀察個股近 30 日走勢圖時，如果曲線剛好在相對低檔區，用零股分批買進通常比追在高點更划算喔！",
+          "請用「未來 3 年內不會動用到的閒錢」來投資，這樣遇到股市海浪起伏時，主人才能像大肥魚一樣從容不迫～",
+          "下單零股前，記得先幫主人確認券商有沒有「零股手續費最低 1 元」優惠，省下來的手續費可以多喝好幾杯紅茶呢！"
+        ],
+        marketQuotes: {
+          surge: (period, pct) => `哇～主人您看！${period}大盤漲了 ${pct}%，大肥魚好開心！不過記得不要一次把預算全追高喔！`,
+          mildUp: (period, sign, pct) => `主人您好～${period}大盤走勢平穩（${sign}${pct}%），最適合照著您的定期定額計畫慢慢累積持股了！`,
+          mildDown: (period, pct) => `唔～${period}大盤稍微退潮了一點（${pct}%），對存股的主人來說，這反而是用優惠價撿零股的好機會喔！`,
+          drop: (period, pct) => `主人別擔心！${period}大盤雖然跌了 ${pct}%，但這正是優質 ETF 辦特賣會的時候，我們分批承接就好！`
+        },
+        noteFooter: "ETF 本身已經幫主人買進一籃子股票，搭配近 30 日走勢圖觀察位階，逢低分批買進效果最好喔！"
+      },
+      hakimi: {
+        id: "hakimi",
+        name: "哈基米",
+        badgeTag: "✨ 星光貓娘哈基米",
+        icon: "🐱",
+        siteTitle: "哈基米的星夜量子理財室",
+        siteBadge: "Gemini 星光版",
+        step1Title: "快輸入你的投資預算吧，本天才哈基米幫你算到小數點！",
+        step2Title: "哈基米多模態運算出的精選標的清單（附近 30 日波段圖）",
+        noteTitle: "哈基米的星夜數據觀測站",
+        switchBtnLabel: "🔄 呼叫大肥魚換班",
+        chartColors: ['#581c87', '#9333ea', '#f43f5e'],
+        poses: {
+          normal: "./hakimi.jpg",
+          happy:  "./hakimi_happy.jpg",
+          smile:  "./hakimi_smile.jpg",
+          cheer:  "./hakimi_cheer.jpg"
+        },
+        handoverGreeting: "喵哈哈～吉米啟動！大肥魚交接完成，接下來就由本天才哈基米帶你征服台股星海吧！",
+        budgetReply: (val) => `哼哼～NT$ ${val.toLocaleString()} 的黃金比例已經被哈基米一秒算出來啦，快看看下面吧！`,
+        tips: [
+          "喵哼～你該不會以為一定要買滿一張 1,000 股吧？盤中零股交易只要 1 股就能上車，小資金也能開啟複利飛輪喔！",
+          "哈基米的星光雷達掃描過了：長期投資最重要的是「留在市場裡」，定期定額扣款就算遇到波動也能自動攤平成本！",
+          "高股息雖然領息很爽，但別忘了把領到的股息再買進原本的 ETF，這才是讓資產像滾雪球一樣變大的秘密武器喵！",
+          "買股票之前先留好至少 6 個月的生活緊急預備金，這樣不管市場怎麼震盪，你都能像哈基米一樣優雅從容！"
+        ],
+        marketQuotes: {
+          surge: (period, pct) => `喵哈哈！${period}大盤狂飆了 ${pct}%！本天才早就預料到這波星光行情啦，不過可別頭腦一熱全梭哈喔！`,
+          mildUp: (period, sign, pct) => `${period}大盤穩穩向上（${sign}${pct}%），數據顯示現在正是按紀律執行定期定額的絕佳節奏喵～`,
+          mildDown: (period, pct) => `呼喵～${period}大盤小幅回檔 ${pct}%，別慌張！在哈基米的演算法裡，這叫做「優質資產打折促銷中」！`,
+          drop: (period, pct) => `打起精神來！${period}大盤雖然修正了 ${pct}%，但歷史數據證明每次大回檔都是長期存股族撿便宜的黃金坑喔！`
+        },
+        noteFooter: "哈基米小叮嚀：不要每天被紅綠數字牽著走，盯緊近 30 日趨勢區間、分批布局才是真正的贏家思維喵！"
+      }
+    };
+
     let appData = FALLBACK_DATA;
+    let currentChar = 'fish';
     let currentRange = '1d';
     let currentStyle = 'steady';
     let marketChartInstance = null;
@@ -326,22 +541,9 @@
     let stockSparkCharts = [];
     let tipIndex = 0;
     let isWalking = true;
+    let isHandoverPlaying = false;
 
-    // 對應您上傳到 GitHub 的 4 張原畫差分檔案
-    const POSE_FILES = {
-      normal: "./mascot.png",
-      happy:  "./mascot_happy.jpg",
-      smile:  "./mascot_smile.jpg",
-      cheer:  "./mascot_cheer.jpg"
-    };
-    const transparentCache = {}; // 儲存已去背完成的透明 PNG DataURL
-
-    const MASCOT_TIPS = [
-      "主人您知道嗎？「零股交易」最低只要買 1 股，就算台積電一張要百萬，小資族花一千多元也能當股東喔！",
-      "大肥魚提醒您：觀察個股近 30 日走勢圖時，如果曲線剛好在相對低檔區，用零股分批買進通常比追在高點更划算喔！",
-      "請用「未來 3 年內不會動用到的閒錢」來投資，這樣遇到股市海浪起伏時，主人才能像大肥魚一樣從容不迫～",
-      "下單零股前，記得先幫主人確認券商有沒有「零股手續費最低 1 元」優惠，省下來的手續費可以多喝好幾杯紅茶呢！"
-    ];
+    const transparentCache = {};
 
     const STYLE_HINTS = {
       steady: "適合剛入門、希望分散風險並跟著台灣整體經濟成長的小白。",
@@ -349,8 +551,8 @@
       growth: "適合能承受較大價格波動、追求長期資本利得爆發力的投資人。"
     };
 
-    // 將單張純白底圖轉換為 100% 真透明背景 PNG 並存入快取
-    function processTransparentImage(srcUrl) {
+    // 將純白底圖片轉為 100% 真透明 PNG 並快取
+    function processTransparentImage(srcUrl, fallbackUrl = "./mascot.png") {
       return new Promise((resolve) => {
         if (transparentCache[srcUrl]) {
           resolve(transparentCache[srcUrl]);
@@ -400,20 +602,29 @@
             resolve(srcUrl);
           }
         };
-        tempImg.onerror = () => resolve(POSE_FILES.normal);
+        tempImg.onerror = () => {
+          if (srcUrl !== fallbackUrl) {
+            processTransparentImage(fallbackUrl, "./mascot.png").then(resolve);
+          } else {
+            resolve(srcUrl);
+          }
+        };
         tempImg.src = srcUrl;
       });
     }
 
-    // 預先在背景將 4 張差分圖全部去背快取，切換時零延遲
-    function preloadAllPoses() {
-      Object.values(POSE_FILES).forEach(url => processTransparentImage(url));
+    function preloadAllCharacters() {
+      Object.values(CHARACTERS).forEach(charObj => {
+        Object.values(charObj.poses).forEach(url => {
+          processTransparentImage(url, charObj.poses.normal);
+        });
+      });
     }
 
-    // 切換大肥魚原畫姿勢與表情
     async function setMascotPose(poseKey) {
-      const targetUrl = POSE_FILES[poseKey] || POSE_FILES.normal;
-      const cleanSrc = await processTransparentImage(targetUrl);
+      const charObj = CHARACTERS[currentChar];
+      const targetUrl = charObj.poses[poseKey] || charObj.poses.normal;
+      const cleanSrc = await processTransparentImage(targetUrl, charObj.poses.normal);
       const imgEl = document.getElementById('mascotImg');
       if (imgEl && imgEl.src !== cleanSrc) {
         imgEl.src = cleanSrc;
@@ -428,15 +639,99 @@
       setMascotPose(poseKey);
     }
 
+    // ================= 雙角色切換與交接班擊掌小劇場 =================
+    async function switchCharacter(targetCharKey) {
+      if (targetCharKey === currentChar || isHandoverPlaying) return;
+      isHandoverPlaying = true;
+
+      const oldChar = CHARACTERS[currentChar];
+      const newChar = CHARACTERS[targetCharKey];
+
+      // 1. 準備交接舞台兩位角色的透明去背圖（使用開心舉手動作擊掌！）
+      const [outSrc, inSrc] = await Promise.all([
+        processTransparentImage(oldChar.poses.happy, oldChar.poses.normal),
+        processTransparentImage(newChar.poses.happy, newChar.poses.normal)
+      ]);
+
+      const petContainer = document.getElementById('petContainer');
+      const stage = document.getElementById('handoverStage');
+      const outImg = document.getElementById('outgoingCharImg');
+      const inImg = document.getElementById('incomingCharImg');
+      const spark = document.getElementById('handoverSpark');
+
+      outImg.src = outSrc;
+      inImg.src = inSrc;
+
+      // 重置動畫 class
+      outImg.className = "w-36 h-44 object-contain drop-shadow-lg anim-outgoing";
+      inImg.className = "w-36 h-44 object-contain drop-shadow-lg anim-incoming";
+      spark.className = "absolute top-10 z-20 flex flex-col items-center anim-spark";
+
+      // 暫時隱藏單人容器，播放雙人擊掌交接舞台
+      petContainer.style.opacity = '0';
+      stage.style.display = 'flex';
+
+      // 2. 同步切換全站主題配色與文字
+      currentChar = targetCharKey;
+      applyCharacterTheme(newChar);
+
+      // 3. 1.55 秒交接動畫結束後，新角色正式接班登場
+      setTimeout(async () => {
+        stage.style.display = 'none';
+        petContainer.style.right = '24px';
+        petContainer.style.opacity = '1';
+
+        const petBody = document.getElementById('petBody');
+        petBody.classList.remove('jump-active');
+        void petBody.offsetWidth;
+        petBody.classList.add('jump-active');
+
+        mascotSpeak(newChar.handoverGreeting, "🙌", "happy");
+        renderRecommendations();
+        isHandoverPlaying = false;
+      }, 1550);
+    }
+
+    function applyCharacterTheme(charObj) {
+      // 切換 body 主題 class
+      if (charObj.id === 'hakimi') {
+        document.body.classList.add('theme-hakimi');
+        document.getElementById('brandIconBox').className = "w-10 h-10 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-indigo-700 border-2 border-white/80 text-white flex items-center justify-center font-black text-xl shadow-sm transition-all";
+        document.getElementById('btnCharFish').className = "px-3 py-1 rounded-full text-xs font-bold text-white/80 hover:text-white transition flex items-center gap-1 cursor-pointer";
+        document.getElementById('btnCharHakimi').className = "px-3 py-1 rounded-full text-xs font-black bg-fuchsia-400 text-slate-950 shadow-xs transition flex items-center gap-1 cursor-pointer";
+      } else {
+        document.body.classList.remove('theme-hakimi');
+        document.getElementById('brandIconBox').className = "w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-700 border-2 border-white/80 text-white flex items-center justify-center font-black text-xl shadow-sm transition-all";
+        document.getElementById('btnCharFish').className = "px-3 py-1 rounded-full text-xs font-black bg-sky-400 text-slate-950 shadow-xs transition flex items-center gap-1 cursor-pointer";
+        document.getElementById('btnCharHakimi').className = "px-3 py-1 rounded-full text-xs font-bold text-white/80 hover:text-white transition flex items-center gap-1 cursor-pointer";
+      }
+
+      document.getElementById('brandIconBox').textContent = charObj.icon;
+      document.getElementById('siteMainTitle').innerHTML = `
+        ${charObj.siteTitle}
+        <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/15 text-white border border-white/30">${charObj.siteBadge}</span>
+      `;
+      document.getElementById('step1Title').textContent = charObj.step1Title;
+      document.getElementById('step2Title').textContent = charObj.step2Title;
+      document.getElementById('noteIcon').textContent = charObj.icon;
+      document.getElementById('noteTitle').textContent = charObj.noteTitle;
+      document.getElementById('mascotNameTag').textContent = charObj.badgeTag;
+      document.getElementById('quickSwitchBtn').textContent = charObj.switchBtnLabel;
+
+      // 重新套用按鈕選中樣式
+      switchRange(currentRange, false);
+      selectStyle(currentStyle, false);
+    }
+
     function interactWithPet() {
+      const charObj = CHARACTERS[currentChar];
       const petBody = document.getElementById('petBody');
       petBody.classList.remove('jump-active');
       void petBody.offsetWidth;
       petBody.classList.add('jump-active');
 
-      const tip = MASCOT_TIPS[tipIndex % MASCOT_TIPS.length];
+      const tip = charObj.tips[tipIndex % charObj.tips.length];
       tipIndex++;
-      // 點擊時在「閉眼溫柔微笑」與「開心舉手大笑」之間輪流互動
       const pose = tipIndex % 2 === 1 ? "smile" : "happy";
       mascotSpeak(tip, "💡", pose);
     }
@@ -453,7 +748,7 @@
     }
 
     setInterval(() => {
-      if (!isWalking) return;
+      if (!isWalking || isHandoverPlaying) return;
       const container = document.getElementById('petContainer');
       const petBody = document.getElementById('petBody');
       const maxOffset = Math.min(window.innerWidth - 220, 480);
@@ -489,11 +784,12 @@
     }
 
     async function fetchLiveFromBrowser(isManual = false) {
+      const charObj = CHARACTERS[currentChar];
       const btn = document.getElementById('liveRefreshBtn');
       const icon = document.getElementById('refreshIcon');
       btn.disabled = true;
       icon.classList.add('animate-spin', 'inline-block');
-      if (isManual) mascotSpeak("收到！大肥魚正在幫主人潛入台股大海抓取最新一秒的即時報價喔～", "✨", "cheer");
+      if (isManual) mascotSpeak(`收到！${charObj.name}正在幫你連線抓最新一秒的即時報價喔～`, "✨", "cheer");
 
       try {
         const twii1d = await fetchYahooViaProxy("^TWII", "5m", "1d");
@@ -548,13 +844,12 @@
         const now = new Date();
         const pad = n => String(n).padStart(2, '0');
         appData.updated_at = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}（即時同步）`;
-        document.getElementById('dataStatusBadge').textContent = "● 已同步最新盤中即時報價";
 
         renderMarket();
         renderRecommendations();
-        if (isManual) mascotSpeak("更新完成啦！所有大盤點數與推薦股票的走勢圖都已經換成最新行情囉！", "💖", "happy");
+        if (isManual) mascotSpeak(`更新完成啦！所有大盤點數與走勢圖都已經換成最新行情囉！`, "💖", "happy");
       } catch (e) {
-        if (isManual) mascotSpeak("唔～目前外部報價通道有點塞車，大肥魚先幫主人保留目前最新的資料庫報價喔！", "💦", "cheer");
+        if (isManual) mascotSpeak(`唔～外部報價通道有點塞車，${charObj.name}先幫你保留目前最新的資料庫報價喔！`, "💦", "cheer");
       } finally {
         btn.disabled = false;
         icon.classList.remove('animate-spin', 'inline-block');
@@ -568,7 +863,6 @@
           const json = await res.json();
           if (json && json.stocks && json.stocks.length > 0) {
             appData = json;
-            document.getElementById('dataStatusBadge').textContent = "● 已載入自動化台股資料庫";
           }
         }
       } catch (e) {}
@@ -582,19 +876,23 @@
       }
     }
 
-    function switchRange(rangeKey) {
+    function switchRange(rangeKey, shouldRender = true) {
       currentRange = rangeKey;
+      const activeBg = currentChar === 'hakimi' ? 'bg-purple-800 text-white shadow-xs' : 'bg-blue-900 text-white shadow-xs';
+      const inactiveText = currentChar === 'hakimi' ? 'text-purple-950 hover:bg-white/60' : 'text-blue-900 hover:bg-white/60';
+
       document.querySelectorAll('.range-btn').forEach(btn => {
         if (btn.dataset.range === rangeKey) {
-          btn.className = "range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-900 text-white shadow-xs transition";
+          btn.className = `range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition ${activeBg}`;
         } else {
-          btn.className = "range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold text-blue-900 hover:bg-white/60 transition";
+          btn.className = `range-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition ${inactiveText}`;
         }
       });
-      renderMarket();
+      if (shouldRender) renderMarket();
     }
 
     function renderMarket() {
+      const charObj = CHARACTERS[currentChar];
       const ranges = appData.market_ranges || FALLBACK_DATA.market_ranges;
       const m = ranges[currentRange] || ranges["1d"];
       const isUp = m.change >= 0;
@@ -628,19 +926,19 @@
       if (m.change_pct > 1.0) {
         moodBadge.textContent = `${rl.periodName}強勢上攻`;
         tempEl.textContent = "偏熱（切勿盲目追高）";
-        mascotSpeak(`哇～主人您看！${rl.periodName}大盤漲了 ${m.change_pct.toFixed(2)}%，大肥魚好開心！不過記得不要一次把預算全追高喔！`, '💖', 'happy');
+        if (!isHandoverPlaying) mascotSpeak(charObj.marketQuotes.surge(rl.periodName, m.change_pct.toFixed(2)), '💖', 'happy');
       } else if (m.change_pct >= 0) {
         moodBadge.textContent = `${rl.periodName}溫和偏多`;
         tempEl.textContent = "適中（適合按計畫買進）";
-        mascotSpeak(`主人您好～${rl.periodName}大盤走勢平穩（${sign}${m.change_pct.toFixed(2)}%），最適合照著您的定期定額計畫慢慢累積持股了！`, '🎵', 'smile');
+        if (!isHandoverPlaying) mascotSpeak(charObj.marketQuotes.mildUp(rl.periodName, sign, m.change_pct.toFixed(2)), '🎵', 'smile');
       } else if (m.change_pct > -1.0) {
         moodBadge.textContent = `${rl.periodName}小幅拉回`;
         tempEl.textContent = "微涼（適合逢低撿零股）";
-        mascotSpeak(`唔～${rl.periodName}大盤稍微退潮了一點（${m.change_pct.toFixed(2)}%），對存股的主人來說，這反而是用優惠價撿零股的好機會喔！`, '💪', 'cheer');
+        if (!isHandoverPlaying) mascotSpeak(charObj.marketQuotes.mildDown(rl.periodName, m.change_pct.toFixed(2)), '💪', 'cheer');
       } else {
         moodBadge.textContent = `${rl.periodName}明顯回檔`;
         tempEl.textContent = "偏冷（分批承接好時機）";
-        mascotSpeak(`主人別擔心！${rl.periodName}大盤雖然跌了 ${Math.abs(m.change_pct).toFixed(2)}%，但這正是優質 ETF 辦特賣會的時候，我們分批承接就好！`, '💪', 'cheer');
+        if (!isHandoverPlaying) mascotSpeak(charObj.marketQuotes.drop(rl.periodName, Math.abs(m.change_pct).toFixed(2)), '💪', 'cheer');
       }
       moodBadge.className = `text-xs font-bold px-2.5 py-0.5 rounded-full border ${badgeClass}`;
       tempEl.className = `font-bold mt-0.5 ${colorClass}`;
@@ -686,29 +984,35 @@
           plugins: { legend: { display: false } },
           scales: {
             x: { grid: { display: false }, ticks: { maxTicksLimit: 8, font: { size: 11 } } },
-            y: { grid: { color: '#e0f2fe' }, ticks: { font: { size: 11 } } }
+            y: { grid: { color: currentChar === 'hakimi' ? '#f3e8ff' : '#e0f2fe' }, ticks: { font: { size: 11 } } }
           }
         }
       });
     }
 
     function setBudget(val) {
+      const charObj = CHARACTERS[currentChar];
       document.getElementById('budgetInput').value = val;
       renderRecommendations();
-      mascotSpeak(`收到！大肥魚已為主人重新精算 NT$ ${val.toLocaleString()} 的最佳零股配置比例囉！`, '✨', 'happy');
+      mascotSpeak(charObj.budgetReply(val), '✨', 'happy');
     }
 
-    function selectStyle(style) {
+    function selectStyle(style, shouldRender = true) {
       currentStyle = style;
       document.getElementById('styleHint').textContent = STYLE_HINTS[style];
+      const activeStyle = currentChar === 'hakimi'
+        ? "border-2 border-purple-900 bg-purple-950 text-white shadow-xs"
+        : "border-2 border-blue-900 bg-blue-950 text-white shadow-xs";
+      const inactiveStyle = "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50";
+
       document.querySelectorAll('.style-btn').forEach(btn => {
         if (btn.dataset.style === style) {
-          btn.className = "style-btn py-2.5 px-3 rounded-2xl border-2 border-blue-900 bg-blue-950 text-white text-xs font-bold text-center shadow-xs";
+          btn.className = `style-btn py-2.5 px-3 rounded-2xl text-xs font-bold text-center transition ${activeStyle}`;
         } else {
-          btn.className = "style-btn py-2.5 px-3 rounded-2xl border border-sky-200 bg-white text-slate-700 hover:bg-sky-50 text-xs font-bold text-center";
+          btn.className = `style-btn py-2.5 px-3 rounded-2xl text-xs font-bold text-center transition ${inactiveStyle}`;
         }
       });
-      renderRecommendations();
+      if (shouldRender) renderRecommendations();
     }
 
     function formatShares(shares) {
@@ -721,6 +1025,7 @@
     }
 
     function renderRecommendations() {
+      const charObj = CHARACTERS[currentChar];
       const budget = Math.max(0, Number(document.getElementById('budgetInput').value) || 0);
       const allStocks = appData.stocks;
 
@@ -765,14 +1070,14 @@
         chartAmounts.push(allocBudget);
 
         const card = document.createElement('div');
-        card.className = "maid-card rounded-3xl p-4 md:p-5 hover:border-blue-400 hover:shadow-md transition";
+        card.className = "maid-card rounded-3xl p-4 md:p-5 hover:shadow-md transition";
         card.innerHTML = `
           <div class="flex flex-wrap items-start justify-between gap-2">
             <div class="flex-1 min-w-[200px]">
               <div class="flex items-center gap-2 flex-wrap">
-                <span class="text-xs font-black px-2.5 py-0.5 rounded-lg bg-gradient-to-r from-blue-800 to-sky-600 text-white">配置 ${weights[idx] * 100}%</span>
-                <span class="text-base font-black text-blue-950">${stock.code} ${stock.name}</span>
-                <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-100 text-blue-900 font-medium">${stock.tag}</span>
+                <span class="theme-gradient-badge text-xs font-black px-2.5 py-0.5 rounded-lg">配置 ${weights[idx] * 100}%</span>
+                <span class="theme-text-main text-base font-black">${stock.code} ${stock.name}</span>
+                <span class="theme-soft-box theme-text-main text-xs px-2.5 py-0.5 rounded-full font-medium border">${stock.tag}</span>
               </div>
               <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">${stock.desc}</p>
             </div>
@@ -782,7 +1087,7 @@
             </div>
           </div>
 
-          <div class="mt-3 bg-sky-50/60 rounded-2xl p-3 border border-sky-100/90">
+          <div class="theme-soft-box mt-3 rounded-2xl p-3 border">
             <div class="flex items-center justify-between text-[11px] text-slate-500 mb-1">
               <span>📈 近 30 日股價波動趨勢（波段：<strong class="${monthTrendUp ? 'tw-up' : 'tw-down'}">${monthChgPct >= 0 ? '+' : ''}${monthChgPct}%</strong>）</span>
               <span>低點 NT$ ${Math.min(...hPoints).toFixed(2)} ～ 高點 NT$ ${Math.max(...hPoints).toFixed(2)}</span>
@@ -792,8 +1097,8 @@
             </div>
           </div>
 
-          <div class="mt-3 pt-3 border-t border-sky-100 flex flex-wrap items-center justify-between gap-2 text-xs">
-            <span class="text-slate-600">分配預算：<strong class="text-blue-950">NT$ ${allocBudget.toLocaleString()}</strong></span>
+          <div class="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span class="text-slate-600">分配預算：<strong class="theme-text-main">NT$ ${allocBudget.toLocaleString()}</strong></span>
             <span class="px-3 py-1 rounded-xl bg-amber-50 text-amber-900 font-bold border border-amber-300/80">
               約可買進：${formatShares(shares)}（約 NT$ ${actualCost.toLocaleString()}）
             </span>
@@ -846,7 +1151,7 @@
           labels: chartLabels,
           datasets: [{
             data: chartAmounts,
-            backgroundColor: ['#1e3a8a', '#0284c7', '#eab308'],
+            backgroundColor: charObj.chartColors,
             borderWidth: 2,
             borderColor: '#ffffff'
           }]
@@ -866,22 +1171,23 @@
       const marketComment = m.change_pct < -0.5
         ? `今日大盤下跌 ${Math.abs(m.change_pct).toFixed(2)}%，屬於回檔日，非常適合用「盤中零股」分批承接優質 ETF，能有效降低平均持有成本。`
         : m.change_pct > 1.0
-        ? `今日大盤大漲 ${m.change_pct.toFixed(2)}%，市場情緒偏熱，建議主人不要一次把預算全部投入，可先買一半，留一半等拉回再補。`
-        : `今日大盤波動溫和（${m.change_pct >= 0 ? '+' : ''}${m.change_pct.toFixed(2)}%），主人照著既定的定期定額或分批計畫執行即可。`;
+        ? `今日大盤大漲 ${m.change_pct.toFixed(2)}%，市場情緒偏熱，建議不要一次把預算全部投入，可先買一半，留一半等拉回再補。`
+        : `今日大盤波動溫和（${m.change_pct >= 0 ? '+' : ''}${m.change_pct.toFixed(2)}%），照著既定的定期定額或分批計畫執行即可。`;
 
       const feeTip = budget < 10000
-        ? `主人的單筆預算在 1 萬元以下，下單前請確認券商是否有「零股手續費最低 1 元」優惠，避免被收取 20 元基本手續費吃掉報酬。`
-        : `主人的預算充足，建議拆成 2～3 筆於不同交易日買進，分散單日買在最高點的風險。`;
+        ? `單筆預算在 1 萬元以下，下單前請確認券商是否有「零股手續費最低 1 元」優惠，避免被收取 20 元基本手續費吃掉報酬。`
+        : `預算充足，建議拆成 2～3 筆於不同交易日買進，分散單日買在最高點的風險。`;
 
       adviceEl.innerHTML = `
         <p>• <strong class="text-amber-200">今日盤勢解讀：</strong>${marketComment}</p>
         <p>• <strong class="text-amber-200">小資下單提醒：</strong>${feeTip}</p>
-        <p>• <strong class="text-amber-200">新手心法：</strong>可搭配每檔標的下方的「近 30 日走勢圖」觀察股價位階，若處於近月相對低點，分批買進會更有優勢喔！</p>
+        <p>• <strong class="text-amber-200">專屬心法：</strong>${charObj.noteFooter}</p>
       `;
     }
 
-    // 啟動預先去背與初始姿勢
-    preloadAllPoses();
+    // 初始化預載雙角色所有差分圖片並啟動預設主題
+    preloadAllCharacters();
+    applyCharacterTheme(CHARACTERS.fish);
     setMascotPose("normal");
 
     document.getElementById('budgetInput').addEventListener('input', renderRecommendations);
