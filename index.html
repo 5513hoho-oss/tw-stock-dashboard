@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>雙看板娘台股理財茶會｜大肥魚 & 哈基米</title>
+  <title>台股簡單!｜大肥魚 & 哈基米理財小助手</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -230,8 +230,8 @@
         </div>
         <div>
           <h1 id="siteMainTitle" class="text-base sm:text-lg font-black tracking-tight flex items-center gap-2">
-            大肥魚的台股理財茶會
-            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">☀️ 日間淺色版</span>
+            台股簡單!
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">☀️ 大肥魚日間版</span>
           </h1>
           <p class="text-xs text-white/75">行情同步時間：<span id="updatedAtText" class="font-bold text-amber-300">載入中...</span></p>
         </div>
@@ -261,7 +261,7 @@
   <!-- ================= 主版面容器（左側分頁側邊欄 + 右側獨立分頁內容） ================= -->
   <div class="max-w-7xl mx-auto w-full px-4 py-6 flex-1 relative z-10 flex flex-col lg:flex-row gap-6 items-start">
 
-    <!-- 左側分頁切換側邊欄（手機版自動變橫向膠囊列，電腦版固定於左側） -->
+    <!-- 左側分頁切換側邊欄 -->
     <aside class="w-full lg:w-56 shrink-0 lg:sticky lg:top-24 space-y-3">
       <nav class="maid-card rounded-3xl p-2.5 flex lg:flex-col gap-2">
         <button id="tabBtnMarket" onclick="switchMainTab('market')"
@@ -297,7 +297,7 @@
     <div class="flex-1 w-full min-w-0">
 
       <!-- ================================================================ -->
-      <!-- 分頁一：大盤與精選入股（維持原本完整首頁功能，互不干擾）               -->
+      <!-- 分頁一：大盤與精選入股                                             -->
       <!-- ================================================================ -->
       <div id="tabViewMarket" class="space-y-6">
         <!-- 區塊 1：加權指數多週期波動看板 -->
@@ -435,7 +435,7 @@
       </div>
 
       <!-- ================================================================ -->
-      <!-- 分頁二：我的持股診斷室（獨立分頁，輸入個人持股、看走勢與賣出/加倉建議） -->
+      <!-- 分頁二：我的持股診斷室                                             -->
       <!-- ================================================================ -->
       <div id="tabViewPortfolio" style="display:none;" class="space-y-6">
 
@@ -543,7 +543,6 @@
               <p id="selHoldSummary" class="theme-text-muted text-xs mt-1">--</p>
             </div>
 
-            <!-- 切換該持股的 當日走勢 / 近 30 日走勢 -->
             <div class="theme-soft-box inline-flex p-1 rounded-xl border">
               <button type="button" id="btnHoldRange1d" onclick="switchHoldingChartRange('1d')"
                 class="px-3 py-1 rounded-lg text-xs font-bold transition">
@@ -616,7 +615,7 @@
         </div>
       </div>
       <p id="mascotSpeech" class="text-xs font-medium leading-relaxed">
-        主人您好呀～大肥魚正式報到！左側分頁可以切換「我的持股診斷室」來幫您追蹤已買進的股票喔！
+        主人您好呀～歡迎來到「台股簡單!」左側分頁可以切換「我的持股診斷室」來幫您追蹤已買進的股票喔！
       </p>
       <div style="background-color: var(--bubble-bg); border-color: var(--bubble-border);" class="w-3 h-3 border-r-2 border-b-2 rotate-45 absolute -bottom-1.5 right-14"></div>
     </div>
@@ -683,8 +682,8 @@
         name: "大肥魚",
         badgeTag: "🎀 大肥魚女僕",
         icon: "🐋",
-        siteTitle: "大肥魚的台股理財茶會",
-        siteBadge: "☀️ 日間淺色版",
+        siteTitle: "台股簡單!",
+        siteBadge: "☀️ 大肥魚日間版",
         step1Title: "請輸入主人本次打算投入的金額與偏好",
         step2Title: "大肥魚為您精選的今日入股參考清單（附近 30 日走勢圖）",
         noteTitle: "大肥魚的盤勢觀察筆記",
@@ -712,7 +711,6 @@
           drop: (period, pct) => `主人別擔心！${period}大盤雖然跌了 ${pct}%，但這正是優質 ETF 辦特賣會的時候，我們分批承接就好！`
         },
         noteFooter: "ETF 本身已經幫主人買進一籃子股票，搭配近 30 日走勢圖觀察位階，逢低分批買進效果最好喔！",
-        // 針對個人持股的專屬紀律診斷話術
         diagnoseHolding: (name, pct, isETF) => {
           if (pct >= 20) {
             return {
@@ -778,8 +776,8 @@
         name: "哈基米",
         badgeTag: "✨ 星光貓娘哈基米",
         icon: "🐱",
-        siteTitle: "哈基米的星夜量子理財室",
-        siteBadge: "🌙 夜間深色版",
+        siteTitle: "台股簡單!",
+        siteBadge: "🌙 哈基米夜間版",
         step1Title: "快輸入你的投資預算吧，本天才哈基米幫你算到小數點！",
         step2Title: "哈基米星夜運算出的精選標的清單（附近 30 日波段圖）",
         noteTitle: "哈基米的星夜數據觀測站",
@@ -895,7 +893,6 @@
       growth: "適合能承受較大價格波動、追求長期資本利得爆發力的投資人。"
     };
 
-    // ================= 1. 左側雙分頁切換邏輯 =================
     function switchMainTab(tabName) {
       currentTab = tabName;
       const viewMarket = document.getElementById('tabViewMarket');
@@ -932,7 +929,6 @@
       btnPortfolio.className = currentTab === 'portfolio' ? activeClass : inactiveClass;
     }
 
-    // ================= 2. 個人持股本地儲存與即時查詢引擎 =================
     function loadHoldingsFromStorage() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -956,7 +952,6 @@
       document.getElementById('holdSharesInput').focus();
     }
 
-    // 自動嘗試 .TW（上市）與 .TWO（上櫃/美債ETF）抓取任意台股即時價與走勢
     async function fetchAnyTwStock(cleanCode) {
       const preset = appData.stocks.find(s => s.code === cleanCode);
       const candidates = preset
@@ -1008,16 +1003,13 @@
               points1mo: points1mo.length ? points1mo : [prevClose, currentPrice]
             };
           }
-        } catch (err) {
-          // 繼續嘗試下一個市場後綴
-        }
+        } catch (err) {}
       }
       throw new Error("查無此股票代號");
     }
 
     async function handleAddHolding(e) {
       e.preventDefault();
-      const charObj = CHARACTERS[currentChar];
       const code = document.getElementById('holdCodeInput').value.trim().toUpperCase();
       const shares = Math.floor(Number(document.getElementById('holdSharesInput').value));
       const totalCost = Math.round(Number(document.getElementById('holdCostInput').value));
@@ -1035,7 +1027,6 @@
         const existingIdx = userHoldings.findIndex(h => h.code === code);
 
         if (existingIdx >= 0) {
-          // 若已有該檔持股，自動合併股數與總成本並重算均價
           const old = userHoldings[existingIdx];
           const newShares = old.shares + shares;
           const newCost = old.totalCost + totalCost;
@@ -1107,7 +1098,6 @@
       renderSelectedHoldingChart();
     }
 
-    // 計算預估賣出淨值（扣除 0.1425% 手續費 + 證交稅 ETF 0.1% / 個股 0.3%）
     function calcNetSellValue(currentPrice, shares, isETF) {
       const gross = currentPrice * shares;
       const fee = Math.max(1, Math.floor(gross * 0.001425));
@@ -1162,7 +1152,6 @@
       pctEl.textContent = `${isProfitUp ? '▲ +' : '▼ '}${totalPct.toFixed(2)}%`;
       pctEl.className = `text-lg sm:text-xl font-black mt-1 ${isProfitUp ? 'tw-up' : 'tw-down'}`;
 
-      // 渲染持股明細卡片清單
       const listEl = document.getElementById('holdingsListContainer');
       listEl.innerHTML = '';
 
@@ -1225,7 +1214,6 @@
             </div>
           </div>
 
-          <!-- 小幫手賣出/加倉紀律建議區塊 -->
           <div class="theme-soft-box mt-3.5 p-3.5 rounded-2xl border space-y-1.5">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <span class="text-xs font-black px-2.5 py-0.5 rounded-full border ${diag.actionBadge}">
@@ -1263,7 +1251,6 @@
       const isDark = currentChar === 'hakimi';
       const live = target.live;
 
-      // 更新按鈕樣式
       const activeBtn = isDark ? 'bg-purple-600 text-white shadow-xs' : 'bg-blue-900 text-white shadow-xs';
       const inactiveBtn = isDark ? 'text-purple-200 hover:bg-white/10' : 'text-blue-900 hover:bg-white/60';
       document.getElementById('btnHoldRange1d').className = `px-3 py-1 rounded-lg text-xs font-bold transition ${selectedHoldingRange === '1d' ? activeBtn : inactiveBtn}`;
@@ -1369,7 +1356,6 @@
       event.target.value = "";
     }
 
-    // ================= 3. 雙角色主題與交接班互動動畫 =================
     function processTransparentImage(srcUrl, fallbackUrl = "./mascot.png") {
       return new Promise((resolve) => {
         if (transparentCache[srcUrl]) {
@@ -1579,7 +1565,6 @@
       }, 2200);
     }, 6000);
 
-    // ================= 4. 大盤與推薦清單資料載入與渲染 =================
     function round2(n) { return Math.round(n * 100) / 100; }
 
     async function fetchYahooViaProxy(symbol, interval = "5m", rangeStr = "1d") {
