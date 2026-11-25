@@ -8,82 +8,127 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
-    /* ================= 雙角色動態主題 CSS 變數 ================= */
+    /* ================= ☀️ 預設：大肥魚（日間淺色茶會主題） ================= */
     :root {
       --bg-grad-start: #e0f2fe;
       --bg-grad-mid: #f0f9ff;
       --bg-grad-end: #f8fafc;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-body: #334155;
       --header-bg: rgba(15, 23, 42, 0.95);
-      --header-border: rgba(251, 191, 36, 0.7);
+      --header-border: rgba(251, 191, 36, 0.75);
+      --card-bg: rgba(255, 255, 255, 0.94);
       --card-border: #bae6fd;
       --card-shadow: rgba(14, 116, 144, 0.08);
+      --divider-color: #e2e8f0;
       --primary-dark: #172554;
       --primary-main: #1e3a8a;
       --primary-accent: #0284c7;
       --soft-bg: #f0f9ff;
-      --soft-border: #e0f2fe;
+      --soft-border: #bae6fd;
+      --input-bg: #ffffff;
+      --input-border: #bae6fd;
+      --bubble-bg: rgba(255, 255, 255, 0.96);
       --bubble-border: #7dd3fc;
+      --bubble-text: #334155;
       --note-grad-1: #0f172a;
       --note-grad-2: #172554;
       --note-grad-3: #1e3a8a;
     }
 
+    /* ================= 🌙 切換：哈基米（夜間深色星夜模式 Dark Mode） ================= */
     body.theme-hakimi {
-      --bg-grad-start: #f3e8ff;
-      --bg-grad-mid: #eef2ff;
-      --bg-grad-end: #fdf4ff;
-      --header-bg: rgba(30, 27, 75, 0.96);
-      --header-border: rgba(232, 121, 249, 0.75);
-      --card-border: #e9d5ff;
-      --card-shadow: rgba(126, 34, 206, 0.09);
-      --primary-dark: #3b0764;
-      --primary-main: #581c87;
-      --primary-accent: #7c3aed;
-      --soft-bg: #faf5ff;
-      --soft-border: #f3e8ff;
-      --bubble-border: #d8b4fe;
-      --note-grad-1: #1e1b4b;
-      --note-grad-2: #3b0764;
-      --note-grad-3: #581c87;
+      --bg-grad-start: #1e1b4b;
+      --bg-grad-mid: #0f172a;
+      --bg-grad-end: #090d16;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-body: #cbd5e1;
+      --header-bg: rgba(9, 13, 22, 0.92);
+      --header-border: rgba(192, 132, 252, 0.65);
+      --card-bg: rgba(30, 27, 75, 0.72);
+      --card-border: rgba(168, 85, 247, 0.35);
+      --card-shadow: rgba(0, 0, 0, 0.45);
+      --divider-color: rgba(148, 163, 184, 0.16);
+      --primary-dark: #e9d5ff;
+      --primary-main: #7e22ce;
+      --primary-accent: #c026d3;
+      --soft-bg: rgba(15, 23, 42, 0.75);
+      --soft-border: rgba(168, 85, 247, 0.3);
+      --input-bg: rgba(15, 23, 42, 0.9);
+      --input-border: rgba(168, 85, 247, 0.45);
+      --bubble-bg: rgba(30, 27, 75, 0.95);
+      --bubble-border: #c084fc;
+      --bubble-text: #f1f5f9;
+      --note-grad-1: #2e1065;
+      --note-grad-2: #4c1d95;
+      --note-grad-3: #311042;
     }
 
     body {
       font-family: 'Noto Sans TC', sans-serif;
-      background: radial-gradient(circle at top right, var(--bg-grad-start) 0%, var(--bg-grad-mid) 45%, var(--bg-grad-end) 100%);
-      color: #0f172a;
+      background: radial-gradient(circle at top right, var(--bg-grad-start) 0%, var(--bg-grad-mid) 50%, var(--bg-grad-end) 100%);
+      color: var(--text-main);
       overflow-x: hidden;
-      transition: background 0.6s ease;
+      transition: background 0.5s ease, color 0.4s ease;
+    }
+
+    /* 夜間模式下的星光微粒點綴 */
+    body.theme-hakimi::before {
+      content: "✦   ✧     ✦       ✧   ✦";
+      position: fixed;
+      top: 76px;
+      right: 12%;
+      font-size: 13px;
+      color: rgba(216, 180, 254, 0.45);
+      pointer-events: none;
+      letter-spacing: 12px;
+      z-index: 1;
     }
 
     .theme-header {
       background-color: var(--header-bg);
       border-bottom-color: var(--header-border);
-      transition: background-color 0.5s ease, border-color 0.5s ease;
+      transition: background-color 0.4s ease, border-color 0.4s ease;
     }
 
+    /* 紅漲綠跌配色（兼顧日/夜對比度） */
     .tw-up { color: #e11d48; }
+    body.theme-hakimi .tw-up { color: #fb7185; }
     .tw-up-bg { background-color: #fff1f2; color: #e11d48; border-color: #fecdd3; }
+    body.theme-hakimi .tw-up-bg { background-color: rgba(225, 29, 72, 0.2); color: #fda4af; border-color: rgba(244, 63, 94, 0.4); }
+
     .tw-down { color: #059669; }
+    body.theme-hakimi .tw-down { color: #34d399; }
     .tw-down-bg { background-color: #ecfdf5; color: #059669; border-color: #a7f3d0; }
+    body.theme-hakimi .tw-down-bg { background-color: rgba(5, 150, 105, 0.2); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.4); }
 
     .maid-card {
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(12px);
+      background-color: var(--card-bg);
+      backdrop-filter: blur(14px);
       border: 1.5px solid var(--card-border);
-      box-shadow: 0 8px 24px -6px var(--card-shadow);
-      transition: border-color 0.5s ease, box-shadow 0.5s ease;
+      box-shadow: 0 8px 28px -6px var(--card-shadow);
+      transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
     }
 
+    .theme-divider { border-color: var(--divider-color); }
     .theme-soft-box {
       background-color: var(--soft-bg);
       border-color: var(--soft-border);
-      transition: background-color 0.5s ease, border-color 0.5s ease;
+      transition: background-color 0.4s ease, border-color 0.4s ease;
+    }
+
+    .theme-input {
+      background-color: var(--input-bg);
+      border-color: var(--input-border);
+      color: var(--text-main);
+      transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
     }
 
     .theme-primary-badge {
-      background-color: var(--primary-dark);
+      background-color: var(--primary-main);
       color: #ffffff;
-      transition: background-color 0.5s ease;
     }
 
     .theme-gradient-badge {
@@ -91,27 +136,21 @@
       color: #ffffff;
     }
 
-    .theme-text-main {
-      color: var(--primary-dark);
-      transition: color 0.5s ease;
-    }
+    .theme-text-main { color: var(--primary-dark); }
+    .theme-text-strong { color: var(--text-main); }
+    .theme-text-body { color: var(--text-body); }
+    .theme-text-muted { color: var(--text-muted); }
 
     .theme-note-card {
       background: linear-gradient(135deg, var(--note-grad-1), var(--note-grad-2), var(--note-grad-3));
       transition: background 0.5s ease;
     }
 
-    /* 哈基米模式下的星空微光裝飾 */
-    body.theme-hakimi::before {
-      content: "✦ ✧ ✦";
-      position: fixed;
-      top: 76px;
-      left: 24px;
-      font-size: 14px;
-      color: rgba(168, 85, 247, 0.35);
-      pointer-events: none;
-      letter-spacing: 8px;
-      z-index: 1;
+    .theme-bubble {
+      background-color: var(--bubble-bg);
+      border-color: var(--bubble-border);
+      color: var(--bubble-text);
+      transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
     }
 
     /* 活潑呼吸與左右微搖擺動畫 */
@@ -199,22 +238,22 @@
         <div>
           <h1 id="siteMainTitle" class="text-base sm:text-lg font-black tracking-tight flex items-center gap-2">
             大肥魚的台股理財茶會
-            <span id="siteSubBadge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">深海女僕版</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">☀️ 日間淺色版</span>
           </h1>
           <p class="text-xs text-white/75">行情同步時間：<span id="updatedAtText" class="font-bold text-amber-300">載入中...</span></p>
         </div>
       </div>
 
-      <!-- 雙角色一鍵切換器 + 即時刷新按鈕 -->
+      <!-- 日/夜雙角色切換器 + 即時刷新按鈕 -->
       <div class="flex items-center gap-2.5 flex-wrap">
         <div class="inline-flex p-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-xs">
           <button id="btnCharFish" onclick="switchCharacter('fish')"
             class="px-3 py-1 rounded-full text-xs font-black bg-sky-400 text-slate-950 shadow-xs transition flex items-center gap-1 cursor-pointer">
-            🐋 大肥魚
+            ☀️ 大肥魚（日間）
           </button>
           <button id="btnCharHakimi" onclick="switchCharacter('hakimi')"
             class="px-3 py-1 rounded-full text-xs font-bold text-white/80 hover:text-white transition flex items-center gap-1 cursor-pointer">
-            ✨ 哈基米
+            🌙 哈基米（夜間）
           </button>
         </div>
 
@@ -230,7 +269,7 @@
 
     <!-- 區塊 1：加權指數多週期波動看板 -->
     <section class="maid-card rounded-3xl p-5 md:p-6">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+      <div class="theme-divider flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b">
         <div>
           <div class="flex items-center gap-2 flex-wrap">
             <span class="theme-primary-badge text-xs font-bold px-2.5 py-0.5 rounded-lg">台灣加權指數 (^TWII)</span>
@@ -260,15 +299,15 @@
 
           <div class="theme-soft-box grid grid-cols-3 gap-3 px-3.5 py-2.5 rounded-2xl border text-xs">
             <div>
-              <div id="labelOpen" class="text-slate-500">今日開盤</div>
-              <div id="indexOpen" class="font-bold text-slate-900 mt-0.5">--</div>
+              <div id="labelOpen" class="theme-text-muted">今日開盤</div>
+              <div id="indexOpen" class="theme-text-strong font-bold mt-0.5">--</div>
             </div>
             <div>
-              <div id="labelBase" class="text-slate-500">昨日收盤</div>
-              <div id="indexPrevClose" class="font-bold text-slate-900 mt-0.5">--</div>
+              <div id="labelBase" class="theme-text-muted">昨日收盤</div>
+              <div id="indexPrevClose" class="theme-text-strong font-bold mt-0.5">--</div>
             </div>
             <div>
-              <div class="text-slate-500">市場溫度計</div>
+              <div class="theme-text-muted">市場溫度計</div>
               <div id="marketTemp" class="font-bold mt-0.5">--</div>
             </div>
           </div>
@@ -276,7 +315,7 @@
       </div>
 
       <div class="mt-4">
-        <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
+        <div class="theme-text-muted flex items-center justify-between text-xs mb-2">
           <span id="chartSubtitle">當日盤中走勢圖（虛線為基準平盤線）</span>
           <span class="theme-text-main font-medium">紅漲綠跌（台灣股市標準）</span>
         </div>
@@ -294,11 +333,11 @@
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-end">
         <div class="md:col-span-6">
-          <label class="block text-xs font-bold text-slate-600 mb-1.5">投入預算（新台幣元）</label>
+          <label class="theme-text-muted block text-xs font-bold mb-1.5">投入預算（新台幣元）</label>
           <div class="relative">
             <span class="theme-text-main absolute left-3.5 top-1/2 -translate-y-1/2 font-bold">NT$</span>
             <input id="budgetInput" type="number" min="1000" step="500" value="10000"
-              class="w-full pl-12 pr-4 py-2.5 text-lg font-black border-2 border-slate-200 rounded-2xl bg-white focus:outline-none focus:border-purple-500 transition" />
+              class="theme-input w-full pl-12 pr-4 py-2.5 text-lg font-black border-2 rounded-2xl focus:outline-none" />
           </div>
           <div class="flex flex-wrap gap-2 mt-2.5">
             <button type="button" onclick="setBudget(3000)" class="theme-soft-box theme-text-main text-xs px-3 py-1 rounded-xl hover:opacity-80 border font-bold transition">3,000 元</button>
@@ -310,7 +349,7 @@
         </div>
 
         <div class="md:col-span-6">
-          <label class="block text-xs font-bold text-slate-600 mb-1.5">選擇您的投資航線風格</label>
+          <label class="theme-text-muted block text-xs font-bold mb-1.5">選擇您的投資航線風格</label>
           <div class="grid grid-cols-3 gap-2" id="styleButtons">
             <button type="button" data-style="steady" onclick="selectStyle('steady')"
               class="style-btn py-2.5 px-3 rounded-2xl text-xs font-bold text-center transition">
@@ -325,7 +364,7 @@
               🚀 積極成長型
             </button>
           </div>
-          <p class="text-xs text-slate-500 mt-2.5" id="styleHint">適合剛入門、希望分散風險並跟著台灣整體經濟成長的小白。</p>
+          <p class="theme-text-muted text-xs mt-2.5" id="styleHint">適合剛入門、希望分散風險並跟著台灣整體經濟成長的小白。</p>
         </div>
       </div>
     </section>
@@ -338,7 +377,7 @@
             <span class="theme-gradient-badge w-6 h-6 rounded-full text-xs flex items-center justify-center shadow-2xs">2</span>
             <span id="step2Title">大肥魚為您精選的今日入股參考清單（附近 30 日走勢圖）</span>
           </h2>
-          <span class="text-xs text-slate-500">1 張 = 1,000 股｜零股最低 1 股起</span>
+          <span class="theme-text-muted text-xs">1 張 = 1,000 股｜零股最低 1 股起</span>
         </div>
         <div id="recommendationCards" class="space-y-4"></div>
       </div>
@@ -363,20 +402,17 @@
 
   </main>
 
-  <footer class="max-w-6xl mx-auto w-full px-4 py-6 text-center text-xs text-slate-500 border-t border-slate-200/60 mt-8">
+  <footer class="theme-divider theme-text-muted max-w-6xl mx-auto w-full px-4 py-6 text-center text-xs border-t mt-8">
     免責聲明：本網站數據透過自動化排程與公開市場介面整理，試算結果僅供投資教育與研究參考，不構成任何買賣邀約或投資保證。投資前請審慎評估自身風險承受度。
   </footer>
 
   <!-- ================= 交接班雙角色擊掌互動舞台（切換角色時觸發） ================= -->
   <div id="handoverStage" style="display:none;" class="fixed bottom-4 right-6 z-50 w-72 h-56 pointer-events-none flex items-end justify-center select-none">
-    <!-- 左側退場角色 -->
     <img id="outgoingCharImg" src="" alt="退場夥伴" class="w-36 h-44 object-contain drop-shadow-lg" />
-    <!-- 中央擊掌閃光特效 -->
-    <div id="handoverSpark" class="absolute top-12 z-20 flex flex-col items-center">
+    <div id="handoverSpark" class="absolute top-10 z-20 flex flex-col items-center">
       <span class="text-3xl drop-shadow-md">🙌✨</span>
-      <span class="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-amber-300 text-slate-950 shadow-md border border-white mt-1">交接班擊掌！</span>
+      <span class="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-amber-300 text-slate-950 shadow-md border border-white mt-1">日夜交接擊掌！</span>
     </div>
-    <!-- 右側進場接班角色 -->
     <img id="incomingCharImg" src="" alt="進場夥伴" class="w-36 h-44 object-contain drop-shadow-lg" />
   </div>
 
@@ -384,27 +420,27 @@
   <div id="petContainer" style="right: 24px; bottom: 12px;" class="fixed z-50 flex flex-col items-end select-none">
 
     <!-- 對話氣泡框 -->
-    <div id="petBubble" style="border-color: var(--bubble-border);" class="mb-1 max-w-[280px] sm:max-w-[320px] bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-xl border-2 relative transition-all">
+    <div id="petBubble" class="theme-bubble mb-1 max-w-[280px] sm:max-w-[320px] backdrop-blur-md rounded-2xl p-3.5 shadow-xl border-2 relative transition-all">
       <div class="flex items-center justify-between gap-2 mb-1">
         <span id="mascotNameTag" class="theme-soft-box theme-text-main text-[11px] font-black px-2.5 py-0.5 rounded-full border">🎀 大肥魚女僕</span>
         <div class="flex items-center gap-1">
           <button onclick="toggleWalkMode()" id="walkToggleBtn" title="切換自動左右散步" class="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold hover:bg-amber-200 transition">
             🚶 散步：開
           </button>
-          <button onclick="toggleBubble()" title="收合對話框" class="text-xs text-slate-400 hover:text-slate-700 px-1 font-bold">✕</button>
+          <button onclick="toggleBubble()" title="收合對話框" class="text-xs opacity-60 hover:opacity-100 px-1 font-bold">✕</button>
         </div>
       </div>
-      <p id="mascotSpeech" class="text-xs text-slate-700 font-medium leading-relaxed">
+      <p id="mascotSpeech" class="text-xs font-medium leading-relaxed">
         主人您好呀～大肥魚正式報到！點我可以切換表情動作與看理財秘笈喔！
       </p>
-      <div style="border-color: var(--bubble-border);" class="w-3 h-3 bg-white border-r-2 border-b-2 rotate-45 absolute -bottom-1.5 right-14"></div>
+      <div style="background-color: var(--bubble-bg); border-color: var(--bubble-border);" class="w-3 h-3 border-r-2 border-b-2 rotate-45 absolute -bottom-1.5 right-14"></div>
     </div>
 
     <!-- 動態角色本體 -->
     <div id="petAvatarWrapper" onclick="interactWithPet()" title="點我與小助手互動！" class="cursor-pointer relative group">
 
       <!-- 滑鼠移入時可手動切換 4 張原畫表情測試 + 快速交接班 -->
-      <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -left-32 top-2 flex flex-col gap-1 bg-white/95 p-2 rounded-xl shadow-md border border-slate-200 text-[10px] font-bold z-30">
+      <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -left-32 top-2 flex flex-col gap-1 bg-white/95 text-slate-800 p-2 rounded-xl shadow-md border border-slate-200 text-[10px] font-bold z-30">
         <button onclick="event.stopPropagation(); setMascotPose('happy')" class="px-2 py-0.5 rounded hover:bg-rose-50 text-rose-600 text-left">🙌 開心舉手大笑</button>
         <button onclick="event.stopPropagation(); setMascotPose('smile')" class="px-2 py-0.5 rounded hover:bg-amber-50 text-amber-700 text-left">😊 溫柔得意微笑</button>
         <button onclick="event.stopPropagation(); setMascotPose('cheer')" class="px-2 py-0.5 rounded hover:bg-emerald-50 text-emerald-700 text-left">✊ 握拳加油打氣</button>
@@ -412,7 +448,7 @@
         <hr class="border-slate-100 my-0.5"/>
         <button id="quickSwitchBtn" onclick="event.stopPropagation(); switchCharacter(currentChar === 'fish' ? 'hakimi' : 'fish')"
           class="px-2 py-1 rounded bg-purple-100 hover:bg-purple-200 text-purple-900 text-left">
-          🔄 呼叫哈基米換班
+          🌙 切換夜間哈基米
         </button>
       </div>
 
@@ -460,7 +496,7 @@
       ]
     };
 
-    // ================= 雙看板娘完整人設與主題設定檔 =================
+    // ================= 雙看板娘完整人設與日/夜主題設定檔 =================
     const CHARACTERS = {
       fish: {
         id: "fish",
@@ -468,11 +504,11 @@
         badgeTag: "🎀 大肥魚女僕",
         icon: "🐋",
         siteTitle: "大肥魚的台股理財茶會",
-        siteBadge: "深海女僕版",
+        siteBadge: "☀️ 日間淺色版",
         step1Title: "請輸入主人本次打算投入的金額與偏好",
         step2Title: "大肥魚為您精選的今日入股參考清單（附近 30 日走勢圖）",
         noteTitle: "大肥魚的盤勢觀察筆記",
-        switchBtnLabel: "🔄 呼叫哈基米換班",
+        switchBtnLabel: "🌙 切換夜間哈基米",
         chartColors: ['#1e3a8a', '#0284c7', '#eab308'],
         poses: {
           normal: "./mascot.png",
@@ -480,7 +516,7 @@
           smile:  "./mascot_smile.jpg",
           cheer:  "./mascot_cheer.jpg"
         },
-        handoverGreeting: "擊掌成功！大肥魚回來繼續服侍主人喝茶看盤囉～哈基米辛苦啦！",
+        handoverGreeting: "擊掌成功！日間模式開啟，大肥魚回來繼續陪主人喝茶看盤囉～",
         budgetReply: (val) => `收到！大肥魚已為主人重新精算 NT$ ${val.toLocaleString()} 的最佳零股配置比例囉！`,
         tips: [
           "主人您知道嗎？「零股交易」最低只要買 1 股，就算台積電一張要百萬，小資族花一千多元也能當股東喔！",
@@ -502,19 +538,20 @@
         badgeTag: "✨ 星光貓娘哈基米",
         icon: "🐱",
         siteTitle: "哈基米的星夜量子理財室",
-        siteBadge: "Gemini 星光版",
+        siteBadge: "🌙 夜間深色版",
         step1Title: "快輸入你的投資預算吧，本天才哈基米幫你算到小數點！",
-        step2Title: "哈基米多模態運算出的精選標的清單（附近 30 日波段圖）",
+        step2Title: "哈基米星夜運算出的精選標的清單（附近 30 日波段圖）",
         noteTitle: "哈基米的星夜數據觀測站",
-        switchBtnLabel: "🔄 呼叫大肥魚換班",
-        chartColors: ['#581c87', '#9333ea', '#f43f5e'],
+        switchBtnLabel: "☀️ 切換日間大肥魚",
+        chartColors: ['#a855f7', '#ec4899', '#38bdf8'],
+        // 精準對應你 GitHub 上傳的 Gemini*.jpg 檔名
         poses: {
-          normal: "./hakimi.jpg",
-          happy:  "./hakimi_happy.jpg",
-          smile:  "./hakimi_smile.jpg",
-          cheer:  "./hakimi_cheer.jpg"
+          normal: "./Gemini.jpg",
+          happy:  "./Gemini_happy.jpg",
+          smile:  "./Gemini_smile.jpg",
+          cheer:  "./Gemini_cheer.jpg"
         },
-        handoverGreeting: "喵哈哈～吉米啟動！大肥魚交接完成，接下來就由本天才哈基米帶你征服台股星海吧！",
+        handoverGreeting: "喵哈哈～吉米啟動！夜間星光模式展開，接下來就由本天才哈基米帶你征服台股星海吧！",
         budgetReply: (val) => `哼哼～NT$ ${val.toLocaleString()} 的黃金比例已經被哈基米一秒算出來啦，快看看下面吧！`,
         tips: [
           "喵哼～你該不會以為一定要買滿一張 1,000 股吧？盤中零股交易只要 1 股就能上車，小資金也能開啟複利飛輪喔！",
@@ -551,7 +588,6 @@
       growth: "適合能承受較大價格波動、追求長期資本利得爆發力的投資人。"
     };
 
-    // 將純白底圖片轉為 100% 真透明 PNG 並快取
     function processTransparentImage(srcUrl, fallbackUrl = "./mascot.png") {
       return new Promise((resolve) => {
         if (transparentCache[srcUrl]) {
@@ -639,7 +675,7 @@
       setMascotPose(poseKey);
     }
 
-    // ================= 雙角色切換與交接班擊掌小劇場 =================
+    // ================= 雙角色日/夜切換與交接班擊掌小劇場 =================
     async function switchCharacter(targetCharKey) {
       if (targetCharKey === currentChar || isHandoverPlaying) return;
       isHandoverPlaying = true;
@@ -647,7 +683,6 @@
       const oldChar = CHARACTERS[currentChar];
       const newChar = CHARACTERS[targetCharKey];
 
-      // 1. 準備交接舞台兩位角色的透明去背圖（使用開心舉手動作擊掌！）
       const [outSrc, inSrc] = await Promise.all([
         processTransparentImage(oldChar.poses.happy, oldChar.poses.normal),
         processTransparentImage(newChar.poses.happy, newChar.poses.normal)
@@ -662,20 +697,18 @@
       outImg.src = outSrc;
       inImg.src = inSrc;
 
-      // 重置動畫 class
       outImg.className = "w-36 h-44 object-contain drop-shadow-lg anim-outgoing";
       inImg.className = "w-36 h-44 object-contain drop-shadow-lg anim-incoming";
       spark.className = "absolute top-10 z-20 flex flex-col items-center anim-spark";
 
-      // 暫時隱藏單人容器，播放雙人擊掌交接舞台
       petContainer.style.opacity = '0';
       stage.style.display = 'flex';
 
-      // 2. 同步切換全站主題配色與文字
       currentChar = targetCharKey;
       applyCharacterTheme(newChar);
+      renderMarket();
+      renderRecommendations();
 
-      // 3. 1.55 秒交接動畫結束後，新角色正式接班登場
       setTimeout(async () => {
         stage.style.display = 'none';
         petContainer.style.right = '24px';
@@ -687,23 +720,21 @@
         petBody.classList.add('jump-active');
 
         mascotSpeak(newChar.handoverGreeting, "🙌", "happy");
-        renderRecommendations();
         isHandoverPlaying = false;
       }, 1550);
     }
 
     function applyCharacterTheme(charObj) {
-      // 切換 body 主題 class
       if (charObj.id === 'hakimi') {
         document.body.classList.add('theme-hakimi');
         document.getElementById('brandIconBox').className = "w-10 h-10 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-indigo-700 border-2 border-white/80 text-white flex items-center justify-center font-black text-xl shadow-sm transition-all";
-        document.getElementById('btnCharFish').className = "px-3 py-1 rounded-full text-xs font-bold text-white/80 hover:text-white transition flex items-center gap-1 cursor-pointer";
-        document.getElementById('btnCharHakimi').className = "px-3 py-1 rounded-full text-xs font-black bg-fuchsia-400 text-slate-950 shadow-xs transition flex items-center gap-1 cursor-pointer";
+        document.getElementById('btnCharFish').className = "px-3 py-1 rounded-full text-xs font-bold text-white/75 hover:text-white transition flex items-center gap-1 cursor-pointer";
+        document.getElementById('btnCharHakimi').className = "px-3 py-1 rounded-full text-xs font-black bg-purple-400 text-slate-950 shadow-xs transition flex items-center gap-1 cursor-pointer";
       } else {
         document.body.classList.remove('theme-hakimi');
         document.getElementById('brandIconBox').className = "w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-700 border-2 border-white/80 text-white flex items-center justify-center font-black text-xl shadow-sm transition-all";
         document.getElementById('btnCharFish').className = "px-3 py-1 rounded-full text-xs font-black bg-sky-400 text-slate-950 shadow-xs transition flex items-center gap-1 cursor-pointer";
-        document.getElementById('btnCharHakimi').className = "px-3 py-1 rounded-full text-xs font-bold text-white/80 hover:text-white transition flex items-center gap-1 cursor-pointer";
+        document.getElementById('btnCharHakimi').className = "px-3 py-1 rounded-full text-xs font-bold text-white/75 hover:text-white transition flex items-center gap-1 cursor-pointer";
       }
 
       document.getElementById('brandIconBox').textContent = charObj.icon;
@@ -718,7 +749,6 @@
       document.getElementById('mascotNameTag').textContent = charObj.badgeTag;
       document.getElementById('quickSwitchBtn').textContent = charObj.switchBtnLabel;
 
-      // 重新套用按鈕選中樣式
       switchRange(currentRange, false);
       selectStyle(currentStyle, false);
     }
@@ -878,8 +908,12 @@
 
     function switchRange(rangeKey, shouldRender = true) {
       currentRange = rangeKey;
-      const activeBg = currentChar === 'hakimi' ? 'bg-purple-800 text-white shadow-xs' : 'bg-blue-900 text-white shadow-xs';
-      const inactiveText = currentChar === 'hakimi' ? 'text-purple-950 hover:bg-white/60' : 'text-blue-900 hover:bg-white/60';
+      const activeBg = currentChar === 'hakimi'
+        ? 'bg-purple-600 text-white shadow-xs'
+        : 'bg-blue-900 text-white shadow-xs';
+      const inactiveText = currentChar === 'hakimi'
+        ? 'text-purple-200 hover:bg-white/10'
+        : 'text-blue-900 hover:bg-white/60';
 
       document.querySelectorAll('.range-btn').forEach(btn => {
         if (btn.dataset.range === rangeKey) {
@@ -893,6 +927,7 @@
 
     function renderMarket() {
       const charObj = CHARACTERS[currentChar];
+      const isDark = currentChar === 'hakimi';
       const ranges = appData.market_ranges || FALLBACK_DATA.market_ranges;
       const m = ranges[currentRange] || ranges["1d"];
       const isUp = m.change >= 0;
@@ -946,8 +981,10 @@
       const ctx = document.getElementById('marketChart').getContext('2d');
       if (marketChartInstance) marketChartInstance.destroy();
 
-      const lineColor = isUp ? '#e11d48' : '#059669';
-      const fillColor = isUp ? 'rgba(225, 29, 72, 0.10)' : 'rgba(5, 150, 105, 0.10)';
+      const lineColor = isUp ? (isDark ? '#fb7185' : '#e11d48') : (isDark ? '#34d399' : '#059669');
+      const fillColor = isUp
+        ? (isDark ? 'rgba(251, 113, 133, 0.16)' : 'rgba(225, 29, 72, 0.10)')
+        : (isDark ? 'rgba(52, 211, 153, 0.16)' : 'rgba(5, 150, 105, 0.10)');
       const baseLine = m.labels.map(() => m.base_price);
 
       marketChartInstance = new Chart(ctx, {
@@ -969,7 +1006,7 @@
             {
               label: '基準線',
               data: baseLine,
-              borderColor: '#64748b',
+              borderColor: isDark ? '#94a3b8' : '#64748b',
               borderWidth: 1.2,
               borderDash: [5, 5],
               pointRadius: 0,
@@ -983,8 +1020,8 @@
           interaction: { mode: 'index', intersect: false },
           plugins: { legend: { display: false } },
           scales: {
-            x: { grid: { display: false }, ticks: { maxTicksLimit: 8, font: { size: 11 } } },
-            y: { grid: { color: currentChar === 'hakimi' ? '#f3e8ff' : '#e0f2fe' }, ticks: { font: { size: 11 } } }
+            x: { grid: { display: false }, ticks: { maxTicksLimit: 8, font: { size: 11 }, color: isDark ? '#94a3b8' : '#64748b' } },
+            y: { grid: { color: isDark ? 'rgba(168, 85, 247, 0.15)' : '#e0f2fe' }, ticks: { font: { size: 11 }, color: isDark ? '#94a3b8' : '#64748b' } }
           }
         }
       });
@@ -1001,9 +1038,11 @@
       currentStyle = style;
       document.getElementById('styleHint').textContent = STYLE_HINTS[style];
       const activeStyle = currentChar === 'hakimi'
-        ? "border-2 border-purple-900 bg-purple-950 text-white shadow-xs"
+        ? "border-2 border-purple-400 bg-purple-700 text-white shadow-xs"
         : "border-2 border-blue-900 bg-blue-950 text-white shadow-xs";
-      const inactiveStyle = "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50";
+      const inactiveStyle = currentChar === 'hakimi'
+        ? "border border-purple-500/30 bg-slate-900/70 text-slate-200 hover:bg-purple-900/40"
+        : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50";
 
       document.querySelectorAll('.style-btn').forEach(btn => {
         if (btn.dataset.style === style) {
@@ -1026,6 +1065,7 @@
 
     function renderRecommendations() {
       const charObj = CHARACTERS[currentChar];
+      const isDark = currentChar === 'hakimi';
       const budget = Math.max(0, Number(document.getElementById('budgetInput').value) || 0);
       const allStocks = appData.stocks;
 
@@ -1069,6 +1109,10 @@
         chartLabels.push(`${stock.code} ${stock.name}`);
         chartAmounts.push(allocBudget);
 
+        const sharePillClass = isDark
+          ? "px-3 py-1 rounded-xl bg-amber-400/20 text-amber-200 font-bold border border-amber-400/40"
+          : "px-3 py-1 rounded-xl bg-amber-50 text-amber-900 font-bold border border-amber-300/80";
+
         const card = document.createElement('div');
         card.className = "maid-card rounded-3xl p-4 md:p-5 hover:shadow-md transition";
         card.innerHTML = `
@@ -1079,16 +1123,16 @@
                 <span class="theme-text-main text-base font-black">${stock.code} ${stock.name}</span>
                 <span class="theme-soft-box theme-text-main text-xs px-2.5 py-0.5 rounded-full font-medium border">${stock.tag}</span>
               </div>
-              <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">${stock.desc}</p>
+              <p class="theme-text-body text-xs mt-1.5 leading-relaxed">${stock.desc}</p>
             </div>
             <div class="text-right">
-              <div class="text-lg font-black text-slate-900">NT$ ${stock.price.toFixed(2)}</div>
+              <div class="theme-text-strong text-lg font-black">NT$ ${stock.price.toFixed(2)}</div>
               <div class="text-xs font-bold ${chgColor}">${isUp ? '▲' : '▼'} ${chgSign}${stock.change_pct.toFixed(2)}% ｜ 參考殖利率 ${stock.yield}%</div>
             </div>
           </div>
 
           <div class="theme-soft-box mt-3 rounded-2xl p-3 border">
-            <div class="flex items-center justify-between text-[11px] text-slate-500 mb-1">
+            <div class="theme-text-muted flex items-center justify-between text-[11px] mb-1">
               <span>📈 近 30 日股價波動趨勢（波段：<strong class="${monthTrendUp ? 'tw-up' : 'tw-down'}">${monthChgPct >= 0 ? '+' : ''}${monthChgPct}%</strong>）</span>
               <span>低點 NT$ ${Math.min(...hPoints).toFixed(2)} ～ 高點 NT$ ${Math.max(...hPoints).toFixed(2)}</span>
             </div>
@@ -1097,9 +1141,9 @@
             </div>
           </div>
 
-          <div class="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
-            <span class="text-slate-600">分配預算：<strong class="theme-text-main">NT$ ${allocBudget.toLocaleString()}</strong></span>
-            <span class="px-3 py-1 rounded-xl bg-amber-50 text-amber-900 font-bold border border-amber-300/80">
+          <div class="theme-divider mt-3 pt-3 border-t flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span class="theme-text-body">分配預算：<strong class="theme-text-main">NT$ ${allocBudget.toLocaleString()}</strong></span>
+            <span class="${sharePillClass}">
               約可買進：${formatShares(shares)}（約 NT$ ${actualCost.toLocaleString()}）
             </span>
           </div>
@@ -1107,8 +1151,10 @@
         container.appendChild(card);
 
         const sCtx = document.getElementById(canvasId).getContext('2d');
-        const sLineColor = monthTrendUp ? '#e11d48' : '#059669';
-        const sFillColor = monthTrendUp ? 'rgba(225, 29, 72, 0.08)' : 'rgba(5, 150, 105, 0.08)';
+        const sLineColor = monthTrendUp ? (isDark ? '#fb7185' : '#e11d48') : (isDark ? '#34d399' : '#059669');
+        const sFillColor = monthTrendUp
+          ? (isDark ? 'rgba(251, 113, 133, 0.14)' : 'rgba(225, 29, 72, 0.08)')
+          : (isDark ? 'rgba(52, 211, 153, 0.14)' : 'rgba(5, 150, 105, 0.08)');
         const sparkChart = new Chart(sCtx, {
           type: 'line',
           data: {
@@ -1135,8 +1181,8 @@
               }
             },
             scales: {
-              x: { grid: { display: false }, ticks: { maxTicksLimit: 6, font: { size: 10 }, color: '#64748b' } },
-              y: { grid: { color: '#e2e8f0' }, ticks: { maxTicksLimit: 3, font: { size: 10 }, color: '#64748b' } }
+              x: { grid: { display: false }, ticks: { maxTicksLimit: 6, font: { size: 10 }, color: isDark ? '#94a3b8' : '#64748b' } },
+              y: { grid: { color: isDark ? 'rgba(168, 85, 247, 0.12)' : '#e2e8f0' }, ticks: { maxTicksLimit: 3, font: { size: 10 }, color: isDark ? '#94a3b8' : '#64748b' } }
             }
           }
         });
@@ -1153,14 +1199,14 @@
             data: chartAmounts,
             backgroundColor: charObj.chartColors,
             borderWidth: 2,
-            borderColor: '#ffffff'
+            borderColor: isDark ? '#1e1b4b' : '#ffffff'
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } }
+            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 }, color: isDark ? '#e2e8f0' : '#334155' } }
           }
         }
       });
@@ -1185,7 +1231,6 @@
       `;
     }
 
-    // 初始化預載雙角色所有差分圖片並啟動預設主題
     preloadAllCharacters();
     applyCharacterTheme(CHARACTERS.fish);
     setMascotPose("normal");
