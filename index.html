@@ -26,60 +26,57 @@
       box-shadow: 0 8px 24px -6px rgba(14, 116, 144, 0.08);
     }
 
-    @keyframes bodyBreathe {
-      0%, 100% { transform: translateY(0px) scaleY(1); }
-      50% { transform: translateY(-4px) scaleY(1.015); }
+    /* 原畫立繪自動白底轉透明濾鏡 */
+    .mascot-blend {
+      mix-blend-mode: multiply;
     }
-    .anim-breathe { animation: bodyBreathe 3s ease-in-out infinite; transform-origin: bottom center; }
 
-    @keyframes ahogeWag {
-      0%, 100% { transform: rotate(-6deg); }
-      50% { transform: rotate(10deg); }
+    /* 活潑呼吸與左右微搖擺動畫 */
+    @keyframes cuteSway {
+      0%, 100% { transform: translateY(0px) rotate(-2deg) scale(1); }
+      25% { transform: translateY(-5px) rotate(0deg) scale(1.02, 0.99); }
+      50% { transform: translateY(0px) rotate(2deg) scale(1); }
+      75% { transform: translateY(-5px) rotate(0deg) scale(0.99, 1.02); }
     }
-    .anim-ahoge { animation: ahogeWag 2.2s ease-in-out infinite; transform-origin: 70px 18px; }
+    .anim-cute-sway {
+      animation: cuteSway 3.4s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
 
-    @keyframes tailSwish {
-      0%, 100% { transform: rotate(-6deg) translateY(0px); }
-      50% { transform: rotate(10deg) translateY(-3px); }
+    /* 走路散步時的輕快小碎步彈跳 */
+    @keyframes walkStep {
+      0%, 100% { transform: translateY(0px) rotate(-3deg); }
+      50% { transform: translateY(-10px) rotate(3deg); }
     }
-    .anim-tail { animation: tailSwish 2.5s ease-in-out infinite; transform-origin: 96px 104px; }
+    .is-walking-step {
+      animation: walkStep 0.55s ease-in-out infinite;
+    }
 
-    @keyframes earFlapLeft {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(-7deg); }
-    }
-    @keyframes earFlapRight {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(7deg); }
-    }
-    .anim-ear-l { animation: earFlapLeft 2.8s ease-in-out infinite; transform-origin: 36px 56px; }
-    .anim-ear-r { animation: earFlapRight 2.8s ease-in-out infinite; transform-origin: 104px 56px; }
-
-    @keyframes eyeBlink {
-      0%, 92%, 100% { transform: scaleY(1); }
-      95% { transform: scaleY(0.08); }
-    }
-    .anim-blink { animation: eyeBlink 4.5s infinite; transform-origin: center 63px; }
-
-    @keyframes mouthTalk {
-      0%, 100% { transform: scaleY(0.45); }
-      50% { transform: scaleY(1.2); }
-    }
-    .is-talking .anim-mouth { animation: mouthTalk 0.28s ease-in-out infinite; transform-origin: 70px 76px; }
-
+    /* 點擊開心大跳躍 */
     @keyframes happyJump {
       0% { transform: translateY(0) scale(1); }
-      30% { transform: translateY(-22px) scale(1.05, 0.96); }
-      60% { transform: translateY(0) scale(0.96, 1.04); }
-      80% { transform: translateY(-8px) scale(1.02); }
+      30% { transform: translateY(-26px) scale(1.08, 0.94); }
+      60% { transform: translateY(0) scale(0.94, 1.06); }
+      80% { transform: translateY(-10px) scale(1.03); }
       100% { transform: translateY(0) scale(1); }
     }
-    .jump-active { animation: happyJump 0.65s cubic-bezier(0.28, 0.84, 0.42, 1); }
+    .jump-active {
+      animation: happyJump 0.65s cubic-bezier(0.28, 0.84, 0.42, 1) !important;
+    }
 
-    #petContainer { transition: right 1.8s ease-in-out, bottom 0.4s ease; }
+    /* 頭頂情緒掛件漂浮 */
+    @keyframes badgePop {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-4px) scale(1.12); }
+    }
+    .anim-mood-badge {
+      animation: badgePop 1.8s ease-in-out infinite;
+    }
+
+    #petContainer { transition: right 2.2s ease-in-out, bottom 0.4s ease; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col pb-32">
+<body class="min-h-screen flex flex-col pb-36">
 
   <!-- 頂部導覽列 -->
   <header class="bg-[#0f172a]/95 text-white backdrop-blur-md border-b-2 border-amber-400/70 sticky top-0 z-20 shadow-md">
@@ -91,7 +88,7 @@
         <div>
           <h1 class="text-lg font-black tracking-tight flex items-center gap-2">
             大肥魚的台股理財茶會
-            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">動態女僕版</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">女僕小助手版</span>
           </h1>
           <p class="text-xs text-sky-200/80">行情同步時間：<span id="updatedAtText" class="font-bold text-amber-300">載入中...</span></p>
         </div>
@@ -101,7 +98,6 @@
         <span id="dataStatusBadge" class="text-xs px-3 py-1.5 rounded-full bg-sky-900/80 text-sky-200 border border-sky-400/50 font-bold">
           ● 已連線台股資料庫
         </span>
-        <!-- 即時手動抓取最新報價按鈕 -->
         <button id="liveRefreshBtn" onclick="fetchLiveFromBrowser(true)"
           class="text-xs px-3.5 py-1.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black shadow-sm transition flex items-center gap-1 cursor-pointer">
           <span id="refreshIcon">🔄</span> 立即抓取盤中最新價
@@ -112,7 +108,7 @@
 
   <main class="max-w-6xl mx-auto w-full px-4 py-6 space-y-6 flex-1">
 
-    <!-- 區塊 1：加權指數多週期波動看板（日 / 週 / 月切換） -->
+    <!-- 區塊 1：加權指數多週期波動看板 -->
     <section class="maid-card rounded-3xl p-5 md:p-6">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-sky-100">
         <div>
@@ -227,7 +223,6 @@
         <div id="recommendationCards" class="space-y-4"></div>
       </div>
 
-      <!-- 右側：資金配置圖與女僕分析筆記 -->
       <div class="lg:col-span-4 space-y-4">
         <div class="maid-card rounded-3xl p-5">
           <h3 class="text-sm font-black text-blue-950 mb-3">建議資金配置比例</h3>
@@ -252,10 +247,11 @@
     免責聲明：本網站數據透過自動化排程與公開市場介面整理，試算結果僅供投資教育與研究參考，不構成任何買賣邀約或投資保證。投資前請審慎評估自身風險承受度。
   </footer>
 
-  <!-- ================= 懸浮動態桌面小助手「大肥魚」 ================= -->
-  <div id="petContainer" style="right: 20px; bottom: 14px;" class="fixed z-50 flex flex-col items-end select-none">
+  <!-- ================= 懸浮動態桌面小助手「大肥魚本尊」 ================= -->
+  <div id="petContainer" style="right: 24px; bottom: 12px;" class="fixed z-50 flex flex-col items-end select-none">
 
-    <div id="petBubble" class="mb-1.5 max-w-[280px] sm:max-w-[320px] bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-xl border-2 border-sky-300 relative transition-all">
+    <!-- 對話氣泡框 -->
+    <div id="petBubble" class="mb-1 max-w-[280px] sm:max-w-[320px] bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-xl border-2 border-sky-300 relative transition-all">
       <div class="flex items-center justify-between gap-2 mb-1">
         <span class="text-[11px] font-black text-blue-900 bg-sky-100 px-2.5 py-0.5 rounded-full">🎀 大肥魚女僕</span>
         <div class="flex items-center gap-1">
@@ -266,159 +262,30 @@
         </div>
       </div>
       <p id="mascotSpeech" class="text-xs text-slate-700 font-medium leading-relaxed">
-        主人您好呀～每檔推薦股現在都附上近 30 日走勢圖囉！如果想看盤中最新一秒的價格，也可以點右上角「立即抓取盤中最新價」喔！
+        主人您好呀～大肥魚正式報到！點我可以跳躍互動與看理財秘笈喔！
       </p>
-      <div class="w-3 h-3 bg-white border-r-2 border-b-2 border-sky-300 rotate-45 absolute -bottom-1.5 right-12"></div>
+      <div class="w-3 h-3 bg-white border-r-2 border-b-2 border-sky-300 rotate-45 absolute -bottom-1.5 right-14"></div>
     </div>
 
+    <!-- 動態角色本體（直接採用您上傳的 mascot.png 並加上動畫與情緒掛件） -->
     <div id="petAvatarWrapper" onclick="interactWithPet()" title="點我與大肥魚互動！" class="cursor-pointer relative group">
-      <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -left-24 top-2 flex flex-col gap-1 bg-white/95 p-1.5 rounded-xl shadow-md border border-sky-200 text-[10px] font-bold z-10">
-        <button onclick="event.stopPropagation(); setExpression('happy')" class="px-2 py-0.5 rounded hover:bg-rose-50 text-rose-600 text-left">✨ 開心星星眼</button>
-        <button onclick="event.stopPropagation(); setExpression('smile')" class="px-2 py-0.5 rounded hover:bg-sky-50 text-blue-800 text-left">😊 溫柔微笑</button>
-        <button onclick="event.stopPropagation(); setExpression('cheer')" class="px-2 py-0.5 rounded hover:bg-emerald-50 text-emerald-700 text-left">💦 加油鼓勵</button>
-        <button onclick="event.stopPropagation(); setExpression('wink')" class="px-2 py-0.5 rounded hover:bg-amber-50 text-amber-700 text-left">😜 俏皮眨眼</button>
+
+      <!-- 隨盤勢變換的頭頂動態情緒小氣泡 -->
+      <div id="moodBadgeBubble" class="anim-mood-badge absolute -top-2 -left-2 z-20 bg-white/95 border-2 border-sky-300 rounded-full px-2 py-0.5 text-sm shadow-md">
+        🎵
       </div>
 
-      <div id="petBody" class="anim-breathe w-32 h-36 sm:w-36 sm:h-40 drop-shadow-xl">
-        <img id="diffImage" src="" alt="大肥魚表情差分" style="display:none;"
-          class="w-full h-full object-contain rounded-2xl" />
+      <div id="petBody" class="anim-cute-sway w-36 h-40 sm:w-40 sm:h-44 flex items-center justify-center">
+        <!-- 優先顯示您上傳的 mascot.png 原畫（並自動白底去背） -->
+        <img id="mascotImg" src="./mascot.png" alt="大肥魚女僕"
+          class="w-full h-full object-contain mascot-blend drop-shadow-md"
+          onerror="this.style.display='none'; document.getElementById('backupTip').style.display='flex';" />
 
-        <svg id="liveWhaleSvg" viewBox="0 0 140 155" class="w-full h-full overflow-visible">
-          <defs>
-            <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#1e40af"/>
-              <stop offset="65%" stop-color="#2563eb"/>
-              <stop offset="100%" stop-color="#60a5fa"/>
-            </linearGradient>
-            <linearGradient id="eyeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#0f172a"/>
-              <stop offset="45%" stop-color="#1d4ed8"/>
-              <stop offset="100%" stop-color="#38bdf8"/>
-            </linearGradient>
-            <linearGradient id="tailGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#1e3a8a"/>
-              <stop offset="60%" stop-color="#2563eb"/>
-              <stop offset="100%" stop-color="#7dd3fc"/>
-            </linearGradient>
-          </defs>
-
-          <g id="fxHappy" style="display:none;">
-            <text x="12" y="30" font-size="15">💖</text>
-            <text x="112" y="26" font-size="14">✨</text>
-          </g>
-          <g id="fxCheer" style="display:none;">
-            <path d="M112,42 Q118,51 112,56 Q106,51 112,42 Z" fill="#38bdf8"/>
-            <text x="10" y="34" font-size="14">💪</text>
-          </g>
-
-          <g class="anim-tail">
-            <path d="M92,110 Q116,112 128,96 Q134,88 125,84 Q115,92 109,94 Q115,82 108,76 Q100,82 96,95 Q90,102 88,106 Z"
-              fill="url(#tailGrad)" stroke="#0f172a" stroke-width="2.2" stroke-linejoin="round"/>
-            <path d="M95,107 Q112,107 122,94" fill="none" stroke="#bae6fd" stroke-width="2" stroke-linecap="round"/>
-          </g>
-
-          <path d="M32,54 C14,72 16,105 28,122 C33,128 38,120 40,115 C42,126 52,130 70,130 C88,130 98,126 100,115 C102,120 107,128 112,122 C124,105 126,72 108,54 Z"
-            fill="url(#hairGrad)" stroke="#0f172a" stroke-width="2.2" stroke-linejoin="round"/>
-          <path d="M27,76 Q20,96 31,114" fill="none" stroke="#93c5fd" stroke-width="3" stroke-linecap="round"/>
-          <path d="M113,76 Q120,96 109,114" fill="none" stroke="#93c5fd" stroke-width="3" stroke-linecap="round"/>
-
-          <g class="anim-ahoge">
-            <path d="M68,20 C56,2 82,2 84,15 C85,20 76,22 72,21" fill="none" stroke="#1e40af" stroke-width="3.5" stroke-linecap="round"/>
-          </g>
-
-          <path d="M32,48 Q70,12 108,48" fill="none" stroke="#0f172a" stroke-width="11" stroke-linecap="round"/>
-          <path d="M32,48 Q70,12 108,48" fill="none" stroke="#ffffff" stroke-width="8.5" stroke-linecap="round" stroke-dasharray="5 3"/>
-          <path d="M35,47 Q70,17 105,47" fill="none" stroke="#93c5fd" stroke-width="2.5"/>
-
-          <g class="anim-ear-l">
-            <path d="M34,54 Q10,56 12,67 Q20,70 28,67 Q33,64 36,60 Z" fill="#1e3a8a" stroke="#0f172a" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M14,66 Q21,68 28,65" fill="none" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round"/>
-          </g>
-          <g class="anim-ear-r">
-            <path d="M106,54 Q130,56 128,67 Q120,70 112,67 Q107,64 104,60 Z" fill="#1e3a8a" stroke="#0f172a" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M126,66 Q119,68 112,65" fill="none" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round"/>
-            <polygon points="102,48 114,42 112,53" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
-            <polygon points="102,48 93,41 95,52" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
-            <circle cx="102" cy="48" r="2.5" fill="#fef08a" stroke="#0f172a" stroke-width="1.2"/>
-          </g>
-
-          <path d="M40,54 C40,76 52,84 70,84 C88,84 100,76 100,54 C100,36 86,30 70,30 C54,30 40,36 40,54 Z"
-            fill="#fff1f2" stroke="#0f172a" stroke-width="2"/>
-
-          <path d="M38,56 C38,32 54,25 70,25 C86,25 102,32 102,56 C96,46 90,44 86,54 C82,44 76,43 70,54 C64,43 58,44 54,54 C50,44 44,46 38,56 Z"
-            fill="#2563eb" stroke="#0f172a" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M48,40 Q56,37 62,40 M78,40 Q84,37 92,40" fill="none" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="M40,54 Q37,72 44,82 Q45,68 44,56 Z" fill="#7dd3fc" stroke="#0f172a" stroke-width="1.5"/>
-          <path d="M100,54 Q103,72 96,82 Q95,68 96,56 Z" fill="#7dd3fc" stroke="#0f172a" stroke-width="1.5"/>
-
-          <g id="eyesSmile" class="anim-blink">
-            <ellipse cx="55" cy="63" rx="6" ry="7.2" fill="url(#eyeGrad)" stroke="#0f172a" stroke-width="1.5"/>
-            <path d="M48,58 Q55,53 62,58" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="53" cy="60" r="2.4" fill="#ffffff"/>
-            <circle cx="57" cy="66" r="1.2" fill="#e0f2fe"/>
-            <ellipse cx="85" cy="63" rx="6" ry="7.2" fill="url(#eyeGrad)" stroke="#0f172a" stroke-width="1.5"/>
-            <path d="M78,58 Q85,53 92,58" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="83" cy="60" r="2.4" fill="#ffffff"/>
-            <circle cx="87" cy="66" r="1.2" fill="#e0f2fe"/>
-          </g>
-
-          <g id="eyesHappy" style="display:none;">
-            <path d="M48,64 Q55,54 62,64" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
-            <path d="M78,64 Q85,54 92,64" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
-            <text x="51" y="55" font-size="8">✦</text>
-            <text x="81" y="55" font-size="8">✦</text>
-          </g>
-
-          <g id="eyesCheer" style="display:none;">
-            <ellipse cx="55" cy="63" rx="5.5" ry="6.5" fill="url(#eyeGrad)" stroke="#0f172a" stroke-width="1.5"/>
-            <circle cx="53" cy="60" r="2.2" fill="#ffffff"/>
-            <path d="M48,53 L61,56" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round"/>
-            <ellipse cx="85" cy="63" rx="5.5" ry="6.5" fill="url(#eyeGrad)" stroke="#0f172a" stroke-width="1.5"/>
-            <circle cx="83" cy="60" r="2.2" fill="#ffffff"/>
-            <path d="M92,53 L79,56" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round"/>
-          </g>
-
-          <g id="eyesWink" style="display:none;">
-            <ellipse cx="55" cy="63" rx="6" ry="7.2" fill="url(#eyeGrad)" stroke="#0f172a" stroke-width="1.5"/>
-            <circle cx="53" cy="60" r="2.4" fill="#ffffff"/>
-            <path d="M78,60 L89,63 L78,67" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-          </g>
-
-          <ellipse cx="46" cy="71" rx="5" ry="2.5" fill="#fda4af" opacity="0.85"/>
-          <ellipse cx="94" cy="71" rx="5" ry="2.5" fill="#fda4af" opacity="0.85"/>
-
-          <g class="anim-mouth">
-            <path d="M65,74 Q70,81 75,74 Z" fill="#fb7185" stroke="#0f172a" stroke-width="1.4" stroke-linejoin="round"/>
-          </g>
-
-          <path d="M46,84 L94,84 L106,132 L34,132 Z" fill="#172554" stroke="#0f172a" stroke-width="2.2" stroke-linejoin="round"/>
-          <path d="M33,132 Q42,138 51,132 Q60,138 70,132 Q80,138 89,132 Q98,138 107,132" fill="#ffffff" stroke="#0f172a" stroke-width="1.8"/>
-          <path d="M38,125 Q70,131 102,125" fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="3 2"/>
-
-          <path d="M53,84 L87,84 L92,127 Q70,133 48,127 Z" fill="#ffffff" stroke="#0f172a" stroke-width="1.8" stroke-linejoin="round"/>
-          <rect x="52" y="96" width="36" height="8" rx="2" fill="#1e3a8a" stroke="#0f172a" stroke-width="1.5"/>
-          <circle cx="62" cy="100" r="1.4" fill="#fde047"/>
-          <circle cx="78" cy="100" r="1.4" fill="#fde047"/>
-
-          <polygon points="70,87 60,82 60,92" fill="#1e3a8a" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
-          <polygon points="70,87 80,82 80,92" fill="#1e3a8a" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
-          <circle cx="70" cy="87" r="2.8" fill="#38bdf8" stroke="#0f172a" stroke-width="1.2"/>
-
-          <g transform="translate(74, 114)">
-            <ellipse cx="0" cy="0" rx="7.5" ry="4.5" fill="#2563eb"/>
-            <polygon points="-7,0 -12,-3.5 -12,3.5" fill="#2563eb"/>
-            <path d="M-2,-4 Q0,-8 2,-4" fill="none" stroke="#38bdf8" stroke-width="1.2" stroke-linecap="round"/>
-            <circle cx="4" cy="-1" r="1" fill="#ffffff"/>
-          </g>
-
-          <circle cx="38" cy="106" r="5" fill="#fff1f2" stroke="#0f172a" stroke-width="1.8"/>
-          <circle cx="102" cy="106" r="5" fill="#fff1f2" stroke="#0f172a" stroke-width="1.8"/>
-
-          <rect x="55" y="134" width="9" height="10" fill="#ffffff" stroke="#0f172a" stroke-width="1.6"/>
-          <rect x="76" y="134" width="9" height="10" fill="#ffffff" stroke="#0f172a" stroke-width="1.6"/>
-          <ellipse cx="59" cy="146" rx="7" ry="4" fill="#172554" stroke="#0f172a" stroke-width="1.8"/>
-          <ellipse cx="81" cy="146" rx="7" ry="4" fill="#172554" stroke="#0f172a" stroke-width="1.8"/>
-        </svg>
+        <!-- 若尚未上傳 mascot.png 時的提示框 -->
+        <div id="backupTip" style="display:none;" class="w-28 h-28 rounded-full bg-sky-100 border-2 border-dashed border-sky-400 flex-col items-center justify-center text-center p-2 text-[11px] text-blue-900 font-bold">
+          <span>🐋</span>
+          <span>請上傳 mascot.png 至倉庫</span>
+        </div>
       </div>
     </div>
   </div>
@@ -463,7 +330,6 @@
     let stockSparkCharts = [];
     let tipIndex = 0;
     let isWalking = true;
-    let talkTimer = null;
 
     const MASCOT_TIPS = [
       "主人您知道嗎？「零股交易」最低只要買 1 股，就算台積電一張要百萬，小資族花一千多元也能當股東喔！",
@@ -478,49 +344,11 @@
       growth: "適合能承受較大價格波動、追求長期資本利得爆發力的投資人。"
     };
 
-    function setExpression(expr) {
-      const diffMap = {
-        happy: "./mascot_happy.png",
-        smile: "./mascot.png",
-        cheer: "./mascot_cheer.png",
-        wink:  "./mascot_wink.png"
-      };
-      const imgEl = document.getElementById('diffImage');
-      const svgEl = document.getElementById('liveWhaleSvg');
-      imgEl.onload = () => { imgEl.style.display = 'block'; svgEl.style.display = 'none'; };
-      imgEl.onerror = () => { imgEl.style.display = 'none'; svgEl.style.display = 'block'; };
-      imgEl.src = diffMap[expr] || "./mascot.png";
-
-      ['eyesSmile', 'eyesHappy', 'eyesCheer', 'eyesWink'].forEach(id => {
-        document.getElementById(id).style.display = 'none';
-      });
-      document.getElementById('fxHappy').style.display = 'none';
-      document.getElementById('fxCheer').style.display = 'none';
-
-      if (expr === 'happy') {
-        document.getElementById('eyesHappy').style.display = 'block';
-        document.getElementById('fxHappy').style.display = 'block';
-      } else if (expr === 'cheer') {
-        document.getElementById('eyesCheer').style.display = 'block';
-        document.getElementById('fxCheer').style.display = 'block';
-      } else if (expr === 'wink') {
-        document.getElementById('eyesWink').style.display = 'block';
-        document.getElementById('fxHappy').style.display = 'block';
-      } else {
-        document.getElementById('eyesSmile').style.display = 'block';
-      }
-    }
-
-    function mascotSpeak(text, expr = null) {
+    function mascotSpeak(text, moodEmoji = "🎵") {
       const bubble = document.getElementById('petBubble');
       bubble.style.display = 'block';
       document.getElementById('mascotSpeech').textContent = text;
-      if (expr) setExpression(expr);
-
-      const petBody = document.getElementById('petBody');
-      petBody.classList.add('is-talking');
-      clearTimeout(talkTimer);
-      talkTimer = setTimeout(() => { petBody.classList.remove('is-talking'); }, 2200);
+      document.getElementById('moodBadgeBubble').textContent = moodEmoji;
     }
 
     function interactWithPet() {
@@ -531,7 +359,7 @@
 
       const tip = MASCOT_TIPS[tipIndex % MASCOT_TIPS.length];
       tipIndex++;
-      mascotSpeak(tip, 'wink');
+      mascotSpeak(tip, "💡");
     }
 
     function toggleBubble() {
@@ -542,21 +370,31 @@
     function toggleWalkMode() {
       isWalking = !isWalking;
       document.getElementById('walkToggleBtn').textContent = isWalking ? '🚶 散步：開' : '🚶 散步：關';
-      if (!isWalking) document.getElementById('petContainer').style.right = '20px';
+      if (!isWalking) document.getElementById('petContainer').style.right = '24px';
     }
 
+    // 讓大肥魚原畫本尊在螢幕下方悠閒左右小碎步移動
     setInterval(() => {
       if (!isWalking) return;
       const container = document.getElementById('petContainer');
+      const petBody = document.getElementById('petBody');
       const maxOffset = Math.min(window.innerWidth - 220, 480);
       if (maxOffset <= 40) return;
-      const randomRight = Math.floor(Math.random() * maxOffset) + 20;
+
+      const randomRight = Math.floor(Math.random() * maxOffset) + 24;
       container.style.right = `${randomRight}px`;
-    }, 5500);
+
+      // 移動過程切換為輕快小碎步彈跳，抵達後恢復溫柔搖擺
+      petBody.classList.remove('anim-cute-sway');
+      petBody.classList.add('is-walking-step');
+      setTimeout(() => {
+        petBody.classList.remove('is-walking-step');
+        petBody.classList.add('anim-cute-sway');
+      }, 2200);
+    }, 6000);
 
     function round2(n) { return Math.round(n * 100) / 100; }
 
-    // 瀏覽器端直接透過免費 CORS 代理抓取最新盤中資料（解決 GitHub 排程延遲問題）
     async function fetchYahooViaProxy(symbol, interval = "5m", rangeStr = "1d") {
       const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${interval}&range=${rangeStr}`;
       const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
@@ -570,7 +408,6 @@
       const d = new Date(ts * 1000);
       const pad = n => String(n).padStart(2, '0');
       if (mode === 'time') return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-      if (mode === 'datetime') return `${d.getMonth() + 1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
       return `${d.getMonth() + 1}/${d.getDate()}`;
     }
 
@@ -579,10 +416,9 @@
       const icon = document.getElementById('refreshIcon');
       btn.disabled = true;
       icon.classList.add('animate-spin', 'inline-block');
-      if (isManual) mascotSpeak("收到！大肥魚正在幫主人潛入台股大海抓取最新一秒的即時報價喔～", "happy");
+      if (isManual) mascotSpeak("收到！大肥魚正在幫主人潛入台股大海抓取最新一秒的即時報價喔～", "✨");
 
       try {
-        // 1. 抓取大盤當日最新資料
         const twii1d = await fetchYahooViaProxy("^TWII", "5m", "1d");
         const meta = twii1d.meta;
         const tsList = twii1d.timestamp || [];
@@ -602,16 +438,10 @@
 
         if (!appData.market_ranges) appData.market_ranges = {};
         appData.market_ranges["1d"] = {
-          base_price: prev,
-          open: points[0] || cur,
-          current: cur,
-          change: chg,
-          change_pct: chgPct,
-          labels,
-          points
+          base_price: prev, open: points[0] || cur, current: cur,
+          change: chg, change_pct: chgPct, labels, points
         };
 
-        // 2. 更新每檔股票的現價與近 30 日走勢
         await Promise.all(appData.stocks.map(async (st) => {
           const ySymbol = st.yahoo || (st.code === "00679B" ? "00679B.TWO" : `${st.code}.TW`);
           try {
@@ -635,9 +465,7 @@
               st.history_labels = hLabels;
               st.history_points = hPoints;
             }
-          } catch (err) {
-            console.log(`略過 ${st.code} 即時更新`, err);
-          }
+          } catch (err) {}
         }));
 
         const now = new Date();
@@ -647,10 +475,9 @@
 
         renderMarket();
         renderRecommendations();
-        if (isManual) mascotSpeak("更新完成啦！所有大盤點數與推薦股票的走勢圖都已經換成最新行情囉！", "happy");
+        if (isManual) mascotSpeak("更新完成啦！所有大盤點數與推薦股票的走勢圖都已經換成最新行情囉！", "💖");
       } catch (e) {
-        console.log("即時抓價失敗，維持現有資料:", e);
-        if (isManual) mascotSpeak("唔～目前外部報價通道有點塞車，大肥魚先幫主人保留目前最新的資料庫報價喔！", "cheer");
+        if (isManual) mascotSpeak("唔～目前外部報價通道有點塞車，大肥魚先幫主人保留目前最新的資料庫報價喔！", "💦");
       } finally {
         btn.disabled = false;
         icon.classList.remove('animate-spin', 'inline-block');
@@ -667,14 +494,11 @@
             document.getElementById('dataStatusBadge').textContent = "● 已載入自動化台股資料庫";
           }
         }
-      } catch (e) {
-        console.log("使用預設資料:", e);
-      }
+      } catch (e) {}
 
       renderMarket();
       renderRecommendations();
 
-      // 若發現資料庫更新時間不是今天（例如早上剛開盤 GitHub 排程還在排隊），自動在背景靜默抓取最新報價
       const todayStr = new Date().toISOString().slice(0, 10);
       if (!String(appData.updated_at).startsWith(todayStr)) {
         fetchLiveFromBrowser(false);
@@ -727,19 +551,19 @@
       if (m.change_pct > 1.0) {
         moodBadge.textContent = `${rl.periodName}強勢上攻`;
         tempEl.textContent = "偏熱（切勿盲目追高）";
-        mascotSpeak(`哇～主人您看！${rl.periodName}大盤漲了 ${m.change_pct.toFixed(2)}%，大肥魚好開心！不過記得不要一次把預算全追高喔！`, 'happy');
+        mascotSpeak(`哇～主人您看！${rl.periodName}大盤漲了 ${m.change_pct.toFixed(2)}%，大肥魚好開心！不過記得不要一次把預算全追高喔！`, '💖');
       } else if (m.change_pct >= 0) {
         moodBadge.textContent = `${rl.periodName}溫和偏多`;
         tempEl.textContent = "適中（適合按計畫買進）";
-        mascotSpeak(`主人您好～${rl.periodName}大盤走勢平穩（${sign}${m.change_pct.toFixed(2)}%），最適合照著您的定期定額計畫慢慢累積持股了！`, 'smile');
+        mascotSpeak(`主人您好～${rl.periodName}大盤走勢平穩（${sign}${m.change_pct.toFixed(2)}%），最適合照著您的定期定額計畫慢慢累積持股了！`, '🎵');
       } else if (m.change_pct > -1.0) {
         moodBadge.textContent = `${rl.periodName}小幅拉回`;
         tempEl.textContent = "微涼（適合逢低撿零股）";
-        mascotSpeak(`唔～${rl.periodName}大盤稍微退潮了一點（${m.change_pct.toFixed(2)}%），對存股的主人來說，這反而是用優惠價撿零股的好機會喔！`, 'cheer');
+        mascotSpeak(`唔～${rl.periodName}大盤稍微退潮了一點（${m.change_pct.toFixed(2)}%），對存股的主人來說，這反而是用優惠價撿零股的好機會喔！`, '💪');
       } else {
         moodBadge.textContent = `${rl.periodName}明顯回檔`;
         tempEl.textContent = "偏冷（分批承接好時機）";
-        mascotSpeak(`主人別擔心！${rl.periodName}大盤雖然跌了 ${Math.abs(m.change_pct).toFixed(2)}%，但這正是優質 ETF 辦特賣會的時候，我們分批承接就好！`, 'cheer');
+        mascotSpeak(`主人別擔心！${rl.periodName}大盤雖然跌了 ${Math.abs(m.change_pct).toFixed(2)}%，但這正是優質 ETF 辦特賣會的時候，我們分批承接就好！`, '💪');
       }
       moodBadge.className = `text-xs font-bold px-2.5 py-0.5 rounded-full border ${badgeClass}`;
       tempEl.className = `font-bold mt-0.5 ${colorClass}`;
@@ -794,7 +618,7 @@
     function setBudget(val) {
       document.getElementById('budgetInput').value = val;
       renderRecommendations();
-      mascotSpeak(`收到！大肥魚已為主人重新精算 NT$ ${val.toLocaleString()} 的最佳零股配置比例囉！`, 'happy');
+      mascotSpeak(`收到！大肥魚已為主人重新精算 NT$ ${val.toLocaleString()} 的最佳零股配置比例囉！`, '✨');
     }
 
     function selectStyle(style) {
@@ -823,7 +647,6 @@
       const budget = Math.max(0, Number(document.getElementById('budgetInput').value) || 0);
       const allStocks = appData.stocks;
 
-      // 銷毀舊的個股迷你圖表實例
       stockSparkCharts.forEach(c => c.destroy());
       stockSparkCharts = [];
 
@@ -851,7 +674,6 @@
         const chgSign = isUp ? '+' : '';
         const canvasId = `stockSpark_${idx}`;
 
-        // 取得該股票近 30 日走勢陣列（若舊資料尚未有歷史陣列則自動生成平穩示意點位）
         const hPoints = (stock.history_points && stock.history_points.length > 1)
           ? stock.history_points
           : [round2(stock.price * 0.97), round2(stock.price * 0.985), round2(stock.price * 0.98), round2(stock.price * 0.995), stock.price];
@@ -883,7 +705,6 @@
             </div>
           </div>
 
-          <!-- 新增：個股近 30 日走勢圖區塊 -->
           <div class="mt-3 bg-sky-50/60 rounded-2xl p-3 border border-sky-100/90">
             <div class="flex items-center justify-between text-[11px] text-slate-500 mb-1">
               <span>📈 近 30 日股價波動趨勢（波段：<strong class="${monthTrendUp ? 'tw-up' : 'tw-down'}">${monthChgPct >= 0 ? '+' : ''}${monthChgPct}%</strong>）</span>
@@ -903,7 +724,6 @@
         `;
         container.appendChild(card);
 
-        // 繪製該股票的迷你走勢圖
         const sCtx = document.getElementById(canvasId).getContext('2d');
         const sLineColor = monthTrendUp ? '#e11d48' : '#059669';
         const sFillColor = monthTrendUp ? 'rgba(225, 29, 72, 0.08)' : 'rgba(5, 150, 105, 0.08)';
@@ -929,9 +749,7 @@
             plugins: {
               legend: { display: false },
               tooltip: {
-                callbacks: {
-                  label: (ctx) => ` 收盤價：NT$ ${Number(ctx.raw).toFixed(2)}`
-                }
+                callbacks: { label: (ctx) => ` 收盤價：NT$ ${Number(ctx.raw).toFixed(2)}` }
               }
             },
             scales: {
