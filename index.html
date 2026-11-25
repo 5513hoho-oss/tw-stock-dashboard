@@ -26,17 +26,12 @@
       box-shadow: 0 8px 24px -6px rgba(14, 116, 144, 0.08);
     }
 
-    /* 原畫立繪自動白底轉透明濾鏡 */
-    .mascot-blend {
-      mix-blend-mode: multiply;
-    }
-
     /* 活潑呼吸與左右微搖擺動畫 */
     @keyframes cuteSway {
-      0%, 100% { transform: translateY(0px) rotate(-2deg) scale(1); }
-      25% { transform: translateY(-5px) rotate(0deg) scale(1.02, 0.99); }
-      50% { transform: translateY(0px) rotate(2deg) scale(1); }
-      75% { transform: translateY(-5px) rotate(0deg) scale(0.99, 1.02); }
+      0%, 100% { transform: translateY(0px) rotate(-1.8deg) scale(1); }
+      25% { transform: translateY(-5px) rotate(0deg) scale(1.015, 0.99); }
+      50% { transform: translateY(0px) rotate(1.8deg) scale(1); }
+      75% { transform: translateY(-5px) rotate(0deg) scale(0.99, 1.015); }
     }
     .anim-cute-sway {
       animation: cuteSway 3.4s ease-in-out infinite;
@@ -45,23 +40,42 @@
 
     /* 走路散步時的輕快小碎步彈跳 */
     @keyframes walkStep {
-      0%, 100% { transform: translateY(0px) rotate(-3deg); }
-      50% { transform: translateY(-10px) rotate(3deg); }
+      0%, 100% { transform: translateY(0px) rotate(-3.5deg); }
+      50% { transform: translateY(-11px) rotate(3.5deg); }
     }
     .is-walking-step {
-      animation: walkStep 0.55s ease-in-out infinite;
+      animation: walkStep 0.5s ease-in-out infinite;
     }
 
     /* 點擊開心大跳躍 */
     @keyframes happyJump {
       0% { transform: translateY(0) scale(1); }
-      30% { transform: translateY(-26px) scale(1.08, 0.94); }
+      30% { transform: translateY(-28px) scale(1.07, 0.94); }
       60% { transform: translateY(0) scale(0.94, 1.06); }
       80% { transform: translateY(-10px) scale(1.03); }
       100% { transform: translateY(0) scale(1); }
     }
     .jump-active {
       animation: happyJump 0.65s cubic-bezier(0.28, 0.84, 0.42, 1) !important;
+    }
+
+    /* 說話時嘴巴開合動畫 */
+    @keyframes mouthTalk {
+      0%, 100% { transform: scaleY(0.35); }
+      50% { transform: scaleY(1.15); }
+    }
+    .is-talking .anim-mouth {
+      animation: mouthTalk 0.26s ease-in-out infinite;
+      transform-origin: 50% 62.5%;
+    }
+
+    /* 自然定時眨眼（用膚色眼皮蓋下） */
+    @keyframes eyelidBlink {
+      0%, 92%, 100% { opacity: 0; }
+      95% { opacity: 1; }
+    }
+    .anim-auto-blink {
+      animation: eyelidBlink 4.2s infinite;
     }
 
     /* 頭頂情緒掛件漂浮 */
@@ -88,7 +102,7 @@
         <div>
           <h1 class="text-lg font-black tracking-tight flex items-center gap-2">
             大肥魚的台股理財茶會
-            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">女僕小助手版</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">動態女僕版</span>
           </h1>
           <p class="text-xs text-sky-200/80">行情同步時間：<span id="updatedAtText" class="font-bold text-amber-300">載入中...</span></p>
         </div>
@@ -247,7 +261,7 @@
     免責聲明：本網站數據透過自動化排程與公開市場介面整理，試算結果僅供投資教育與研究參考，不構成任何買賣邀約或投資保證。投資前請審慎評估自身風險承受度。
   </footer>
 
-  <!-- ================= 懸浮動態桌面小助手「大肥魚本尊」 ================= -->
+  <!-- ================= 懸浮動態桌面小助手「大肥魚原畫動態版」 ================= -->
   <div id="petContainer" style="right: 24px; bottom: 12px;" class="fixed z-50 flex flex-col items-end select-none">
 
     <!-- 對話氣泡框 -->
@@ -262,30 +276,72 @@
         </div>
       </div>
       <p id="mascotSpeech" class="text-xs text-slate-700 font-medium leading-relaxed">
-        主人您好呀～大肥魚正式報到！點我可以跳躍互動與看理財秘笈喔！
+        主人您好呀～大肥魚正式報到！點我可以切換表情、跳躍互動與看理財秘笈喔！
       </p>
       <div class="w-3 h-3 bg-white border-r-2 border-b-2 border-sky-300 rotate-45 absolute -bottom-1.5 right-14"></div>
     </div>
 
-    <!-- 動態角色本體（直接採用您上傳的 mascot.png 並加上動畫與情緒掛件） -->
+    <!-- 動態角色本體（原畫自動去背 + 五官動態表情疊加層） -->
     <div id="petAvatarWrapper" onclick="interactWithPet()" title="點我與大肥魚互動！" class="cursor-pointer relative group">
 
+      <!-- 滑鼠移入時可手動切換 4 種原畫表情測試 -->
+      <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -left-24 top-4 flex flex-col gap-1 bg-white/95 p-1.5 rounded-xl shadow-md border border-sky-200 text-[10px] font-bold z-30">
+        <button onclick="event.stopPropagation(); setArtExpression('happy')" class="px-2 py-0.5 rounded hover:bg-rose-50 text-rose-600 text-left">✨ 開心彎彎眼</button>
+        <button onclick="event.stopPropagation(); setArtExpression('normal')" class="px-2 py-0.5 rounded hover:bg-sky-50 text-blue-800 text-left">😊 乖巧眨眼</button>
+        <button onclick="event.stopPropagation(); setArtExpression('cheer')" class="px-2 py-0.5 rounded hover:bg-emerald-50 text-emerald-700 text-left">💦 打氣加油</button>
+        <button onclick="event.stopPropagation(); setArtExpression('wink')" class="px-2 py-0.5 rounded hover:bg-amber-50 text-amber-700 text-left">😜 俏皮 Wink</button>
+      </div>
+
       <!-- 隨盤勢變換的頭頂動態情緒小氣泡 -->
-      <div id="moodBadgeBubble" class="anim-mood-badge absolute -top-2 -left-2 z-20 bg-white/95 border-2 border-sky-300 rounded-full px-2 py-0.5 text-sm shadow-md">
+      <div id="moodBadgeBubble" class="anim-mood-badge absolute -top-1 left-1 z-30 bg-white/95 border-2 border-sky-300 rounded-full px-2 py-0.5 text-sm shadow-md">
         🎵
       </div>
 
-      <div id="petBody" class="anim-cute-sway w-36 h-40 sm:w-40 sm:h-44 flex items-center justify-center">
-        <!-- 優先顯示您上傳的 mascot.png 原畫（並自動白底去背） -->
+      <div id="petBody" class="anim-cute-sway relative w-40 h-48 sm:w-44 sm:h-52 flex items-center justify-center">
+        <!-- 原畫底圖（載入後自動執行洪水填充透明去背） -->
         <img id="mascotImg" src="./mascot.png" alt="大肥魚女僕"
-          class="w-full h-full object-contain mascot-blend drop-shadow-md"
-          onerror="this.style.display='none'; document.getElementById('backupTip').style.display='flex';" />
+          class="w-full h-full object-contain drop-shadow-md pointer-events-none" />
 
-        <!-- 若尚未上傳 mascot.png 時的提示框 -->
-        <div id="backupTip" style="display:none;" class="w-28 h-28 rounded-full bg-sky-100 border-2 border-dashed border-sky-400 flex-col items-center justify-center text-center p-2 text-[11px] text-blue-900 font-bold">
-          <span>🐋</span>
-          <span>請上傳 mascot.png 至倉庫</span>
-        </div>
+        <!-- 原畫五官動態疊加層（精準對齊原圖眼睛與嘴巴座標） -->
+        <svg viewBox="0 0 100 120" class="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
+          <!-- 1. 平時乖巧眨眼模式（定時用膚色眼皮蓋上閉眼線） -->
+          <g id="artEyesNormal" class="anim-auto-blink">
+            <ellipse cx="38.5" cy="54.2" rx="6.2" ry="4.5" fill="#fdece8"/>
+            <path d="M33,54.8 Q38.5,57.5 44,54.8" fill="none" stroke="#311b18" stroke-width="1.6" stroke-linecap="round"/>
+            <ellipse cx="60.5" cy="54.2" rx="6.2" ry="4.5" fill="#fdece8"/>
+            <path d="M55,54.8 Q60.5,57.5 66,54.8" fill="none" stroke="#311b18" stroke-width="1.6" stroke-linecap="round"/>
+          </g>
+
+          <!-- 2. 大漲開心笑眼模式（覆蓋原眼改為彎月笑眼 + 粉紅腮紅） -->
+          <g id="artEyesHappy" style="display:none;">
+            <ellipse cx="38.5" cy="54.2" rx="6.5" ry="4.8" fill="#fdece8"/>
+            <path d="M33,55.5 Q38.5,49.5 44,55.5" fill="none" stroke="#311b18" stroke-width="1.8" stroke-linecap="round"/>
+            <ellipse cx="60.5" cy="54.2" rx="6.5" ry="4.8" fill="#fdece8"/>
+            <path d="M55,55.5 Q60.5,49.5 66,55.5" fill="none" stroke="#311b18" stroke-width="1.8" stroke-linecap="round"/>
+            <ellipse cx="33" cy="59.5" rx="3.2" ry="1.6" fill="#fda4af" opacity="0.8"/>
+            <ellipse cx="66" cy="59.5" rx="3.2" ry="1.6" fill="#fda4af" opacity="0.8"/>
+          </g>
+
+          <!-- 3. 下跌鼓勵打氣模式（堅定八字眉 + 藍水滴汗珠） -->
+          <g id="artEyesCheer" style="display:none;">
+            <path d="M33,47.5 L43,49.2" stroke="#1e3a8a" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M66,47.5 L56,49.2" stroke="#1e3a8a" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M74,44 Q77,49 74,52 Q71,49 74,44 Z" fill="#38bdf8"/>
+          </g>
+
+          <!-- 4. 點擊俏皮 Wink 單眼眨眼模式 -->
+          <g id="artEyesWink" style="display:none;">
+            <ellipse cx="60.5" cy="54.2" rx="6.5" ry="4.8" fill="#fdece8"/>
+            <path d="M55.5,52 L64.5,54.5 L55.5,57" fill="none" stroke="#311b18" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <ellipse cx="33" cy="59.5" rx="3" ry="1.5" fill="#fda4af" opacity="0.75"/>
+            <ellipse cx="66" cy="59.5" rx="3" ry="1.5" fill="#fda4af" opacity="0.75"/>
+          </g>
+
+          <!-- 5. 說話會開合的小嘴巴（覆蓋在原圖嘴巴位置） -->
+          <g class="anim-mouth">
+            <ellipse cx="49.5" cy="61.5" rx="2.6" ry="2.1" fill="#fb7185" stroke="#9f1239" stroke-width="0.6"/>
+          </g>
+        </svg>
       </div>
     </div>
   </div>
@@ -330,6 +386,7 @@
     let stockSparkCharts = [];
     let tipIndex = 0;
     let isWalking = true;
+    let talkTimer = null;
 
     const MASCOT_TIPS = [
       "主人您知道嗎？「零股交易」最低只要買 1 股，就算台積電一張要百萬，小資族花一千多元也能當股東喔！",
@@ -344,11 +401,81 @@
       growth: "適合能承受較大價格波動、追求長期資本利得爆發力的投資人。"
     };
 
-    function mascotSpeak(text, moodEmoji = "🎵") {
+    // 智慧邊緣去背：只把最外圈相連純白底轉為 100% 透明，完整保留眼白與白色蕾絲
+    function autoRemoveWhiteBg(imgEl) {
+      if (!imgEl || !imgEl.complete || imgEl.naturalWidth === 0) return;
+      if (imgEl.dataset.processed === "true") return;
+
+      try {
+        const canvas = document.createElement("canvas");
+        const w = imgEl.naturalWidth;
+        const h = imgEl.naturalHeight;
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(imgEl, 0, 0);
+
+        const imgData = ctx.getImageData(0, 0, w, h);
+        const data = imgData.data;
+        const visited = new Uint8Array(w * h);
+        const stack = [];
+
+        const isWhiteBg = (idx) => data[idx] > 232 && data[idx + 1] > 232 && data[idx + 2] > 232;
+
+        for (let x = 0; x < w; x++) stack.push([x, 0], [x, h - 1]);
+        for (let y = 0; y < h; y++) stack.push([0, y], [w - 1, y]);
+
+        while (stack.length > 0) {
+          const [x, y] = stack.pop();
+          if (x < 0 || x >= w || y < 0 || y >= h) continue;
+          const pos = y * w + x;
+          if (visited[pos]) continue;
+          visited[pos] = 1;
+
+          const idx = pos * 4;
+          if (isWhiteBg(idx)) {
+            data[idx + 3] = 0;
+            stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+          }
+        }
+
+        ctx.putImageData(imgData, 0, 0);
+        imgEl.dataset.processed = "true";
+        imgEl.src = canvas.toDataURL("image/png");
+      } catch (err) {
+        console.log("去背處理略過:", err);
+      }
+    }
+
+    // 切換原畫動態表情
+    function setArtExpression(expr) {
+      ['artEyesNormal', 'artEyesHappy', 'artEyesCheer', 'artEyesWink'].forEach(id => {
+        document.getElementById(id).style.display = 'none';
+      });
+      if (expr === 'happy') {
+        document.getElementById('artEyesHappy').style.display = 'block';
+      } else if (expr === 'cheer') {
+        document.getElementById('artEyesCheer').style.display = 'block';
+      } else if (expr === 'wink') {
+        document.getElementById('artEyesWink').style.display = 'block';
+      } else {
+        document.getElementById('artEyesNormal').style.display = 'block';
+      }
+    }
+
+    function mascotSpeak(text, moodEmoji = "🎵", expr = "normal") {
       const bubble = document.getElementById('petBubble');
       bubble.style.display = 'block';
       document.getElementById('mascotSpeech').textContent = text;
       document.getElementById('moodBadgeBubble').textContent = moodEmoji;
+      setArtExpression(expr);
+
+      const petBody = document.getElementById('petBody');
+      petBody.classList.add('is-talking');
+      clearTimeout(talkTimer);
+      talkTimer = setTimeout(() => {
+        petBody.classList.remove('is-talking');
+      }, 2400);
     }
 
     function interactWithPet() {
@@ -359,7 +486,7 @@
 
       const tip = MASCOT_TIPS[tipIndex % MASCOT_TIPS.length];
       tipIndex++;
-      mascotSpeak(tip, "💡");
+      mascotSpeak(tip, "💡", "wink");
     }
 
     function toggleBubble() {
@@ -373,7 +500,6 @@
       if (!isWalking) document.getElementById('petContainer').style.right = '24px';
     }
 
-    // 讓大肥魚原畫本尊在螢幕下方悠閒左右小碎步移動
     setInterval(() => {
       if (!isWalking) return;
       const container = document.getElementById('petContainer');
@@ -384,7 +510,6 @@
       const randomRight = Math.floor(Math.random() * maxOffset) + 24;
       container.style.right = `${randomRight}px`;
 
-      // 移動過程切換為輕快小碎步彈跳，抵達後恢復溫柔搖擺
       petBody.classList.remove('anim-cute-sway');
       petBody.classList.add('is-walking-step');
       setTimeout(() => {
@@ -416,7 +541,7 @@
       const icon = document.getElementById('refreshIcon');
       btn.disabled = true;
       icon.classList.add('animate-spin', 'inline-block');
-      if (isManual) mascotSpeak("收到！大肥魚正在幫主人潛入台股大海抓取最新一秒的即時報價喔～", "✨");
+      if (isManual) mascotSpeak("收到！大肥魚正在幫主人潛入台股大海抓取最新一秒的即時報價喔～", "✨", "happy");
 
       try {
         const twii1d = await fetchYahooViaProxy("^TWII", "5m", "1d");
@@ -475,9 +600,9 @@
 
         renderMarket();
         renderRecommendations();
-        if (isManual) mascotSpeak("更新完成啦！所有大盤點數與推薦股票的走勢圖都已經換成最新行情囉！", "💖");
+        if (isManual) mascotSpeak("更新完成啦！所有大盤點數與推薦股票的走勢圖都已經換成最新行情囉！", "💖", "happy");
       } catch (e) {
-        if (isManual) mascotSpeak("唔～目前外部報價通道有點塞車，大肥魚先幫主人保留目前最新的資料庫報價喔！", "💦");
+        if (isManual) mascotSpeak("唔～目前外部報價通道有點塞車，大肥魚先幫主人保留目前最新的資料庫報價喔！", "💦", "cheer");
       } finally {
         btn.disabled = false;
         icon.classList.remove('animate-spin', 'inline-block');
@@ -551,19 +676,19 @@
       if (m.change_pct > 1.0) {
         moodBadge.textContent = `${rl.periodName}強勢上攻`;
         tempEl.textContent = "偏熱（切勿盲目追高）";
-        mascotSpeak(`哇～主人您看！${rl.periodName}大盤漲了 ${m.change_pct.toFixed(2)}%，大肥魚好開心！不過記得不要一次把預算全追高喔！`, '💖');
+        mascotSpeak(`哇～主人您看！${rl.periodName}大盤漲了 ${m.change_pct.toFixed(2)}%，大肥魚好開心！不過記得不要一次把預算全追高喔！`, '💖', 'happy');
       } else if (m.change_pct >= 0) {
         moodBadge.textContent = `${rl.periodName}溫和偏多`;
         tempEl.textContent = "適中（適合按計畫買進）";
-        mascotSpeak(`主人您好～${rl.periodName}大盤走勢平穩（${sign}${m.change_pct.toFixed(2)}%），最適合照著您的定期定額計畫慢慢累積持股了！`, '🎵');
+        mascotSpeak(`主人您好～${rl.periodName}大盤走勢平穩（${sign}${m.change_pct.toFixed(2)}%），最適合照著您的定期定額計畫慢慢累積持股了！`, '🎵', 'normal');
       } else if (m.change_pct > -1.0) {
         moodBadge.textContent = `${rl.periodName}小幅拉回`;
         tempEl.textContent = "微涼（適合逢低撿零股）";
-        mascotSpeak(`唔～${rl.periodName}大盤稍微退潮了一點（${m.change_pct.toFixed(2)}%），對存股的主人來說，這反而是用優惠價撿零股的好機會喔！`, '💪');
+        mascotSpeak(`唔～${rl.periodName}大盤稍微退潮了一點（${m.change_pct.toFixed(2)}%），對存股的主人來說，這反而是用優惠價撿零股的好機會喔！`, '💪', 'cheer');
       } else {
         moodBadge.textContent = `${rl.periodName}明顯回檔`;
         tempEl.textContent = "偏冷（分批承接好時機）";
-        mascotSpeak(`主人別擔心！${rl.periodName}大盤雖然跌了 ${Math.abs(m.change_pct).toFixed(2)}%，但這正是優質 ETF 辦特賣會的時候，我們分批承接就好！`, '💪');
+        mascotSpeak(`主人別擔心！${rl.periodName}大盤雖然跌了 ${Math.abs(m.change_pct).toFixed(2)}%，但這正是優質 ETF 辦特賣會的時候，我們分批承接就好！`, '💪', 'cheer');
       }
       moodBadge.className = `text-xs font-bold px-2.5 py-0.5 rounded-full border ${badgeClass}`;
       tempEl.className = `font-bold mt-0.5 ${colorClass}`;
@@ -618,7 +743,7 @@
     function setBudget(val) {
       document.getElementById('budgetInput').value = val;
       renderRecommendations();
-      mascotSpeak(`收到！大肥魚已為主人重新精算 NT$ ${val.toLocaleString()} 的最佳零股配置比例囉！`, '✨');
+      mascotSpeak(`收到！大肥魚已為主人重新精算 NT$ ${val.toLocaleString()} 的最佳零股配置比例囉！`, '✨', 'happy');
     }
 
     function selectStyle(style) {
@@ -802,6 +927,10 @@
         <p>• <strong class="text-amber-200">新手心法：</strong>可搭配每檔標的下方的「近 30 日走勢圖」觀察股價位階，若處於近月相對低點，分批買進會更有優勢喔！</p>
       `;
     }
+
+    const mImg = document.getElementById("mascotImg");
+    mImg.addEventListener("load", () => autoRemoveWhiteBg(mImg));
+    if (mImg.complete) autoRemoveWhiteBg(mImg);
 
     document.getElementById('budgetInput').addEventListener('input', renderRecommendations);
     loadRealData();
