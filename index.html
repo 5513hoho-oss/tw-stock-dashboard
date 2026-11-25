@@ -26,33 +26,23 @@
       box-shadow: 0 8px 24px -6px rgba(14, 116, 144, 0.08);
     }
 
-    /* ================= Live2D 風格骨骼微動畫 ================= */
     @keyframes bodyBreathe {
       0%, 100% { transform: translateY(0px) scaleY(1); }
       50% { transform: translateY(-4px) scaleY(1.015); }
     }
-    .anim-breathe {
-      animation: bodyBreathe 3s ease-in-out infinite;
-      transform-origin: bottom center;
-    }
+    .anim-breathe { animation: bodyBreathe 3s ease-in-out infinite; transform-origin: bottom center; }
 
     @keyframes ahogeWag {
       0%, 100% { transform: rotate(-6deg); }
       50% { transform: rotate(10deg); }
     }
-    .anim-ahoge {
-      animation: ahogeWag 2.2s ease-in-out infinite;
-      transform-origin: 70px 18px;
-    }
+    .anim-ahoge { animation: ahogeWag 2.2s ease-in-out infinite; transform-origin: 70px 18px; }
 
     @keyframes tailSwish {
       0%, 100% { transform: rotate(-6deg) translateY(0px); }
       50% { transform: rotate(10deg) translateY(-3px); }
     }
-    .anim-tail {
-      animation: tailSwish 2.5s ease-in-out infinite;
-      transform-origin: 96px 104px;
-    }
+    .anim-tail { animation: tailSwish 2.5s ease-in-out infinite; transform-origin: 96px 104px; }
 
     @keyframes earFlapLeft {
       0%, 100% { transform: rotate(0deg); }
@@ -69,19 +59,13 @@
       0%, 92%, 100% { transform: scaleY(1); }
       95% { transform: scaleY(0.08); }
     }
-    .anim-blink {
-      animation: eyeBlink 4.5s infinite;
-      transform-origin: center 63px;
-    }
+    .anim-blink { animation: eyeBlink 4.5s infinite; transform-origin: center 63px; }
 
     @keyframes mouthTalk {
       0%, 100% { transform: scaleY(0.45); }
       50% { transform: scaleY(1.2); }
     }
-    .is-talking .anim-mouth {
-      animation: mouthTalk 0.28s ease-in-out infinite;
-      transform-origin: 70px 76px;
-    }
+    .is-talking .anim-mouth { animation: mouthTalk 0.28s ease-in-out infinite; transform-origin: 70px 76px; }
 
     @keyframes happyJump {
       0% { transform: translateY(0) scale(1); }
@@ -90,13 +74,9 @@
       80% { transform: translateY(-8px) scale(1.02); }
       100% { transform: translateY(0) scale(1); }
     }
-    .jump-active {
-      animation: happyJump 0.65s cubic-bezier(0.28, 0.84, 0.42, 1);
-    }
+    .jump-active { animation: happyJump 0.65s cubic-bezier(0.28, 0.84, 0.42, 1); }
 
-    #petContainer {
-      transition: right 1.8s ease-in-out, bottom 0.4s ease;
-    }
+    #petContainer { transition: right 1.8s ease-in-out, bottom 0.4s ease; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col pb-32">
@@ -113,13 +93,19 @@
             大肥魚的台股理財茶會
             <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">動態女僕版</span>
           </h1>
-          <p class="text-xs text-sky-200/80">行情自動同步時間：<span id="updatedAtText" class="font-bold text-amber-300">載入中...</span></p>
+          <p class="text-xs text-sky-200/80">行情同步時間：<span id="updatedAtText" class="font-bold text-amber-300">載入中...</span></p>
         </div>
       </div>
-      <div class="flex items-center gap-2">
+
+      <div class="flex items-center gap-2.5 flex-wrap">
         <span id="dataStatusBadge" class="text-xs px-3 py-1.5 rounded-full bg-sky-900/80 text-sky-200 border border-sky-400/50 font-bold">
-          ● 每日自動同步台股報價
+          ● 已連線台股資料庫
         </span>
+        <!-- 即時手動抓取最新報價按鈕 -->
+        <button id="liveRefreshBtn" onclick="fetchLiveFromBrowser(true)"
+          class="text-xs px-3.5 py-1.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black shadow-sm transition flex items-center gap-1 cursor-pointer">
+          <span id="refreshIcon">🔄</span> 立即抓取盤中最新價
+        </button>
       </div>
     </div>
   </header>
@@ -140,7 +126,6 @@
           </div>
         </div>
 
-        <!-- 日 / 週 / 月 切換按鈕組 -->
         <div class="flex flex-col sm:items-end gap-3">
           <div class="inline-flex p-1 rounded-xl bg-sky-100/80 border border-sky-200">
             <button type="button" data-range="1d" onclick="switchRange('1d')"
@@ -229,17 +214,17 @@
       </div>
     </section>
 
-    <!-- 區塊 3：推薦標的與零股/整張試算 -->
+    <!-- 區塊 3：推薦標的與迷你走勢圖 -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       <div class="lg:col-span-8 space-y-4">
         <div class="flex items-center justify-between flex-wrap gap-2">
           <h2 class="text-base font-black text-blue-950 flex items-center gap-2">
             <span class="w-6 h-6 rounded-full bg-gradient-to-r from-blue-700 to-sky-500 text-white text-xs flex items-center justify-center shadow-2xs">2</span>
-            大肥魚為您精選的今日入股參考清單
+            大肥魚為您精選的今日入股參考清單（附近 30 日走勢圖）
           </h2>
           <span class="text-xs text-slate-500">1 張 = 1,000 股｜零股最低 1 股起</span>
         </div>
-        <div id="recommendationCards" class="space-y-3.5"></div>
+        <div id="recommendationCards" class="space-y-4"></div>
       </div>
 
       <!-- 右側：資金配置圖與女僕分析筆記 -->
@@ -264,13 +249,12 @@
   </main>
 
   <footer class="max-w-6xl mx-auto w-full px-4 py-6 text-center text-xs text-slate-500 border-t border-sky-200/60 mt-8">
-    免責聲明：本網站數據透過自動化排程整理公開市場報價，試算結果僅供投資教育與研究參考，不構成任何買賣邀約或投資保證。投資前請審慎評估自身風險承受度。
+    免責聲明：本網站數據透過自動化排程與公開市場介面整理，試算結果僅供投資教育與研究參考，不構成任何買賣邀約或投資保證。投資前請審慎評估自身風險承受度。
   </footer>
 
   <!-- ================= 懸浮動態桌面小助手「大肥魚」 ================= -->
   <div id="petContainer" style="right: 20px; bottom: 14px;" class="fixed z-50 flex flex-col items-end select-none">
 
-    <!-- 對話氣泡框 -->
     <div id="petBubble" class="mb-1.5 max-w-[280px] sm:max-w-[320px] bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-xl border-2 border-sky-300 relative transition-all">
       <div class="flex items-center justify-between gap-2 mb-1">
         <span class="text-[11px] font-black text-blue-900 bg-sky-100 px-2.5 py-0.5 rounded-full">🎀 大肥魚女僕</span>
@@ -282,14 +266,12 @@
         </div>
       </div>
       <p id="mascotSpeech" class="text-xs text-slate-700 font-medium leading-relaxed">
-        主人您好呀～點我可以切換表情與理財秘笈，大肥魚還會在螢幕下方悠閒游動喔！
+        主人您好呀～每檔推薦股現在都附上近 30 日走勢圖囉！如果想看盤中最新一秒的價格，也可以點右上角「立即抓取盤中最新價」喔！
       </p>
       <div class="w-3 h-3 bg-white border-r-2 border-b-2 border-sky-300 rotate-45 absolute -bottom-1.5 right-12"></div>
     </div>
 
-    <!-- 動態角色本體 -->
     <div id="petAvatarWrapper" onclick="interactWithPet()" title="點我與大肥魚互動！" class="cursor-pointer relative group">
-      <!-- 表情測試快捷選單 -->
       <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -left-24 top-2 flex flex-col gap-1 bg-white/95 p-1.5 rounded-xl shadow-md border border-sky-200 text-[10px] font-bold z-10">
         <button onclick="event.stopPropagation(); setExpression('happy')" class="px-2 py-0.5 rounded hover:bg-rose-50 text-rose-600 text-left">✨ 開心星星眼</button>
         <button onclick="event.stopPropagation(); setExpression('smile')" class="px-2 py-0.5 rounded hover:bg-sky-50 text-blue-800 text-left">😊 溫柔微笑</button>
@@ -298,26 +280,21 @@
       </div>
 
       <div id="petBody" class="anim-breathe w-32 h-36 sm:w-36 sm:h-40 drop-shadow-xl">
-        <!-- 若有上傳差分圖會自動載入 -->
         <img id="diffImage" src="" alt="大肥魚表情差分" style="display:none;"
           class="w-full h-full object-contain rounded-2xl" />
 
-        <!-- 高精細重繪：二頭身萌系「大肥魚女僕」Live2D 骨骼向量立繪 -->
         <svg id="liveWhaleSvg" viewBox="0 0 140 155" class="w-full h-full overflow-visible">
           <defs>
-            <!-- 深海藍長髮漸層 -->
             <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#1e40af"/>
               <stop offset="65%" stop-color="#2563eb"/>
               <stop offset="100%" stop-color="#60a5fa"/>
             </linearGradient>
-            <!-- 寶石藍瞳孔漸層 -->
             <linearGradient id="eyeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#0f172a"/>
               <stop offset="45%" stop-color="#1d4ed8"/>
               <stop offset="100%" stop-color="#38bdf8"/>
             </linearGradient>
-            <!-- 鯨魚尾漸層 -->
             <linearGradient id="tailGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="#1e3a8a"/>
               <stop offset="60%" stop-color="#2563eb"/>
@@ -325,7 +302,6 @@
             </linearGradient>
           </defs>
 
-          <!-- 漂浮情緒特效 -->
           <g id="fxHappy" style="display:none;">
             <text x="12" y="30" font-size="15">💖</text>
             <text x="112" y="26" font-size="14">✨</text>
@@ -335,32 +311,25 @@
             <text x="10" y="34" font-size="14">💪</text>
           </g>
 
-          <!-- 1. 厚實圓潤的鯨魚尾巴（獨立搖擺） -->
           <g class="anim-tail">
             <path d="M92,110 Q116,112 128,96 Q134,88 125,84 Q115,92 109,94 Q115,82 108,76 Q100,82 96,95 Q90,102 88,106 Z"
               fill="url(#tailGrad)" stroke="#0f172a" stroke-width="2.2" stroke-linejoin="round"/>
-            <!-- 魚尾腹面淺藍高光 -->
             <path d="M95,107 Q112,107 122,94" fill="none" stroke="#bae6fd" stroke-width="2" stroke-linecap="round"/>
           </g>
 
-          <!-- 2. 蓬鬆雙層大波浪捲髮（背面層） -->
           <path d="M32,54 C14,72 16,105 28,122 C33,128 38,120 40,115 C42,126 52,130 70,130 C88,130 98,126 100,115 C102,120 107,128 112,122 C124,105 126,72 108,54 Z"
             fill="url(#hairGrad)" stroke="#0f172a" stroke-width="2.2" stroke-linejoin="round"/>
-          <!-- 髮絲波浪線條與淺藍挑染 -->
           <path d="M27,76 Q20,96 31,114" fill="none" stroke="#93c5fd" stroke-width="3" stroke-linecap="round"/>
           <path d="M113,76 Q120,96 109,114" fill="none" stroke="#93c5fd" stroke-width="3" stroke-linecap="round"/>
 
-          <!-- 3. 招牌愛心弧度大呆毛 -->
           <g class="anim-ahoge">
             <path d="M68,20 C56,2 82,2 84,15 C85,20 76,22 72,21" fill="none" stroke="#1e40af" stroke-width="3.5" stroke-linecap="round"/>
           </g>
 
-          <!-- 4. 荷葉邊純白蕾絲女僕頭飾 -->
           <path d="M32,48 Q70,12 108,48" fill="none" stroke="#0f172a" stroke-width="11" stroke-linecap="round"/>
           <path d="M32,48 Q70,12 108,48" fill="none" stroke="#ffffff" stroke-width="8.5" stroke-linecap="round" stroke-dasharray="5 3"/>
           <path d="M35,47 Q70,17 105,47" fill="none" stroke="#93c5fd" stroke-width="2.5"/>
 
-          <!-- 5. 羽狀白邊鯨魚耳鰭 + 右側水藍蝴蝶結 -->
           <g class="anim-ear-l">
             <path d="M34,54 Q10,56 12,67 Q20,70 28,67 Q33,64 36,60 Z" fill="#1e3a8a" stroke="#0f172a" stroke-width="2" stroke-linejoin="round"/>
             <path d="M14,66 Q21,68 28,65" fill="none" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round"/>
@@ -368,41 +337,31 @@
           <g class="anim-ear-r">
             <path d="M106,54 Q130,56 128,67 Q120,70 112,67 Q107,64 104,60 Z" fill="#1e3a8a" stroke="#0f172a" stroke-width="2" stroke-linejoin="round"/>
             <path d="M126,66 Q119,68 112,65" fill="none" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round"/>
-            <!-- 水藍色小蝴蝶結 -->
             <polygon points="102,48 114,42 112,53" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
             <polygon points="102,48 93,41 95,52" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
             <circle cx="102" cy="48" r="2.5" fill="#fef08a" stroke="#0f172a" stroke-width="1.2"/>
           </g>
 
-          <!-- 6. 圓潤萌系小臉蛋 -->
           <path d="M40,54 C40,76 52,84 70,84 C88,84 100,76 100,54 C100,36 86,30 70,30 C54,30 40,36 40,54 Z"
             fill="#fff1f2" stroke="#0f172a" stroke-width="2"/>
 
-          <!-- 7. 層次感藍色齊瀏海 + 兩側挑染鬢角 -->
           <path d="M38,56 C38,32 54,25 70,25 C86,25 102,32 102,56 C96,46 90,44 86,54 C82,44 76,43 70,54 C64,43 58,44 54,54 C50,44 44,46 38,56 Z"
             fill="#2563eb" stroke="#0f172a" stroke-width="2" stroke-linejoin="round"/>
-          <!-- 瀏海天使光環高光 -->
           <path d="M48,40 Q56,37 62,40 M78,40 Q84,37 92,40" fill="none" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round"/>
-          <!-- 內側淺藍挑染鬢角 -->
           <path d="M40,54 Q37,72 44,82 Q45,68 44,56 Z" fill="#7dd3fc" stroke="#0f172a" stroke-width="1.5"/>
           <path d="M100,54 Q103,72 96,82 Q95,68 96,56 Z" fill="#7dd3fc" stroke="#0f172a" stroke-width="1.5"/>
 
-          <!-- 8. 四種日系大眼表情群組 -->
-          <!-- 表情 1：溫柔水潤寶石大眼 -->
           <g id="eyesSmile" class="anim-blink">
-            <!-- 左眼 -->
             <ellipse cx="55" cy="63" rx="6" ry="7.2" fill="url(#eyeGrad)" stroke="#0f172a" stroke-width="1.5"/>
             <path d="M48,58 Q55,53 62,58" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
             <circle cx="53" cy="60" r="2.4" fill="#ffffff"/>
             <circle cx="57" cy="66" r="1.2" fill="#e0f2fe"/>
-            <!-- 右眼 -->
             <ellipse cx="85" cy="63" rx="6" ry="7.2" fill="url(#eyeGrad)" stroke="#0f172a" stroke-width="1.5"/>
             <path d="M78,58 Q85,53 92,58" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
             <circle cx="83" cy="60" r="2.4" fill="#ffffff"/>
             <circle cx="87" cy="66" r="1.2" fill="#e0f2fe"/>
           </g>
 
-          <!-- 表情 2：大漲開心星星眼 -->
           <g id="eyesHappy" style="display:none;">
             <path d="M48,64 Q55,54 62,64" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
             <path d="M78,64 Q85,54 92,64" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
@@ -410,7 +369,6 @@
             <text x="81" y="55" font-size="8">✦</text>
           </g>
 
-          <!-- 表情 3：下跌鼓勵加油眼 -->
           <g id="eyesCheer" style="display:none;">
             <ellipse cx="55" cy="63" rx="5.5" ry="6.5" fill="url(#eyeGrad)" stroke="#0f172a" stroke-width="1.5"/>
             <circle cx="53" cy="60" r="2.2" fill="#ffffff"/>
@@ -420,43 +378,32 @@
             <path d="M92,53 L79,56" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round"/>
           </g>
 
-          <!-- 表情 4：點擊俏皮 Wink -->
           <g id="eyesWink" style="display:none;">
             <ellipse cx="55" cy="63" rx="6" ry="7.2" fill="url(#eyeGrad)" stroke="#0f172a" stroke-width="1.5"/>
             <circle cx="53" cy="60" r="2.4" fill="#ffffff"/>
             <path d="M78,60 L89,63 L78,67" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
           </g>
 
-          <!-- 粉嫩腮紅 -->
           <ellipse cx="46" cy="71" rx="5" ry="2.5" fill="#fda4af" opacity="0.85"/>
           <ellipse cx="94" cy="71" rx="5" ry="2.5" fill="#fda4af" opacity="0.85"/>
 
-          <!-- 9. 說話會動的可愛小嘴 -->
           <g class="anim-mouth">
             <path d="M65,74 Q70,81 75,74 Z" fill="#fb7185" stroke="#0f172a" stroke-width="1.4" stroke-linejoin="round"/>
           </g>
 
-          <!-- 10. 二頭身海軍藍古典女僕裝與純白蕾絲圍裙 -->
-          <!-- 蓬蓬女僕裙主體 -->
           <path d="M46,84 L94,84 L106,132 L34,132 Z" fill="#172554" stroke="#0f172a" stroke-width="2.2" stroke-linejoin="round"/>
-          <!-- 白色蕾絲裙襬底邊 -->
           <path d="M33,132 Q42,138 51,132 Q60,138 70,132 Q80,138 89,132 Q98,138 107,132" fill="#ffffff" stroke="#0f172a" stroke-width="1.8"/>
-          <!-- 裙襬精緻金線刺繡 -->
           <path d="M38,125 Q70,131 102,125" fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="3 2"/>
 
-          <!-- 純白圍裙（含荷葉肩帶與圓弧裙擺） -->
           <path d="M53,84 L87,84 L92,127 Q70,133 48,127 Z" fill="#ffffff" stroke="#0f172a" stroke-width="1.8" stroke-linejoin="round"/>
-          <!-- 高腰海軍藍雙排扣束腰 -->
           <rect x="52" y="96" width="36" height="8" rx="2" fill="#1e3a8a" stroke="#0f172a" stroke-width="1.5"/>
           <circle cx="62" cy="100" r="1.4" fill="#fde047"/>
           <circle cx="78" cy="100" r="1.4" fill="#fde047"/>
 
-          <!-- 胸前海軍藍領結 + 藍寶石胸針 -->
           <polygon points="70,87 60,82 60,92" fill="#1e3a8a" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
           <polygon points="70,87 80,82 80,92" fill="#1e3a8a" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
           <circle cx="70" cy="87" r="2.8" fill="#38bdf8" stroke="#0f172a" stroke-width="1.2"/>
 
-          <!-- 圍裙右下角的「胖嘟嘟大肥魚」刺繡圖案 -->
           <g transform="translate(74, 114)">
             <ellipse cx="0" cy="0" rx="7.5" ry="4.5" fill="#2563eb"/>
             <polygon points="-7,0 -12,-3.5 -12,3.5" fill="#2563eb"/>
@@ -464,11 +411,9 @@
             <circle cx="4" cy="-1" r="1" fill="#ffffff"/>
           </g>
 
-          <!-- 可愛小手手與蕾絲袖口 -->
           <circle cx="38" cy="106" r="5" fill="#fff1f2" stroke="#0f172a" stroke-width="1.8"/>
           <circle cx="102" cy="106" r="5" fill="#fff1f2" stroke="#0f172a" stroke-width="1.8"/>
 
-          <!-- 蕾絲白襪與深藍瑪莉珍鞋 -->
           <rect x="55" y="134" width="9" height="10" fill="#ffffff" stroke="#0f172a" stroke-width="1.6"/>
           <rect x="76" y="134" width="9" height="10" fill="#ffffff" stroke="#0f172a" stroke-width="1.6"/>
           <ellipse cx="59" cy="146" rx="7" ry="4" fill="#172554" stroke="#0f172a" stroke-width="1.8"/>
@@ -499,14 +444,14 @@
         }
       },
       stocks: [
-        { code: "006208", name: "富邦台50", style: "steady", price: 112.5, change_pct: 0.62, yield: 3.3, tag: "低內扣市值型", desc: "追蹤指數與 0050 相同，內扣管理費更低、單價更親民，小資族定期定額首選。" },
-        { code: "0050", name: "元大台灣50", style: "steady", price: 196.0, change_pct: 0.67, yield: 3.4, tag: "市值型龍頭", desc: "一次買進台灣前 50 大上市公司，跟著台灣經濟長期成長。" },
-        { code: "00713", name: "元大台灣高息低波", style: "steady", price: 54.8, change_pct: 0.18, yield: 6.1, tag: "抗跌低波動", desc: "兼具高股息與低波動特性，大盤下跌時通常較抗跌。" },
-        { code: "00878", name: "國泰永續高股息", style: "dividend", price: 22.6, change_pct: 0.44, yield: 6.8, tag: "季配息人氣王", desc: "結合 ESG 與高股息選股，每季穩定配息，適合建立現金流。" },
-        { code: "00919", name: "群益台灣精選高息", style: "dividend", price: 23.8, change_pct: 0.51, yield: 8.5, tag: "高殖利率季配", desc: "鎖定已宣告高股利之企業，近年配息表現亮眼。" },
-        { code: "2884", name: "玉山金", style: "dividend", price: 28.4, change_pct: -0.35, yield: 4.8, tag: "存股族愛用金融", desc: "經營穩健且股利政策透明，單價親民，適合每月存零股。" },
-        { code: "2330", name: "台積電", style: "growth", price: 1045.0, change_pct: 1.46, yield: 1.6, tag: "護國神山", desc: "全球晶圓代工龍頭，受惠 AI 長期趨勢，建議用零股分批買進。" },
-        { code: "00679B", name: "元大美債20年", style: "steady", price: 29.5, change_pct: -0.20, yield: 4.3, tag: "避險資產配置", desc: "投資美國政府長天期公債，適合用來平衡股票波動風險。" }
+        { code: "006208", yahoo: "006208.TW", name: "富邦台50", style: "steady", price: 112.5, change_pct: 0.62, yield: 3.3, tag: "低內扣市值型", desc: "追蹤指數與 0050 相同，內扣管理費更低、單價更親民，小資族定期定額首選。", history_labels: ["W1","W2","W3","W4","今"], history_points: [108.5, 110.2, 109.8, 111.4, 112.5] },
+        { code: "0050", yahoo: "0050.TW", name: "元大台灣50", style: "steady", price: 196.0, change_pct: 0.67, yield: 3.4, tag: "市值型龍頭", desc: "一次買進台灣前 50 大上市公司，跟著台灣經濟長期成長。", history_labels: ["W1","W2","W3","W4","今"], history_points: [189.0, 192.5, 191.0, 194.2, 196.0] },
+        { code: "00713", yahoo: "00713.TW", name: "元大台灣高息低波", style: "steady", price: 54.8, change_pct: 0.18, yield: 6.1, tag: "抗跌低波動", desc: "兼具高股息與低波動特性，大盤下跌時通常較抗跌。", history_labels: ["W1","W2","W3","W4","今"], history_points: [54.1, 54.5, 54.3, 54.7, 54.8] },
+        { code: "00878", yahoo: "00878.TW", name: "國泰永續高股息", style: "dividend", price: 22.6, change_pct: 0.44, yield: 6.8, tag: "季配息人氣王", desc: "結合 ESG 與高股息選股，每季穩定配息，適合建立現金流。", history_labels: ["W1","W2","W3","W4","今"], history_points: [22.1, 22.4, 22.2, 22.5, 22.6] },
+        { code: "00919", yahoo: "00919.TW", name: "群益台灣精選高息", style: "dividend", price: 23.8, change_pct: 0.51, yield: 8.5, tag: "高殖利率季配", desc: "鎖定已宣告高股利之企業，近年配息表現亮眼。", history_labels: ["W1","W2","W3","W4","今"], history_points: [23.2, 23.5, 23.4, 23.7, 23.8] },
+        { code: "2884", yahoo: "2884.TW", name: "玉山金", style: "dividend", price: 28.4, change_pct: -0.35, yield: 4.8, tag: "存股族愛用金融", desc: "經營穩健且股利政策透明，單價親民，適合每月存零股。", history_labels: ["W1","W2","W3","W4","今"], history_points: [28.9, 28.7, 28.8, 28.5, 28.4] },
+        { code: "2330", yahoo: "2330.TW", name: "台積電", style: "growth", price: 1045.0, change_pct: 1.46, yield: 1.6, tag: "護國神山", desc: "全球晶圓代工龍頭，受惠 AI 長期趨勢，建議用零股分批買進。", history_labels: ["W1","W2","W3","W4","今"], history_points: [995, 1015, 1005, 1030, 1045] },
+        { code: "00679B", yahoo: "00679B.TWO", name: "元大美債20年", style: "steady", price: 29.5, change_pct: -0.20, yield: 4.3, tag: "避險資產配置", desc: "投資美國政府長天期公債，適合用來平衡股票波動風險。", history_labels: ["W1","W2","W3","W4","今"], history_points: [30.1, 29.9, 29.8, 29.6, 29.5] }
       ]
     };
 
@@ -515,13 +460,14 @@
     let currentStyle = 'steady';
     let marketChartInstance = null;
     let allocChartInstance = null;
+    let stockSparkCharts = [];
     let tipIndex = 0;
     let isWalking = true;
     let talkTimer = null;
 
     const MASCOT_TIPS = [
       "主人您知道嗎？「零股交易」最低只要買 1 股，就算台積電一張要百萬，小資族花一千多元也能當股東喔！",
-      "大肥魚提醒您：高股息 ETF 的配息會從股價裡扣除，除息後要順利漲回來（填息），才算真正把股息放進口袋喔！",
+      "大肥魚提醒您：觀察個股近 30 日走勢圖時，如果曲線剛好在相對低檔區，用零股分批買進通常比追在高點更划算喔！",
       "請用「未來 3 年內不會動用到的閒錢」來投資，這樣遇到股市海浪起伏時，主人才能像大肥魚一樣從容不迫～",
       "下單零股前，記得先幫主人確認券商有沒有「零股手續費最低 1 元」優惠，省下來的手續費可以多喝好幾杯紅茶呢！"
     ];
@@ -539,10 +485,8 @@
         cheer: "./mascot_cheer.png",
         wink:  "./mascot_wink.png"
       };
-
       const imgEl = document.getElementById('diffImage');
       const svgEl = document.getElementById('liveWhaleSvg');
-
       imgEl.onload = () => { imgEl.style.display = 'block'; svgEl.style.display = 'none'; };
       imgEl.onerror = () => { imgEl.style.display = 'none'; svgEl.style.display = 'block'; };
       imgEl.src = diffMap[expr] || "./mascot.png";
@@ -576,9 +520,7 @@
       const petBody = document.getElementById('petBody');
       petBody.classList.add('is-talking');
       clearTimeout(talkTimer);
-      talkTimer = setTimeout(() => {
-        petBody.classList.remove('is-talking');
-      }, 2200);
+      talkTimer = setTimeout(() => { petBody.classList.remove('is-talking'); }, 2200);
     }
 
     function interactWithPet() {
@@ -600,9 +542,7 @@
     function toggleWalkMode() {
       isWalking = !isWalking;
       document.getElementById('walkToggleBtn').textContent = isWalking ? '🚶 散步：開' : '🚶 散步：關';
-      if (!isWalking) {
-        document.getElementById('petContainer').style.right = '20px';
-      }
+      if (!isWalking) document.getElementById('petContainer').style.right = '20px';
     }
 
     setInterval(() => {
@@ -614,45 +554,131 @@
       container.style.right = `${randomRight}px`;
     }, 5500);
 
+    function round2(n) { return Math.round(n * 100) / 100; }
+
+    // 瀏覽器端直接透過免費 CORS 代理抓取最新盤中資料（解決 GitHub 排程延遲問題）
+    async function fetchYahooViaProxy(symbol, interval = "5m", rangeStr = "1d") {
+      const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${interval}&range=${rangeStr}`;
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+      const res = await fetch(proxyUrl);
+      if (!res.ok) throw new Error("Proxy error");
+      const json = await res.json();
+      return json.chart.result[0];
+    }
+
+    function formatTs(ts, mode) {
+      const d = new Date(ts * 1000);
+      const pad = n => String(n).padStart(2, '0');
+      if (mode === 'time') return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      if (mode === 'datetime') return `${d.getMonth() + 1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      return `${d.getMonth() + 1}/${d.getDate()}`;
+    }
+
+    async function fetchLiveFromBrowser(isManual = false) {
+      const btn = document.getElementById('liveRefreshBtn');
+      const icon = document.getElementById('refreshIcon');
+      btn.disabled = true;
+      icon.classList.add('animate-spin', 'inline-block');
+      if (isManual) mascotSpeak("收到！大肥魚正在幫主人潛入台股大海抓取最新一秒的即時報價喔～", "happy");
+
+      try {
+        // 1. 抓取大盤當日最新資料
+        const twii1d = await fetchYahooViaProxy("^TWII", "5m", "1d");
+        const meta = twii1d.meta;
+        const tsList = twii1d.timestamp || [];
+        const closeList = twii1d.indicators.quote[0].close || [];
+        const labels = [];
+        const points = [];
+        for (let i = 0; i < tsList.length; i++) {
+          if (closeList[i] != null) {
+            labels.push(formatTs(tsList[i], 'time'));
+            points.push(round2(closeList[i]));
+          }
+        }
+        const cur = round2(meta.regularMarketPrice || points[points.length - 1]);
+        const prev = round2(meta.chartPreviousClose || meta.previousClose || points[0]);
+        const chg = round2(cur - prev);
+        const chgPct = prev ? round2((chg / prev) * 100) : 0;
+
+        if (!appData.market_ranges) appData.market_ranges = {};
+        appData.market_ranges["1d"] = {
+          base_price: prev,
+          open: points[0] || cur,
+          current: cur,
+          change: chg,
+          change_pct: chgPct,
+          labels,
+          points
+        };
+
+        // 2. 更新每檔股票的現價與近 30 日走勢
+        await Promise.all(appData.stocks.map(async (st) => {
+          const ySymbol = st.yahoo || (st.code === "00679B" ? "00679B.TWO" : `${st.code}.TW`);
+          try {
+            const res = await fetchYahooViaProxy(ySymbol, "1d", "1mo");
+            const sMeta = res.meta;
+            const sTs = res.timestamp || [];
+            const sCloses = res.indicators.quote[0].close || [];
+            const hLabels = [];
+            const hPoints = [];
+            for (let i = 0; i < sTs.length; i++) {
+              if (sCloses[i] != null) {
+                hLabels.push(formatTs(sTs[i], 'date'));
+                hPoints.push(round2(sCloses[i]));
+              }
+            }
+            const sPrice = round2(sMeta.regularMarketPrice || hPoints[hPoints.length - 1] || st.price);
+            const sPrev = round2(sMeta.chartPreviousClose || sMeta.previousClose || (hPoints.length >= 2 ? hPoints[hPoints.length - 2] : sPrice));
+            st.price = sPrice;
+            st.change_pct = sPrev ? round2(((sPrice - sPrev) / sPrev) * 100) : 0;
+            if (hPoints.length > 0) {
+              st.history_labels = hLabels;
+              st.history_points = hPoints;
+            }
+          } catch (err) {
+            console.log(`略過 ${st.code} 即時更新`, err);
+          }
+        }));
+
+        const now = new Date();
+        const pad = n => String(n).padStart(2, '0');
+        appData.updated_at = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}（即時同步）`;
+        document.getElementById('dataStatusBadge').textContent = "● 已同步最新盤中即時報價";
+
+        renderMarket();
+        renderRecommendations();
+        if (isManual) mascotSpeak("更新完成啦！所有大盤點數與推薦股票的走勢圖都已經換成最新行情囉！", "happy");
+      } catch (e) {
+        console.log("即時抓價失敗，維持現有資料:", e);
+        if (isManual) mascotSpeak("唔～目前外部報價通道有點塞車，大肥魚先幫主人保留目前最新的資料庫報價喔！", "cheer");
+      } finally {
+        btn.disabled = false;
+        icon.classList.remove('animate-spin', 'inline-block');
+      }
+    }
+
     async function loadRealData() {
       try {
         const res = await fetch(`./stock_data.json?t=${Date.now()}`);
         if (res.ok) {
           const json = await res.json();
           if (json && json.stocks && json.stocks.length > 0) {
-            // 若舊版 JSON 尚未包含 5d/1mo，自動依目前點數建立合理波段曲線防呆
-            if (!json.market_ranges && json.market) {
-              const cur = json.market.current;
-              const prev = json.market.prev_close;
-              json.market_ranges = {
-                "1d": { ...json.market, base_price: prev },
-                "5d": {
-                  base_price: round2(prev * 0.985), open: round2(prev * 0.985), current: cur,
-                  change: round2(cur - prev * 0.985), change_pct: round2(((cur - prev * 0.985) / (prev * 0.985)) * 100),
-                  labels: ["前4日", "前3日", "前2日", "昨日", "今日"],
-                  points: [round2(prev * 0.985), round2(prev * 0.992), round2(prev * 0.989), prev, cur]
-                },
-                "1mo": {
-                  base_price: round2(prev * 0.96), open: round2(prev * 0.96), current: cur,
-                  change: round2(cur - prev * 0.96), change_pct: round2(((cur - prev * 0.96) / (prev * 0.96)) * 100),
-                  labels: ["3週前", "2週前", "1週前", "本週"],
-                  points: [round2(prev * 0.96), round2(prev * 0.978), round2(prev * 0.985), cur]
-                }
-              };
-            }
             appData = json;
-            document.getElementById('dataStatusBadge').textContent = "● 已同步最新真實台股行情";
+            document.getElementById('dataStatusBadge').textContent = "● 已載入自動化台股資料庫";
           }
         }
       } catch (e) {
-        console.log("目前使用預設資料:", e);
+        console.log("使用預設資料:", e);
       }
+
       renderMarket();
       renderRecommendations();
-    }
 
-    function round2(n) {
-      return Math.round(n * 100) / 100;
+      // 若發現資料庫更新時間不是今天（例如早上剛開盤 GitHub 排程還在排隊），自動在背景靜默抓取最新報價
+      const todayStr = new Date().toISOString().slice(0, 10);
+      if (!String(appData.updated_at).startsWith(todayStr)) {
+        fetchLiveFromBrowser(false);
+      }
     }
 
     function switchRange(rangeKey) {
@@ -797,6 +823,10 @@
       const budget = Math.max(0, Number(document.getElementById('budgetInput').value) || 0);
       const allStocks = appData.stocks;
 
+      // 銷毀舊的個股迷你圖表實例
+      stockSparkCharts.forEach(c => c.destroy());
+      stockSparkCharts = [];
+
       let matched = allStocks.filter(s => s.style === currentStyle);
       if (matched.length < 3) {
         const others = allStocks.filter(s => s.style !== currentStyle);
@@ -819,6 +849,18 @@
         const isUp = stock.change_pct >= 0;
         const chgColor = isUp ? 'tw-up' : 'tw-down';
         const chgSign = isUp ? '+' : '';
+        const canvasId = `stockSpark_${idx}`;
+
+        // 取得該股票近 30 日走勢陣列（若舊資料尚未有歷史陣列則自動生成平穩示意點位）
+        const hPoints = (stock.history_points && stock.history_points.length > 1)
+          ? stock.history_points
+          : [round2(stock.price * 0.97), round2(stock.price * 0.985), round2(stock.price * 0.98), round2(stock.price * 0.995), stock.price];
+        const hLabels = (stock.history_labels && stock.history_labels.length === hPoints.length)
+          ? stock.history_labels
+          : hPoints.map((_, i) => i === hPoints.length - 1 ? '最新' : `D-${hPoints.length - 1 - i}`);
+
+        const monthTrendUp = hPoints[hPoints.length - 1] >= hPoints[0];
+        const monthChgPct = hPoints[0] ? round2(((hPoints[hPoints.length - 1] - hPoints[0]) / hPoints[0]) * 100) : 0;
 
         chartLabels.push(`${stock.code} ${stock.name}`);
         chartAmounts.push(allocBudget);
@@ -827,7 +869,7 @@
         card.className = "maid-card rounded-3xl p-4 md:p-5 hover:border-blue-400 hover:shadow-md transition";
         card.innerHTML = `
           <div class="flex flex-wrap items-start justify-between gap-2">
-            <div>
+            <div class="flex-1 min-w-[200px]">
               <div class="flex items-center gap-2 flex-wrap">
                 <span class="text-xs font-black px-2.5 py-0.5 rounded-lg bg-gradient-to-r from-blue-800 to-sky-600 text-white">配置 ${weights[idx] * 100}%</span>
                 <span class="text-base font-black text-blue-950">${stock.code} ${stock.name}</span>
@@ -840,7 +882,19 @@
               <div class="text-xs font-bold ${chgColor}">${isUp ? '▲' : '▼'} ${chgSign}${stock.change_pct.toFixed(2)}% ｜ 參考殖利率 ${stock.yield}%</div>
             </div>
           </div>
-          <div class="mt-3.5 pt-3 border-t border-sky-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+
+          <!-- 新增：個股近 30 日走勢圖區塊 -->
+          <div class="mt-3 bg-sky-50/60 rounded-2xl p-3 border border-sky-100/90">
+            <div class="flex items-center justify-between text-[11px] text-slate-500 mb-1">
+              <span>📈 近 30 日股價波動趨勢（波段：<strong class="${monthTrendUp ? 'tw-up' : 'tw-down'}">${monthChgPct >= 0 ? '+' : ''}${monthChgPct}%</strong>）</span>
+              <span>低點 NT$ ${Math.min(...hPoints).toFixed(2)} ～ 高點 NT$ ${Math.max(...hPoints).toFixed(2)}</span>
+            </div>
+            <div class="h-24 w-full">
+              <canvas id="${canvasId}"></canvas>
+            </div>
+          </div>
+
+          <div class="mt-3 pt-3 border-t border-sky-100 flex flex-wrap items-center justify-between gap-2 text-xs">
             <span class="text-slate-600">分配預算：<strong class="text-blue-950">NT$ ${allocBudget.toLocaleString()}</strong></span>
             <span class="px-3 py-1 rounded-xl bg-amber-50 text-amber-900 font-bold border border-amber-300/80">
               約可買進：${formatShares(shares)}（約 NT$ ${actualCost.toLocaleString()}）
@@ -848,6 +902,45 @@
           </div>
         `;
         container.appendChild(card);
+
+        // 繪製該股票的迷你走勢圖
+        const sCtx = document.getElementById(canvasId).getContext('2d');
+        const sLineColor = monthTrendUp ? '#e11d48' : '#059669';
+        const sFillColor = monthTrendUp ? 'rgba(225, 29, 72, 0.08)' : 'rgba(5, 150, 105, 0.08)';
+        const sparkChart = new Chart(sCtx, {
+          type: 'line',
+          data: {
+            labels: hLabels,
+            datasets: [{
+              data: hPoints,
+              borderColor: sLineColor,
+              backgroundColor: sFillColor,
+              borderWidth: 2,
+              fill: true,
+              tension: 0.3,
+              pointRadius: 1.5,
+              pointHoverRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ` 收盤價：NT$ ${Number(ctx.raw).toFixed(2)}`
+                }
+              }
+            },
+            scales: {
+              x: { grid: { display: false }, ticks: { maxTicksLimit: 6, font: { size: 10 }, color: '#64748b' } },
+              y: { grid: { color: '#e2e8f0' }, ticks: { maxTicksLimit: 3, font: { size: 10 }, color: '#64748b' } }
+            }
+          }
+        });
+        stockSparkCharts.push(sparkChart);
       });
 
       const allocCtx = document.getElementById('allocChart').getContext('2d');
@@ -888,7 +981,7 @@
       adviceEl.innerHTML = `
         <p>• <strong class="text-amber-200">今日盤勢解讀：</strong>${marketComment}</p>
         <p>• <strong class="text-amber-200">小資下單提醒：</strong>${feeTip}</p>
-        <p>• <strong class="text-amber-200">新手心法：</strong>ETF 本身已經幫主人買進一籃子股票，不需要每天盯盤殺進殺出，長期持有並把股息再投入效果最好喔！</p>
+        <p>• <strong class="text-amber-200">新手心法：</strong>可搭配每檔標的下方的「近 30 日走勢圖」觀察股價位階，若處於近月相對低點，分批買進會更有優勢喔！</p>
       `;
     }
 
