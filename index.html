@@ -59,25 +59,6 @@
       animation: happyJump 0.65s cubic-bezier(0.28, 0.84, 0.42, 1) !important;
     }
 
-    /* 說話時嘴巴開合動畫 */
-    @keyframes mouthTalk {
-      0%, 100% { transform: scaleY(0.35); }
-      50% { transform: scaleY(1.15); }
-    }
-    .is-talking .anim-mouth {
-      animation: mouthTalk 0.26s ease-in-out infinite;
-      transform-origin: 48.5% 65.2%;
-    }
-
-    /* 自然定時眨眼（用膚色眼皮蓋下） */
-    @keyframes eyelidBlink {
-      0%, 92%, 100% { opacity: 0; }
-      95% { opacity: 1; }
-    }
-    .anim-auto-blink {
-      animation: eyelidBlink 4.2s infinite;
-    }
-
     /* 頭頂情緒掛件漂浮 */
     @keyframes badgePop {
       0%, 100% { transform: translateY(0px) scale(1); }
@@ -102,7 +83,7 @@
         <div>
           <h1 class="text-lg font-black tracking-tight flex items-center gap-2">
             大肥魚的台股理財茶會
-            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">動態女僕版</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/40">女僕小助手版</span>
           </h1>
           <p class="text-xs text-sky-200/80">行情同步時間：<span id="updatedAtText" class="font-bold text-amber-300">載入中...</span></p>
         </div>
@@ -261,7 +242,7 @@
     免責聲明：本網站數據透過自動化排程與公開市場介面整理，試算結果僅供投資教育與研究參考，不構成任何買賣邀約或投資保證。投資前請審慎評估自身風險承受度。
   </footer>
 
-  <!-- ================= 懸浮動態桌面小助手「大肥魚原畫動態版」 ================= -->
+  <!-- ================= 懸浮動態桌面小助手「大肥魚 4 表情原畫差分版」 ================= -->
   <div id="petContainer" style="right: 24px; bottom: 12px;" class="fixed z-50 flex flex-col items-end select-none">
 
     <!-- 對話氣泡框 -->
@@ -276,44 +257,20 @@
         </div>
       </div>
       <p id="mascotSpeech" class="text-xs text-slate-700 font-medium leading-relaxed">
-        主人您好呀～大肥魚正式報到！點我可以切換表情、跳躍互動與看理財秘笈喔！
+        主人您好呀～大肥魚換上全新表情組登場囉！點我可以切換表情動作與看理財秘笈喔！
       </p>
       <div class="w-3 h-3 bg-white border-r-2 border-b-2 border-sky-300 rotate-45 absolute -bottom-1.5 right-14"></div>
     </div>
 
-    <!-- 動態角色本體（原畫自動去背 + 精準對齊五官動態疊加層） -->
+    <!-- 動態角色本體（純原畫差分切換 + 自動純白透明去背） -->
     <div id="petAvatarWrapper" onclick="interactWithPet()" title="點我與大肥魚互動！" class="cursor-pointer relative group">
 
-      <!-- 滑鼠移入時顯示的表情切換與五官微調面板 -->
-      <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -left-28 top-2 flex flex-col gap-1 bg-white/95 p-2 rounded-xl shadow-md border border-sky-200 text-[10px] font-bold z-30">
-        <button onclick="event.stopPropagation(); setArtExpression('happy')" class="px-2 py-0.5 rounded hover:bg-rose-50 text-rose-600 text-left">✨ 開心彎彎眼</button>
-        <button onclick="event.stopPropagation(); setArtExpression('normal')" class="px-2 py-0.5 rounded hover:bg-sky-50 text-blue-800 text-left">😊 乖巧眨眼</button>
-        <button onclick="event.stopPropagation(); setArtExpression('cheer')" class="px-2 py-0.5 rounded hover:bg-emerald-50 text-emerald-700 text-left">💦 打氣加油</button>
-        <button onclick="event.stopPropagation(); setArtExpression('wink')" class="px-2 py-0.5 rounded hover:bg-amber-50 text-amber-700 text-left">😜 俏皮 Wink</button>
-        <hr class="border-sky-100 my-0.5"/>
-        <button onclick="event.stopPropagation(); toggleCalibratePanel()" class="px-2 py-0.5 rounded bg-sky-50 hover:bg-sky-100 text-blue-900 text-left">🎯 校準五官</button>
-      </div>
-
-      <!-- 隱藏式即時五官微調滑桿面板 -->
-      <div id="calibratePanel" onclick="event.stopPropagation()" style="display:none;"
-        class="absolute -left-56 bottom-2 w-52 bg-white/95 backdrop-blur-md p-3 rounded-2xl shadow-xl border-2 border-blue-400 text-[11px] z-40 space-y-2">
-        <div class="flex items-center justify-between font-black text-blue-950">
-          <span>🎯 五官座標微調</span>
-          <button onclick="toggleCalibratePanel()" class="text-slate-400 hover:text-slate-700">✕</button>
-        </div>
-        <div>
-          <label class="flex justify-between text-slate-600"><span>左右位移 (X)</span><span id="calXVal">0</span></label>
-          <input id="calX" type="range" min="-15" max="15" step="0.5" value="0" oninput="updateFaceOffset()" class="w-full accent-blue-600"/>
-        </div>
-        <div>
-          <label class="flex justify-between text-slate-600"><span>上下位移 (Y)</span><span id="calYVal">0</span></label>
-          <input id="calY" type="range" min="-15" max="15" step="0.5" value="0" oninput="updateFaceOffset()" class="w-full accent-blue-600"/>
-        </div>
-        <div>
-          <label class="flex justify-between text-slate-600"><span>五官縮放比例</span><span id="calScaleVal">1.00</span></label>
-          <input id="calScale" type="range" min="0.8" max="1.2" step="0.02" value="1" oninput="updateFaceOffset()" class="w-full accent-blue-600"/>
-        </div>
-        <p class="text-[10px] text-slate-400 leading-tight">調好後記下數值，即可永久寫入程式碼中！</p>
+      <!-- 滑鼠移入時可手動切換 4 張原畫表情測試 -->
+      <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -left-28 top-3 flex flex-col gap-1 bg-white/95 p-2 rounded-xl shadow-md border border-sky-200 text-[10px] font-bold z-30">
+        <button onclick="event.stopPropagation(); setMascotPose('happy')" class="px-2 py-0.5 rounded hover:bg-rose-50 text-rose-600 text-left">🙌 開心舉手大笑</button>
+        <button onclick="event.stopPropagation(); setMascotPose('smile')" class="px-2 py-0.5 rounded hover:bg-amber-50 text-amber-700 text-left">😊 閉眼溫柔微笑</button>
+        <button onclick="event.stopPropagation(); setMascotPose('cheer')" class="px-2 py-0.5 rounded hover:bg-emerald-50 text-emerald-700 text-left">✊ 握拳加油打氣</button>
+        <button onclick="event.stopPropagation(); setMascotPose('normal')" class="px-2 py-0.5 rounded hover:bg-sky-50 text-blue-800 text-left">🎀 乖巧待機姿勢</button>
       </div>
 
       <!-- 隨盤勢變換的頭頂動態情緒小氣泡 -->
@@ -321,54 +278,10 @@
         🎵
       </div>
 
-      <!-- 鎖定與原圖完全一致的 100 : 124 長寬比例容器，消除縮放誤差 -->
-      <div id="petBody" class="anim-cute-sway relative w-40 h-[198px] sm:w-44 sm:h-[218px] flex items-center justify-center">
-        <!-- 原畫底圖 -->
+      <div id="petBody" class="anim-cute-sway relative w-40 h-48 sm:w-44 sm:h-52 flex items-center justify-center">
+        <!-- 直接顯示去背後的原畫差分圖 -->
         <img id="mascotImg" src="./mascot.png" alt="大肥魚女僕"
-          class="w-full h-full object-fill drop-shadow-md pointer-events-none" />
-
-        <!-- 精準對齊原圖五官的動態疊加層 (viewBox="0 0 100 124") -->
-        <svg viewBox="0 0 100 124" class="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
-          <g id="faceOverlayGroup" transform="translate(0, 0) scale(1)">
-            <!-- 1. 平時乖巧眨眼模式（精準對齊原畫雙眼中心：左 37.5, 56.8 / 右 59.5, 56.8） -->
-            <g id="artEyesNormal" class="anim-auto-blink">
-              <ellipse cx="37.5" cy="56.8" rx="6.4" ry="4.6" fill="#fcedea"/>
-              <path d="M32,57.4 Q37.5,60.2 43,57.4" fill="none" stroke="#2d1916" stroke-width="1.6" stroke-linecap="round"/>
-              <ellipse cx="59.5" cy="56.8" rx="6.4" ry="4.6" fill="#fcedea"/>
-              <path d="M54,57.4 Q59.5,60.2 65,57.4" fill="none" stroke="#2d1916" stroke-width="1.6" stroke-linecap="round"/>
-            </g>
-
-            <!-- 2. 大漲開心笑眼模式 -->
-            <g id="artEyesHappy" style="display:none;">
-              <ellipse cx="37.5" cy="56.8" rx="6.6" ry="4.8" fill="#fcedea"/>
-              <path d="M32,58.2 Q37.5,52.0 43,58.2" fill="none" stroke="#2d1916" stroke-width="1.8" stroke-linecap="round"/>
-              <ellipse cx="59.5" cy="56.8" rx="6.6" ry="4.8" fill="#fcedea"/>
-              <path d="M54,58.2 Q59.5,52.0 65,58.2" fill="none" stroke="#2d1916" stroke-width="1.8" stroke-linecap="round"/>
-              <ellipse cx="31.5" cy="62.2" rx="3.2" ry="1.6" fill="#fda4af" opacity="0.8"/>
-              <ellipse cx="65.5" cy="62.2" rx="3.2" ry="1.6" fill="#fda4af" opacity="0.8"/>
-            </g>
-
-            <!-- 3. 下跌鼓勵打氣模式 -->
-            <g id="artEyesCheer" style="display:none;">
-              <path d="M32,50.0 L42,51.8" stroke="#1e3a8a" stroke-width="1.5" stroke-linecap="round"/>
-              <path d="M65,50.0 L55,51.8" stroke="#1e3a8a" stroke-width="1.5" stroke-linecap="round"/>
-              <path d="M73,46 Q76,51 73,54 Q70,51 73,46 Z" fill="#38bdf8"/>
-            </g>
-
-            <!-- 4. 點擊俏皮 Wink 單眼眨眼模式 -->
-            <g id="artEyesWink" style="display:none;">
-              <ellipse cx="59.5" cy="56.8" rx="6.6" ry="4.8" fill="#fcedea"/>
-              <path d="M54.5,54.5 L63.5,57.0 L54.5,59.5" fill="none" stroke="#2d1916" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              <ellipse cx="31.5" cy="62.2" rx="3" ry="1.5" fill="#fda4af" opacity="0.75"/>
-              <ellipse cx="65.5" cy="62.2" rx="3" ry="1.5" fill="#fda4af" opacity="0.75"/>
-            </g>
-
-            <!-- 5. 說話會開合的小嘴巴（精準對齊原畫嘴巴中心：48.5, 65.2） -->
-            <g class="anim-mouth">
-              <ellipse cx="48.5" cy="65.2" rx="2.5" ry="2.0" fill="#fb7185" stroke="#9f1239" stroke-width="0.6"/>
-            </g>
-          </g>
-        </svg>
+          class="w-full h-full object-contain drop-shadow-md pointer-events-none transition-transform duration-200" />
       </div>
     </div>
   </div>
@@ -413,7 +326,15 @@
     let stockSparkCharts = [];
     let tipIndex = 0;
     let isWalking = true;
-    let talkTimer = null;
+
+    // 對應您上傳到 GitHub 的 4 張原畫差分檔案
+    const POSE_FILES = {
+      normal: "./mascot.png",
+      happy:  "./mascot_happy.jpg",
+      smile:  "./mascot_smile.jpg",
+      cheer:  "./mascot_cheer.jpg"
+    };
+    const transparentCache = {}; // 儲存已去背完成的透明 PNG DataURL
 
     const MASCOT_TIPS = [
       "主人您知道嗎？「零股交易」最低只要買 1 股，就算台積電一張要百萬，小資族花一千多元也能當股東喔！",
@@ -428,98 +349,83 @@
       growth: "適合能承受較大價格波動、追求長期資本利得爆發力的投資人。"
     };
 
-    // 智慧邊緣去背：只把最外圈相連純白底轉為 100% 透明，完整保留眼白與白色蕾絲
-    function autoRemoveWhiteBg(imgEl) {
-      if (!imgEl || !imgEl.complete || imgEl.naturalWidth === 0) return;
-      if (imgEl.dataset.processed === "true") return;
-
-      try {
-        const canvas = document.createElement("canvas");
-        const w = imgEl.naturalWidth;
-        const h = imgEl.naturalHeight;
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(imgEl, 0, 0);
-
-        const imgData = ctx.getImageData(0, 0, w, h);
-        const data = imgData.data;
-        const visited = new Uint8Array(w * h);
-        const stack = [];
-
-        const isWhiteBg = (idx) => data[idx] > 232 && data[idx + 1] > 232 && data[idx + 2] > 232;
-
-        for (let x = 0; x < w; x++) stack.push([x, 0], [x, h - 1]);
-        for (let y = 0; y < h; y++) stack.push([0, y], [w - 1, y]);
-
-        while (stack.length > 0) {
-          const [x, y] = stack.pop();
-          if (x < 0 || x >= w || y < 0 || y >= h) continue;
-          const pos = y * w + x;
-          if (visited[pos]) continue;
-          visited[pos] = 1;
-
-          const idx = pos * 4;
-          if (isWhiteBg(idx)) {
-            data[idx + 3] = 0;
-            stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
-          }
+    // 將單張純白底圖轉換為 100% 真透明背景 PNG 並存入快取
+    function processTransparentImage(srcUrl) {
+      return new Promise((resolve) => {
+        if (transparentCache[srcUrl]) {
+          resolve(transparentCache[srcUrl]);
+          return;
         }
+        const tempImg = new Image();
+        tempImg.crossOrigin = "anonymous";
+        tempImg.onload = () => {
+          try {
+            const canvas = document.createElement("canvas");
+            const w = tempImg.naturalWidth;
+            const h = tempImg.naturalHeight;
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(tempImg, 0, 0);
 
-        ctx.putImageData(imgData, 0, 0);
-        imgEl.dataset.processed = "true";
-        imgEl.src = canvas.toDataURL("image/png");
-      } catch (err) {
-        console.log("去背處理略過:", err);
-      }
-    }
+            const imgData = ctx.getImageData(0, 0, w, h);
+            const data = imgData.data;
+            const visited = new Uint8Array(w * h);
+            const stack = [];
 
-    // 切換原畫動態表情
-    function setArtExpression(expr) {
-      ['artEyesNormal', 'artEyesHappy', 'artEyesCheer', 'artEyesWink'].forEach(id => {
-        document.getElementById(id).style.display = 'none';
+            const isWhiteBg = (idx) => data[idx] > 232 && data[idx + 1] > 232 && data[idx + 2] > 232;
+
+            for (let x = 0; x < w; x++) stack.push([x, 0], [x, h - 1]);
+            for (let y = 0; y < h; y++) stack.push([0, y], [w - 1, y]);
+
+            while (stack.length > 0) {
+              const [x, y] = stack.pop();
+              if (x < 0 || x >= w || y < 0 || y >= h) continue;
+              const pos = y * w + x;
+              if (visited[pos]) continue;
+              visited[pos] = 1;
+
+              const idx = pos * 4;
+              if (isWhiteBg(idx)) {
+                data[idx + 3] = 0;
+                stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+              }
+            }
+
+            ctx.putImageData(imgData, 0, 0);
+            const cleanDataUrl = canvas.toDataURL("image/png");
+            transparentCache[srcUrl] = cleanDataUrl;
+            resolve(cleanDataUrl);
+          } catch (e) {
+            resolve(srcUrl);
+          }
+        };
+        tempImg.onerror = () => resolve(POSE_FILES.normal);
+        tempImg.src = srcUrl;
       });
-      if (expr === 'happy') {
-        document.getElementById('artEyesHappy').style.display = 'block';
-      } else if (expr === 'cheer') {
-        document.getElementById('artEyesCheer').style.display = 'block';
-      } else if (expr === 'wink') {
-        document.getElementById('artEyesWink').style.display = 'block';
-      } else {
-        document.getElementById('artEyesNormal').style.display = 'block';
+    }
+
+    // 預先在背景將 4 張差分圖全部去背快取，切換時零延遲
+    function preloadAllPoses() {
+      Object.values(POSE_FILES).forEach(url => processTransparentImage(url));
+    }
+
+    // 切換大肥魚原畫姿勢與表情
+    async function setMascotPose(poseKey) {
+      const targetUrl = POSE_FILES[poseKey] || POSE_FILES.normal;
+      const cleanSrc = await processTransparentImage(targetUrl);
+      const imgEl = document.getElementById('mascotImg');
+      if (imgEl && imgEl.src !== cleanSrc) {
+        imgEl.src = cleanSrc;
       }
     }
 
-    function toggleCalibratePanel() {
-      const panel = document.getElementById('calibratePanel');
-      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function updateFaceOffset() {
-      const x = Number(document.getElementById('calX').value);
-      const y = Number(document.getElementById('calY').value);
-      const s = Number(document.getElementById('calScale').value);
-      document.getElementById('calXVal').textContent = x;
-      document.getElementById('calYVal').textContent = y;
-      document.getElementById('calScaleVal').textContent = s.toFixed(2);
-
-      const group = document.getElementById('faceOverlayGroup');
-      group.setAttribute('transform', `translate(${x}, ${y}) translate(48.5, 58) scale(${s}) translate(-48.5, -58)`);
-    }
-
-    function mascotSpeak(text, moodEmoji = "🎵", expr = "normal") {
+    function mascotSpeak(text, moodEmoji = "🎵", poseKey = "normal") {
       const bubble = document.getElementById('petBubble');
       bubble.style.display = 'block';
       document.getElementById('mascotSpeech').textContent = text;
       document.getElementById('moodBadgeBubble').textContent = moodEmoji;
-      setArtExpression(expr);
-
-      const petBody = document.getElementById('petBody');
-      petBody.classList.add('is-talking');
-      clearTimeout(talkTimer);
-      talkTimer = setTimeout(() => {
-        petBody.classList.remove('is-talking');
-      }, 2400);
+      setMascotPose(poseKey);
     }
 
     function interactWithPet() {
@@ -530,7 +436,9 @@
 
       const tip = MASCOT_TIPS[tipIndex % MASCOT_TIPS.length];
       tipIndex++;
-      mascotSpeak(tip, "💡", "wink");
+      // 點擊時在「閉眼溫柔微笑」與「開心舉手大笑」之間輪流互動
+      const pose = tipIndex % 2 === 1 ? "smile" : "happy";
+      mascotSpeak(tip, "💡", pose);
     }
 
     function toggleBubble() {
@@ -585,7 +493,7 @@
       const icon = document.getElementById('refreshIcon');
       btn.disabled = true;
       icon.classList.add('animate-spin', 'inline-block');
-      if (isManual) mascotSpeak("收到！大肥魚正在幫主人潛入台股大海抓取最新一秒的即時報價喔～", "✨", "happy");
+      if (isManual) mascotSpeak("收到！大肥魚正在幫主人潛入台股大海抓取最新一秒的即時報價喔～", "✨", "cheer");
 
       try {
         const twii1d = await fetchYahooViaProxy("^TWII", "5m", "1d");
@@ -724,7 +632,7 @@
       } else if (m.change_pct >= 0) {
         moodBadge.textContent = `${rl.periodName}溫和偏多`;
         tempEl.textContent = "適中（適合按計畫買進）";
-        mascotSpeak(`主人您好～${rl.periodName}大盤走勢平穩（${sign}${m.change_pct.toFixed(2)}%），最適合照著您的定期定額計畫慢慢累積持股了！`, '🎵', 'normal');
+        mascotSpeak(`主人您好～${rl.periodName}大盤走勢平穩（${sign}${m.change_pct.toFixed(2)}%），最適合照著您的定期定額計畫慢慢累積持股了！`, '🎵', 'smile');
       } else if (m.change_pct > -1.0) {
         moodBadge.textContent = `${rl.periodName}小幅拉回`;
         tempEl.textContent = "微涼（適合逢低撿零股）";
@@ -972,9 +880,9 @@
       `;
     }
 
-    const mImg = document.getElementById("mascotImg");
-    mImg.addEventListener("load", () => autoRemoveWhiteBg(mImg));
-    if (mImg.complete) autoRemoveWhiteBg(mImg);
+    // 啟動預先去背與初始姿勢
+    preloadAllPoses();
+    setMascotPose("normal");
 
     document.getElementById('budgetInput').addEventListener('input', renderRecommendations);
     loadRealData();
