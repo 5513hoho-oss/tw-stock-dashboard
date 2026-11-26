@@ -976,61 +976,78 @@
       return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())}`;
     }
 
-    async function fetchAnyTwStock(cleanCode) {
-      const preset = appData.stocks.find(s => s.code === cleanCode);
-      const candidates = preset
-        ? [preset.yahoo]
-        : (cleanCode.endsWith('B') || cleanCode.endsWith('L') ? [`${cleanCode}.TWO`, `${cleanCode}.TW`] : [`${cleanCode}.TW`, `${cleanCode}.TWO`]);
+async function fetchAnyTwStock(cleanCode) {
+  const preset = appData.stocks.find(s => s.code === cleanCode);
+  const candidates = preset
+    ? [preset.yahoo]
+    : (cleanCode.endsWith('B') || cleanCode.endsWith('L') ? [`${cleanCode}.TWO`, `${cleanCode}.TW`] : [`${cleanCode}.TW`, `${cleanCode}.TWO`]);
 
-      for (const symbol of candidates) {
-        try {
-          const [res1d, res1mo] = await Promise.all([
-            fetchYahooViaProxy(symbol, "5m", "1d"),
-            fetchYahooViaProxy(symbol, "1d", "1mo")
-          ]);
+  for (const symbol of candidates) {
+    try {
+      const [res1d, res1mo] = await Promise.all([
+        fetchYahooViaProxy(symbol, "5m", "1d"),
+        fetchYahooViaProxy(symbol, "1d", "1mo")
+      ]);
 
-          const meta = res1d.meta;
-          const ts1d = res1d.timestamp || [];
-          const close1d = res1d.indicators.quote[0].close || [];
-          const labels1d = [], points1d = [];
-          for (let i = 0; i < ts1d.length; i++) {
-            if (close1d[i] != null) {
-              labels1d.push(formatTs(ts1d[i], 'time'));
-              points1d.push(round2(close1d[i]));
-            }
-          }
-
-          const ts1mo = res1mo.timestamp || [];
-          const close1mo = res1mo.indicators.quote[0].close || [];
-          const labels1mo = [], points1mo = [];
-          for (let i = 0; i < ts1mo.length; i++) {
-            if (close1mo[i] != null) {
-              labels1mo.push(formatTs(ts1mo[i], 'date'));
-              points1mo.push(round2(close1mo[i]));
-            }
-          }
-
-          const currentPrice = round2(meta.regularMarketPrice || points1d[points1d.length - 1] || points1mo[points1mo.length - 1]);
-          const prevClose = round2(meta.chartPreviousClose || meta.previousClose || currentPrice);
-          const dayChgPct = prevClose ? round2(((currentPrice - prevClose) / prevClose) * 100) : 0;
-
-          if (currentPrice > 0) {
-            return {
-              yahoo: symbol,
-              name: preset ? preset.name : (meta.shortName || meta.symbol || cleanCode),
-              price: currentPrice,
-              prevClose,
-              dayChgPct,
-              labels1d: labels1d.length ? labels1d : ["開盤", "最新"],
-              points1d: points1d.length ? points1d : [prevClose, currentPrice],
-              labels1mo: labels1mo.length ? labels1mo : ["30日前", "最新"],
-              points1mo: points1mo.length ? points1mo : [prevClose, currentPrice]
-            };
-          }
-        } catch (err) {}
+      const meta = res1d.meta;
+      const ts1d = res1d.timestamp || [];
+      const close1d = res1d.indicators.quote[0].close || [];
+      const labels1d = [], points1d = [];
+      for (let i = 0; i < ts1d.length; i++) {
+        if (close1d[i] != null) {
+          labels1d.push(formatTs(ts1d[i], 'time'));
+          points1d.push(round2(close1d[i]));
+        }
       }
-      throw new Error("查無此股票代號");
-    }
+
+      const ts1mo = res1mo.timestamp || [];
+      const close1mo = res1mo.indicators.quote[0].close || [];
+      const labels1mo = [], points1mo = [];
+      for (let i = 0; i < ts1mo.length; i++) {
+        if (close1mo[i] != null) {
+          labels1mo.push(formatTs(ts1mo[i], 'date'));
+          points1mo.push(round2(close1mo[i]));
+        }
+      }
+
+      const currentPrice = round2(meta.regularMarketPrice || points1d[points1d.length - 1] || points1mo[points1mo.length - 1]);
+      const prevClose = round2(meta.chartPreviousClose || meta.previousClose || currentPrice);
+      const dayChgPct = prevClose ? round2(((currentPrice - prevClose) / prevClose) * 100) : 0;
+
+      if (currentPrice > 0) {
+        return {
+          yahoo: symbol,
+          name: preset ? preset.name : (meta.shortName || meta.symbol || cleanCode),
+          price: currentPrice,
+          prevClose,
+          dayChgPct,
+          labels1d: labels1d.length ? labels1d : ["開盤", "最新"],
+          points1d: points1d.length ? points1d : [prevClose, currentPrice],
+          labels1mo: labels1mo.length ? labels1mo : ["30日前", "最新"],
+          points1mo: points1mo.length ? points1mo : [prevClose, currentPrice]
+        };
+      }
+    } catch (err) {}
+  }
+
+  if (preset && preset.price > 0) {
+    const hPoints = (preset.history_points && preset.history_points.length > 1) ? preset.history_points : [preset.price];
+    const hLabels = (preset.history_labels && preset.history_labels.length === hPoints.length) ? preset.history_labels : ["最新"];
+    return {
+      yahoo: preset.yahoo,
+      name: preset.name,
+      price: preset.price,
+      prevClose: preset.price,
+      dayChgPct: preset.change_pct || 0,
+      labels1d: ["資料庫同步價"],
+      points1d: [preset.price],
+      labels1mo: hLabels,
+      points1mo: hPoints
+    };
+  }
+
+  throw new Error("查無此股票代號");
+}   
 
     async function handleAddHolding(e) {
       e.preventDefault();
@@ -1626,14 +1643,29 @@
 
     function round2(n) { return Math.round(n * 100) / 100; }
 
-    async function fetchYahooViaProxy(symbol, interval = "5m", rangeStr = "1d") {
-      const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${interval}&range=${rangeStr}`;
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
-      const res = await fetch(proxyUrl);
-      if (!res.ok) throw new Error("Proxy error");
+async function fetchYahooViaProxy(symbol, interval = "5m", rangeStr = "1d") {
+  const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${interval}&range=${rangeStr}`;
+  const proxyBuilders = [
+    (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
+  ];
+
+  for (const buildUrl of proxyBuilders) {
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 5000);
+      const res = await fetch(buildUrl(targetUrl), { signal: controller.signal });
+      clearTimeout(timer);
+      if (!res.ok) continue;
       const json = await res.json();
-      return json.chart.result[0];
-    }
+      if (json && json.chart && json.chart.result && json.chart.result[0]) {
+        return json.chart.result[0];
+      }
+    } catch (err) {}
+  }
+  throw new Error("All proxies failed");
+}
 
     function formatTs(ts, mode) {
       const d = new Date(ts * 1000);
