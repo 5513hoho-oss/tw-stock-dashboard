@@ -1181,22 +1181,52 @@
       const btn = document.getElementById('checkupSubmitBtn');
       const origText = btn.textContent;
       btn.disabled = true;
-      btn.textContent = "⏳ 體檢分析中...";
-      mascotSpeak(`收到！${charObj.selfPronoun}正在為您調閱「${code}」的背景資料與近 30 日走勢圖喔～`, "🔍", "cheer");
+      btn.textContent = "⏳ AI 體檢分析中...";
+      mascotSpeak(`收到！${charObj.selfPronoun}正在連線 AI 大腦調閱「${code}」的白話來歷與近 30 日走勢喔～`, "✨", "cheer");
 
       try {
         const live = await fetchAnyTwStock(code);
         const wiki = STOCK_ENCYCLOPEDIA[code];
         const isETF = code.startsWith('00');
 
-        const displayName = wiki ? wiki.name : live.name;
-        const category = wiki ? wiki.category : (isETF ? "台股指數型 / 主題型 ETF" : "台灣上市 / 上櫃公司");
-        const suitable = wiki ? wiki.suitable : (isETF ? "適合族群：希望透過一籃子成分股分散風險的投資人" : "適合族群：建議先了解該公司主要產品與營收表現後再分批布局");
-        const bio = wiki
-          ? wiki.bio
-          : `代號 ${code}（${live.name}）為台灣證券市場掛牌標的。因為屬於較專門或冷門個股，建議下單前可點擊右上方「前往 Yahoo 股市看詳細財報」快速瀏覽它的主要營業項目與近期新聞，確認公司有穩定獲利再進場喔！`;
+        // 先計算近 30 日漲跌幅與位階，傳給 AI 一起判讀
+        const pts = (live.points1mo && live.points1mo.length > 0) ? live.points1mo : [live.price];
+        const low30 = Math.min(...pts);
+        const high30 = Math.max(...pts);
+        const first30 = pts[0];
+        const monthPct = first30 > 0 ? round2(((live.price - first30) / first30) * 100) : 0;
+        const posRatio = (high30 > low30)
+          ? Math.min(100, Math.max(0, Math.round(((live.price - low30) / (high30 - low30)) * 100)))
+          : 50;
 
-        lastCheckedStockData = { code, displayName, category, suitable, bio, live, isETF };
+        let displayName = wiki ? wiki.name : live.name;
+        let category = wiki ? wiki.category : (isETF ? "台股指數型 / 主題型 ETF" : "台灣上市 / 上櫃公司");
+        let suitable = wiki ? wiki.suitable : "適合族群：建議先了解該公司主要產品與營收表現後再分批布局";
+        let bio = wiki ? wiki.bio : "";
+        let aiCustomAdvice = "";
+
+        // 呼叫 Cloudflare Worker 串接 Gemini AI 生成專屬白話介紹
+        try {
+          const aiUrl = `/api/ai-intro?code=${encodeURIComponent(code)}&name=${encodeURIComponent(live.name)}&price=${live.price}&monthPct=${monthPct}&posRatio=${posRatio}&char=${currentChar}`;
+          const aiRes = await fetch(aiUrl);
+          if (aiRes.ok) {
+            const aiData = await aiRes.json();
+            if (aiData && aiData.bio) {
+              if (aiData.chineseName) displayName = aiData.chineseName;
+              if (aiData.category) category = aiData.category;
+              if (aiData.suitable) suitable = aiData.suitable;
+              bio = aiData.bio;
+              aiCustomAdvice = aiData.advice || "";
+            }
+          }
+        } catch (aiErr) {}
+
+        // 若 AI 暫時忙碌，使用內建保底說明
+        if (!bio) {
+          bio = `代號 ${code}（${live.name}）為台灣證券市場掛牌標的。下單前可點擊右上方「前往 Yahoo 股市看詳細財報」快速瀏覽它的主要營業項目與近期新聞，確認公司有穩定獲利再進場喔！`;
+        }
+
+        lastCheckedStockData = { code, displayName, category, suitable, bio, aiCustomAdvice, live, isETF };
         renderCheckupReport(true);
       } catch (err) {
         mascotSpeak(`唔～${charObj.selfPronoun}找不到代號「${code}」的台股資料，請確認是否為正確的 4～6 碼台股代號喔！`, "💦", "cheer");
@@ -1206,9 +1236,9 @@
       }
     }
 
-    function renderCheckupReport(shouldSpeak = false) {
+function renderCheckupReport(shouldSpeak = false) {
       if (!lastCheckedStockData) return;
-      const { code, displayName, category, suitable, bio, live, isETF } = lastCheckedStockData;
+      const { code, displayName, category, suitable, bio, aiCustomAdvice, live, isETF } = lastCheckedStockData;
       const charObj = CHARACTERS[currentChar];
       const isDark = currentChar === 'hakimi';
 
@@ -1226,7 +1256,6 @@
       dayEl.textContent = `今日漲跌：${isDayUp ? '▲ +' : '▼ '}${live.dayChgPct.toFixed(2)}%`;
       dayEl.className = `text-xs font-bold mt-0.5 ${isDayUp ? 'tw-up' : 'tw-down'}`;
 
-      // 計算近 30 日高低點與目前價格位階百分比
       const pts = (live.points1mo && live.points1mo.length > 0) ? live.points1mo : [live.price];
       const lbls = (live.labels1mo && live.labels1mo.length === pts.length) ? live.labels1mo : ["最新"];
       const low30 = Math.min(...pts);
@@ -1246,7 +1275,6 @@
       document.getElementById('ckPositionLabel').textContent =
         posRatio >= 75 ? `${posRatio}%（偏高檔）` : posRatio <= 30 ? `${posRatio}%（偏低檔）` : `${posRatio}%（中間區）`;
 
-      // 繪製近一個月走勢圖
       const ctx = document.getElementById('checkupMonthChart').getContext('2d');
       if (checkupChartInstance) checkupChartInstance.destroy();
 
@@ -1286,15 +1314,18 @@
         }
       });
 
-      // 生成大肥魚 / 哈基米的買前冷靜分析建議
       const report = charObj.analyzePreBuy(code, displayName, live.price, monthPct, posRatio, isETF);
       document.getElementById('ckAdvisorIcon').textContent = charObj.icon;
-      document.getElementById('ckAdvisorTitle').textContent = `${charObj.name}的買前冷靜評估報告`;
+      document.getElementById('ckAdvisorTitle').textContent = `${charObj.name}的 AI 買前冷靜評估報告`;
       document.getElementById('ckVerdictBadge').textContent = report.verdict;
-      document.getElementById('ckAdvisorBody').innerHTML = report.paragraphs.map(p => `<p>${p}</p>`).join('');
+
+      const finalParagraphs = aiCustomAdvice
+        ? [`• <strong>${charObj.name} AI 深度點評：</strong>${aiCustomAdvice}`, ...report.paragraphs]
+        : report.paragraphs;
+      document.getElementById('ckAdvisorBody').innerHTML = finalParagraphs.map(p => `<p>${p}</p>`).join('');
 
       if (shouldSpeak) {
-        mascotSpeak(`「${code} ${displayName}」體檢完成啦！目前位於近一個月價格區間的 ${posRatio}% 位置，快看看下方的買前評估建議吧！`, report.emoji, report.pose);
+        mascotSpeak(`「${code} ${displayName}」AI 體檢完成啦！目前位於近一個月價格區間的 ${posRatio}% 位置，快看看${charObj.selfPronoun}幫你整理的報告吧！`, report.emoji, report.pose);
       }
     }
 
