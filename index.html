@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>台股 簡單!｜大肥魚 & 哈基米理財小助手</title>
+  <title>台股 簡單!</title>
   <link id="faviconLink" rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230284c7'/><text x='50' y='72' font-size='64' text-anchor='middle'>🐋</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -409,7 +409,7 @@
             <div class="flex items-center justify-between flex-wrap gap-2">
               <h2 class="theme-text-main text-base font-black flex items-center gap-2">
                 <span class="theme-gradient-badge w-6 h-6 rounded-full text-xs flex items-center justify-center shadow-2xs">2</span>
-                <span id="step2Title">大肥魚為您精選的今日入股參考清單（附近 30 日走勢圖）</span>
+                <span id="step2Title">本魚為您精選的今日入股參考清單（附近 30 日走勢圖）</span>
               </h2>
               <span class="theme-text-muted text-xs">1 張 = 1,000 股｜零股最低 1 股起</span>
             </div>
@@ -436,7 +436,7 @@
       </div>
 
       <!-- ================================================================ -->
-      <!-- 分頁二：我的持股診斷室（支援忘記買入成本，自動以輸入當日市價為基準）    -->
+      <!-- 分頁二：我的持股診斷室                                             -->
       <!-- ================================================================ -->
       <div id="tabViewPortfolio" style="display:none;" class="space-y-6">
 
@@ -618,7 +618,7 @@
         </div>
       </div>
       <p id="mascotSpeech" class="text-xs font-medium leading-relaxed">
-        主人您好呀～歡迎來到「台股 簡單!」左側分頁可以切換「我的持股診斷室」，就算忘記當初買價也能直接輸入股數追蹤喔！
+        主人您好呀～歡迎來到「台股 簡單!」本魚隨時在這裡陪您看盤喔！左側分頁還能切換「我的持股診斷室」呢！
       </p>
       <div style="background-color: var(--bubble-bg); border-color: var(--bubble-border);" class="w-3 h-3 border-r-2 border-b-2 rotate-45 absolute -bottom-1.5 right-14"></div>
     </div>
@@ -683,12 +683,13 @@
       fish: {
         id: "fish",
         name: "大肥魚",
+        selfPronoun: "本魚",
         badgeTag: "🎀 大肥魚女僕",
         icon: "🐋",
         siteTitle: "台股 簡單!",
         siteBadge: "☀️ 大肥魚日間版",
         step1Title: "請輸入主人本次打算投入的金額與偏好",
-        step2Title: "大肥魚為您精選的今日入股參考清單（附近 30 日走勢圖）",
+        step2Title: "本魚為您精選的今日入股參考清單（附近 30 日走勢圖）",
         noteTitle: "大肥魚的盤勢觀察筆記",
         portfolioTitle: "大肥魚的個人持股診斷室",
         switchBtnLabel: "🌙 切換夜間哈基米",
@@ -699,21 +700,21 @@
           smile:  "./mascot_smile.jpg",
           cheer:  "./mascot_cheer.jpg"
         },
-        handoverGreeting: "擊掌成功！日間模式開啟，大肥魚回來繼續陪主人喝茶看盤囉～",
-        budgetReply: (val) => `收到！大肥魚已為主人重新精算 NT$ ${val.toLocaleString()} 的最佳零股配置比例囉！`,
+        handoverGreeting: "擊掌成功！日間模式開啟，本魚回來繼續陪主人喝茶看盤囉～",
+        budgetReply: (val) => `收到！本魚已為主人重新精算 NT$ ${val.toLocaleString()} 的最佳零股配置比例囉！`,
         tips: [
           "主人您知道嗎？「零股交易」最低只要買 1 股，就算台積電一張要百萬，小資族花一千多元也能當股東喔！",
-          "大肥魚提醒您：觀察個股近 30 日走勢圖時，如果曲線剛好在相對低檔區，用零股分批買進通常比追在高點更划算喔！",
-          "請用「未來 3 年內不會動用到的閒錢」來投資，這樣遇到股市海浪起伏時，主人才能像大肥魚一樣從容不迫～",
+          "本魚提醒您：觀察個股近 30 日走勢圖時，如果曲線剛好在相對低檔區，用零股分批買進通常比追在高點更划算喔！",
+          "請用「未來 3 年內不會動用到的閒錢」來投資，這樣遇到股市海浪起伏時，主人才能像本魚一樣從容不迫～",
           "下單零股前，記得先幫主人確認券商有沒有「零股手續費最低 1 元」優惠，省下來的手續費可以多喝好幾杯紅茶呢！"
         ],
         marketQuotes: {
-          surge: (period, pct) => `哇～主人您看！${period}大盤漲了 ${pct}%，大肥魚好開心！不過記得不要一次把預算全追高喔！`,
+          surge: (period, pct) => `哇～主人您看！${period}大盤漲了 ${pct}%，本魚好開心！不過記得不要一次把預算全追高喔！`,
           mildUp: (period, sign, pct) => `主人您好～${period}大盤走勢平穩（${sign}${pct}%），最適合照著您的定期定額計畫慢慢累積持股了！`,
           mildDown: (period, pct) => `唔～${period}大盤稍微退潮了一點（${pct}%），對存股的主人來說，這反而是用優惠價撿零股的好機會喔！`,
           drop: (period, pct) => `主人別擔心！${period}大盤雖然跌了 ${pct}%，但這正是優質 ETF 辦特賣會的時候，我們分批承接就好！`
         },
-        noteFooter: "ETF 本身已經幫主人買進一籃子股票，搭配近 30 日走勢圖觀察位階，逢低分批買進效果最好喔！",
+        noteFooter: "本魚小叮嚀：ETF 本身已經幫主人買進一籃子股票，搭配近 30 日走勢圖觀察位階，逢低分批買進效果最好喔！",
         diagnoseHolding: (name, pct, isETF, isTodayBaseline, baseDate) => {
           const baseIntro = isTodayBaseline
             ? `（以基準日 ${baseDate} 當時市價為起點追蹤）`
@@ -725,7 +726,7 @@
               actionBadge: "tw-up-bg",
               pose: "happy",
               emoji: "💰",
-              detail: `哇～主人的 ${name} ${baseIntro}已經上漲 +${pct.toFixed(2)}% 囉！大肥魚建議可以先賣出約 1/3 股數把獲利放進口袋，剩下的 2/3 繼續抱著參與上漲，這樣心態最穩健喔！`
+              detail: `哇～主人的 ${name} ${baseIntro}已經上漲 +${pct.toFixed(2)}% 囉！本魚建議可以先賣出約 1/3 股數把獲利放進口袋，剩下的 2/3 繼續抱著參與上漲，這樣心態最穩健喔！`
             };
           } else if (pct >= 8) {
             return {
@@ -733,7 +734,7 @@
               actionBadge: "tw-up-bg",
               pose: "smile",
               emoji: "📈",
-              detail: `主人操作得真棒！${name} ${baseIntro}目前穩健上漲 +${pct.toFixed(2)}%，還沒到過熱警戒區，建議繼續抱緊領息或等更大波段，不要太早賣飛囉～`
+              detail: `主人操作得真棒！${name} ${baseIntro}目前穩健上漲 +${pct.toFixed(2)}%，還沒到過熱警戒區，本魚建議繼續抱緊領息或等更大波段，不要太早賣飛囉～`
             };
           } else if (pct > -6) {
             return {
@@ -742,7 +743,7 @@
               pose: "normal",
               emoji: "🍵",
               detail: isTodayBaseline
-                ? `大肥魚已為您記錄好 ${name} 在 ${baseDate} 的基準價位！接下來只要它相對今天漲超過 8%～20% 或跌破 6%，我就會立刻提醒主人停利或逢低加碼喔！`
+                ? `本魚已為您記錄好 ${name} 在 ${baseDate} 的基準價位！接下來只要它相對今天漲超過 8%～20% 或跌破 6%，本魚就會立刻提醒主人停利或逢低加碼喔！`
                 : `${name} 目前損益為 ${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%，屬於股市每天正常的潮起潮落。主人泡杯茶放輕鬆，照著原本的定期定額步調就好！`
             };
           } else if (pct > -12) {
@@ -752,14 +753,14 @@
                   actionBadge: "tw-down-bg",
                   pose: "cheer",
                   emoji: "💪",
-                  detail: `主人的 ${name} ${baseIntro}回檔了 ${pct.toFixed(2)}%。因為它是分散風險的 ETF，大肥魚建議若手上還有預備金，可以買進幾股零股慢慢降低平均成本喔！`
+                  detail: `主人的 ${name} ${baseIntro}回檔了 ${pct.toFixed(2)}%。因為它是分散風險的 ETF，本魚建議若手上還有預備金，可以買進幾股零股慢慢降低平均成本喔！`
                 }
               : {
                   action: "🔍 單一個股回檔中（暫緩加倉・先觀察止跌）",
                   actionBadge: "tw-down-bg",
                   pose: "cheer",
                   emoji: "🛡️",
-                  detail: `唔～個股 ${name} ${baseIntro}回檔了 ${pct.toFixed(2)}%。個股波動比 ETF 大，大肥魚提醒主人先不要急著一次攤平，等股價站穩或確認公司基本面沒問題再考慮加倉喔！`
+                  detail: `唔～個股 ${name} ${baseIntro}回檔了 ${pct.toFixed(2)}%。個股波動比 ETF 大，本魚提醒主人先不要急著一次攤平，等股價站穩或確認公司基本面沒問題再考慮加倉喔！`
                 };
           } else {
             return isETF
@@ -775,7 +776,7 @@
                   actionBadge: "tw-down-bg",
                   pose: "cheer",
                   emoji: "⚠️",
-                  detail: `主人注意！個股 ${name} ${baseIntro}已經下跌 ${Math.abs(pct).toFixed(2)}% 了。新手最怕對單一股票越跌越買，請先檢查這家公司是否出現利空，必要時要嚴格執行停損保護本金！`
+                  detail: `主人注意！個股 ${name} ${baseIntro}已經下跌 ${Math.abs(pct).toFixed(2)}% 了。新手最怕對單一股票越跌越買，本魚請您先檢查這家公司是否出現利空，必要時要嚴格執行停損保護本金！`
                 };
           }
         }
@@ -783,12 +784,13 @@
       hakimi: {
         id: "hakimi",
         name: "哈基米",
+        selfPronoun: "本貓",
         badgeTag: "✨ 星光貓娘哈基米",
         icon: "🐱",
         siteTitle: "台股 簡單!",
         siteBadge: "🌙 哈基米夜間版",
-        step1Title: "快輸入你的投資預算吧，本天才哈基米幫你算到小數點！",
-        step2Title: "哈基米星夜運算出的精選標的清單（附近 30 日波段圖）",
+        step1Title: "快輸入你的投資預算吧，本貓幫你精算到小數點！",
+        step2Title: "本貓星夜運算出的精選標的清單（附近 30 日波段圖）",
         noteTitle: "哈基米的星夜數據觀測站",
         portfolioTitle: "哈基米的星夜持倉量化診斷室",
         switchBtnLabel: "☀️ 切換日間大肥魚",
@@ -799,21 +801,21 @@
           smile:  "./Gemini_smile.jpg",
           cheer:  "./Gemini_cheer.jpg"
         },
-        handoverGreeting: "喵哈哈～吉米啟動！夜間星光模式展開，接下來就由本天才哈基米帶你征服台股星海吧！",
-        budgetReply: (val) => `哼哼～NT$ ${val.toLocaleString()} 的黃金比例已經被哈基米一秒算出來啦，快看看下面吧！`,
+        handoverGreeting: "喵哈哈～吉米啟動！夜間星光模式展開，接下來就由本貓帶你征服台股星海吧！",
+        budgetReply: (val) => `哼哼～NT$ ${val.toLocaleString()} 的黃金比例已經被本貓一秒算出來啦，快看看下面吧！`,
         tips: [
           "喵哼～你該不會以為一定要買滿一張 1,000 股吧？盤中零股交易只要 1 股就能上車，小資金也能開啟複利飛輪喔！",
-          "哈基米的星光雷達掃描過了：長期投資最重要的是「留在市場裡」，定期定額扣款就算遇到波動也能自動攤平成本！",
+          "本貓的星光雷達掃描過了：長期投資最重要的是「留在市場裡」，定期定額扣款就算遇到波動也能自動攤平成本！",
           "高股息雖然領息很爽，但別忘了把領到的股息再買進原本的 ETF，這才是讓資產像滾雪球一樣變大的秘密武器喵！",
-          "買股票之前先留好至少 6 個月的生活緊急預備金，這樣不管市場怎麼震盪，你都能像哈基米一樣優雅從容！"
+          "買股票之前先留好至少 6 個月的生活緊急預備金，這樣不管市場怎麼震盪，你都能像本貓一樣優雅從容！"
         ],
         marketQuotes: {
-          surge: (period, pct) => `喵哈哈！${period}大盤狂飆了 ${pct}%！本天才早就預料到這波星光行情啦，不過可別頭腦一熱全梭哈喔！`,
+          surge: (period, pct) => `喵哈哈！${period}大盤狂飆了 ${pct}%！本貓早就預料到這波星光行情啦，不過可別頭腦一熱全梭哈喔！`,
           mildUp: (period, sign, pct) => `${period}大盤穩穩向上（${sign}${pct}%），數據顯示現在正是按紀律執行定期定額的絕佳節奏喵～`,
-          mildDown: (period, pct) => `呼喵～${period}大盤小幅回檔 ${pct}%，別慌張！在哈基米的演算法裡，這叫做「優質資產打折促銷中」！`,
+          mildDown: (period, pct) => `呼喵～${period}大盤小幅回檔 ${pct}%，別慌張！在本貓的演算法裡，這叫做「優質資產打折促銷中」！`,
           drop: (period, pct) => `打起精神來！${period}大盤雖然修正了 ${pct}%，但歷史數據證明每次大回檔都是長期存股族撿便宜的黃金坑喔！`
         },
-        noteFooter: "哈基米小叮嚀：不要每天被紅綠數字牽著走，盯緊近 30 日趨勢區間、分批布局才是真正的贏家思維喵！",
+        noteFooter: "本貓小叮嚀：不要每天被紅綠數字牽著走，盯緊近 30 日趨勢區間、分批布局才是真正的贏家思維喵！",
         diagnoseHolding: (name, pct, isETF, isTodayBaseline, baseDate) => {
           const baseIntro = isTodayBaseline
             ? `（以基準日 ${baseDate} 當時市價為起點追蹤）`
@@ -825,7 +827,7 @@
               actionBadge: "tw-up-bg",
               pose: "happy",
               emoji: "🌟",
-              detail: `喵哈哈！${name} ${baseIntro}暴賺 +${pct.toFixed(2)}% 啦！本天才建議你先把 1/3 的獲利轉成現金收進口袋，剩下 2/3 設好移動停利繼續衝刺，這才是高勝率玩法喵！`
+              detail: `喵哈哈！${name} ${baseIntro}暴賺 +${pct.toFixed(2)}% 啦！本貓建議你先把 1/3 的獲利轉成現金收進口袋，剩下 2/3 設好移動停利繼續衝刺，這才是高勝率玩法喵！`
             };
           } else if (pct >= 8) {
             return {
@@ -833,7 +835,7 @@
               actionBadge: "tw-up-bg",
               pose: "smile",
               emoji: "😺",
-              detail: `哼哼～眼光不錯嘛！${name} ${baseIntro}目前上漲 +${pct.toFixed(2)}%，趨勢還在星光軌道上穩穩推進，現在賣掉太可惜了，繼續抱緊就對啦！`
+              detail: `哼哼～眼光不錯嘛！${name} ${baseIntro}目前上漲 +${pct.toFixed(2)}%，趨勢還在星光軌道上穩穩推進，現在賣掉太可惜了，聽本貓的繼續抱緊就對啦！`
             };
           } else if (pct > -6) {
             return {
@@ -842,8 +844,8 @@
               pose: "normal",
               emoji: "🔮",
               detail: isTodayBaseline
-                ? `哼哼～忘記當初買價也沒關係！哈基米已經幫你把 ${name} 在 ${baseDate} 的價格設成起跑線啦，之後只要波段漲跌達到門檻，本天才馬上提醒你出手喵！`
-                : `${name} 目前報酬率 ${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%，在哈基米的量化模型裡只是微幅雜訊，不需要任何操作，去喝杯飲料吧喵～`
+                ? `哼哼～忘記當初買價也沒關係！本貓已經幫你把 ${name} 在 ${baseDate} 的價格設成起跑線啦，之後只要波段漲跌達到門檻，本貓馬上提醒你出手喵！`
+                : `${name} 目前報酬率 ${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%，在本貓的量化模型裡只是微幅雜訊，不需要任何操作，去喝杯飲料吧喵～`
             };
           } else if (pct > -12) {
             return isETF
@@ -859,7 +861,7 @@
                   actionBadge: "tw-down-bg",
                   pose: "cheer",
                   emoji: "🔭",
-                  detail: `呼喵～個股 ${name} ${baseIntro}修正了 ${pct.toFixed(2)}%。個股不像 ETF 有成分股保護，先別急著盲目加倉，等日線打出止跌訊號再出手也不遲！`
+                  detail: `呼喵～個股 ${name} ${baseIntro}修正了 ${pct.toFixed(2)}%。個股不像 ETF 有成分股保護，本貓勸你先別急著盲目加倉，等日線打出止跌訊號再出手也不遲！`
                 };
           } else {
             return isETF
@@ -912,6 +914,7 @@
       currentTab = tabName;
       const viewMarket = document.getElementById('tabViewMarket');
       const viewPortfolio = document.getElementById('tabViewPortfolio');
+      const charObj = CHARACTERS[currentChar];
 
       if (tabName === 'market') {
         viewMarket.style.display = 'block';
@@ -921,7 +924,7 @@
         viewPortfolio.style.display = 'block';
         renderPortfolioView();
         if (userHoldings.length === 0) {
-          mascotSpeak(`這裡是專屬於您的持股診斷室！只要輸入股數，就算忘記買價也能直接按「加入並分析」，${CHARACTERS[currentChar].name}會以今日現價為起點幫您追蹤喔！`, "💼", "smile");
+          mascotSpeak(`這裡是專屬於您的持股診斷室！只要輸入股數，就算忘記買價也能直接按「加入並分析」，${charObj.selfPronoun}會以今日現價為起點幫您追蹤喔！`, "💼", "smile");
         }
       }
       updateTabButtonStyles();
@@ -1031,6 +1034,7 @@
 
     async function handleAddHolding(e) {
       e.preventDefault();
+      const charObj = CHARACTERS[currentChar];
       const code = document.getElementById('holdCodeInput').value.trim().toUpperCase();
       const shares = Math.floor(Number(document.getElementById('holdSharesInput').value));
       const rawCostStr = document.getElementById('holdCostInput').value.trim();
@@ -1041,11 +1045,10 @@
       const origText = btn.textContent;
       btn.disabled = true;
       btn.textContent = "查詢報價中...";
-      mascotSpeak(`正在幫您查詢代號「${code}」的最新即時行情與走勢曲線喔～`, "🔍", "cheer");
+      mascotSpeak(`${charObj.selfPronoun}正在幫您查詢代號「${code}」的最新即時行情與走勢曲線喔～`, "🔍", "cheer");
 
       try {
         const liveInfo = await fetchAnyTwStock(code);
-        // 若使用者未填寫總投入成本，自動以「今日即時市價 × 持有股數」作為追蹤基準
         const isTodayBaseline = !rawCostStr || Number(rawCostStr) <= 0;
         const totalCost = isTodayBaseline
           ? Math.round(liveInfo.price * shares)
@@ -1069,7 +1072,7 @@
             baselineDate: old.baselineDate || todayDate,
             live: liveInfo
           };
-          mascotSpeak(`已為您合併加碼「${code} ${liveInfo.name}」！目前共持有 ${formatShares(newShares)}，基準均價為 NT$ ${round2(newCost / newShares).toFixed(2)} 喔！`, "✨", "happy");
+          mascotSpeak(`${charObj.selfPronoun}已為您合併加碼「${code} ${liveInfo.name}」！目前共持有 ${formatShares(newShares)}，基準均價為 NT$ ${round2(newCost / newShares).toFixed(2)} 喔！`, "✨", "happy");
         } else {
           userHoldings.unshift({
             code,
@@ -1083,9 +1086,9 @@
             live: liveInfo
           });
           if (isTodayBaseline) {
-            mascotSpeak(`已為您加入「${code} ${liveInfo.name}」（${formatShares(shares)}），並自動以今日現價 NT$ ${liveInfo.price.toFixed(2)} 作為追蹤基準線囉！`, "🧭", "happy");
+            mascotSpeak(`${charObj.selfPronoun}已為您加入「${code} ${liveInfo.name}」（${formatShares(shares)}），並自動以今日現價 NT$ ${liveInfo.price.toFixed(2)} 作為追蹤基準線囉！`, "🧭", "happy");
           } else {
-            mascotSpeak(`成功加入「${code} ${liveInfo.name}」！快看看下方的成本基準線走勢圖與診斷建議吧！`, "💖", "happy");
+            mascotSpeak(`成功加入「${code} ${liveInfo.name}」！快看看下方的成本基準線走勢圖與${charObj.selfPronoun}的診斷建議吧！`, "💖", "happy");
           }
         }
 
@@ -1097,7 +1100,7 @@
         document.getElementById('holdSharesInput').value = '';
         document.getElementById('holdCostInput').value = '';
       } catch (err) {
-        mascotSpeak(`唔～找不到代號「${code}」的台股報價，請確認是否為正確的台股上市/上櫃代號（例如 0050、00878）喔！`, "💦", "cheer");
+        mascotSpeak(`唔～${charObj.selfPronoun}找不到代號「${code}」的台股報價，請確認是否為正確的台股上市/上櫃代號（例如 0050、00878）喔！`, "💦", "cheer");
       } finally {
         btn.disabled = false;
         btn.textContent = origText;
@@ -1105,13 +1108,14 @@
     }
 
     function removeHolding(code) {
+      const charObj = CHARACTERS[currentChar];
       userHoldings = userHoldings.filter(h => h.code !== code);
       if (selectedHoldingCode === code) {
         selectedHoldingCode = userHoldings.length > 0 ? userHoldings[0].code : null;
       }
       saveHoldingsToStorage();
       renderPortfolioView();
-      mascotSpeak(`已將代號 ${code} 從您的持股清單中移除囉！`, "🗑️", "normal");
+      mascotSpeak(`${charObj.selfPronoun}已將代號 ${code} 從您的持股清單中移除囉！`, "🗑️", "normal");
     }
 
     function selectHoldingForChart(code, triggerSpeak = false) {
@@ -1149,8 +1153,9 @@
     }
 
     async function refreshAllHoldingsLive(isManual = false) {
+      const charObj = CHARACTERS[currentChar];
       if (userHoldings.length === 0) return;
-      if (isManual) mascotSpeak(`收到！正在為您同步所有個人持股的最新盤中價格與走勢喔～`, "🔄", "cheer");
+      if (isManual) mascotSpeak(`收到！${charObj.selfPronoun}正在為您同步所有個人持股的最新盤中價格與走勢喔～`, "🔄", "cheer");
 
       await Promise.all(userHoldings.map(async (item) => {
         try {
@@ -1204,7 +1209,7 @@
             <div class="text-3xl">📭</div>
             <div class="theme-text-main font-black text-base">目前還沒有輸入任何持股紀錄喔！</div>
             <p class="theme-text-muted text-xs max-w-md mx-auto leading-relaxed">
-              請在上方表單填入您目前已購買的股票代號（例如 <strong class="theme-text-main">0050</strong> 或 <strong class="theme-text-main">00878</strong>）與持有股數，<strong>忘記買入價格可直接留白</strong>，${charObj.name}會以今日現價為基準幫您追蹤後續收益並提供買賣建議！
+              請在上方表單填入您目前已購買的股票代號（例如 <strong class="theme-text-main">0050</strong> 或 <strong class="theme-text-main">00878</strong>）與持有股數，<strong>忘記買入價格可直接留白</strong>，${charObj.selfPronoun}會以今日現價為基準幫您追蹤後續收益並提供買賣建議！
             </p>
           </div>
         `;
@@ -1268,7 +1273,7 @@
               <div class="flex items-center gap-2">
                 <button type="button" onclick="event.stopPropagation(); selectHoldingForChart('${item.code}', true)"
                   class="theme-primary-badge text-[11px] font-bold px-2.5 py-1 rounded-lg hover:opacity-90 transition cursor-pointer">
-                  ${charObj.icon} 請${charObj.name}語音點評
+                  ${charObj.icon} 請${charObj.selfPronoun}語音點評
                 </button>
                 <button type="button" onclick="event.stopPropagation(); removeHolding('${item.code}')"
                   class="text-[11px] font-bold px-2 py-1 rounded-lg text-rose-500 hover:bg-rose-500/10 transition cursor-pointer">
@@ -1373,6 +1378,7 @@
     }
 
     function exportHoldings() {
+      const charObj = CHARACTERS[currentChar];
       const exportData = userHoldings.map(({ code, name, yahoo, shares, totalCost, avgCost, isTodayBaseline, baselineDate }) => ({
         code, name, yahoo, shares, totalCost, avgCost, isTodayBaseline, baselineDate
       }));
@@ -1383,10 +1389,11 @@
       a.download = `my_stock_holdings_${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      mascotSpeak("已為您匯出個人持股備份檔案囉！妥善保存好，換手機或換電腦隨時都能一鍵還原！", "💾", "smile");
+      mascotSpeak(`${charObj.selfPronoun}已為您匯出個人持股備份檔案囉！妥善保存好，換手機或換電腦隨時都能一鍵還原！`, "💾", "smile");
     }
 
     async function importHoldings(event) {
+      const charObj = CHARACTERS[currentChar];
       const file = event.target.files[0];
       if (!file) return;
       try {
@@ -1397,10 +1404,10 @@
           saveHoldingsToStorage();
           await refreshAllHoldingsLive(false);
           renderPortfolioView();
-          mascotSpeak(`成功匯入 ${imported.length} 檔持股紀錄並同步最新報價囉！`, "🎉", "happy");
+          mascotSpeak(`${charObj.selfPronoun}已成功幫您匯入 ${imported.length} 檔持股紀錄並同步最新報價囉！`, "🎉", "happy");
         }
       } catch (e) {
-        mascotSpeak("唔～這個檔案格式好像不太對，請選擇之前匯出的 .json 持股備份檔喔！", "💦", "cheer");
+        mascotSpeak(`唔～這個檔案格式好像不太對，請選擇之前匯出的 .json 持股備份檔喔！`, "💦", "cheer");
       }
       event.target.value = "";
     }
@@ -1648,7 +1655,7 @@
       const icon = document.getElementById('refreshIcon');
       btn.disabled = true;
       icon.classList.add('animate-spin', 'inline-block');
-      if (isManual) mascotSpeak(`收到！${charObj.name}正在幫你連線抓最新一秒的即時報價喔～`, "✨", "cheer");
+      if (isManual) mascotSpeak(`收到！${charObj.selfPronoun}正在幫你連線抓最新一秒的即時報價喔～`, "✨", "cheer");
 
       try {
         const twii1d = await fetchYahooViaProxy("^TWII", "5m", "1d");
@@ -1708,7 +1715,7 @@
         renderRecommendations();
         if (isManual) mascotSpeak(`更新完成啦！所有大盤點數、推薦股與個人持股都已經換成最新行情囉！`, "💖", "happy");
       } catch (e) {
-        if (isManual) mascotSpeak(`唔～外部報價通道有點塞車，${charObj.name}先幫你保留目前最新的資料庫報價喔！`, "💦", "cheer");
+        if (isManual) mascotSpeak(`唔～外部報價通道有點塞車，${charObj.selfPronoun}先幫你保留目前最新的資料庫報價喔！`, "💦", "cheer");
       } finally {
         btn.disabled = false;
         icon.classList.remove('animate-spin', 'inline-block');
