@@ -40,7 +40,7 @@ export default {
       }
     }
 
-    // 2. Gemini AI 個股白話來歷與買前體檢接口
+    // 2. Gemini AI 個股白話來歷與買前體檢接口（自動偵測金鑰可用模型）
     if (url.pathname === "/api/ai-intro") {
       const code = url.searchParams.get("code") || "";
       const name = url.searchParams.get("name") || "";
@@ -73,13 +73,26 @@ export default {
   "advice": "約80～110字的買前冷靜小提醒，結合它近一個月漲跌幅（${monthPct}%）與高低位階（${posRatio}%），提醒新手該用零股分批試水溫還是注意追高風險。"
 }`;
 
-      // 依錯誤提示使用最新模型 gemini-3.8-flash，並保留備援模型
-      const models = ["gemini-3.8-flash", "gemini-3.0-flash", "gemini-2.5-flash"];
-      let lastErrorDetail = null;
+      // 先動態向 Google 查詢此金鑰目前開通的可用模型清單
+      let candidateModels = ["models/gemini-3.8-flash", "models/gemini-2.5-flash"];
+      try {
+        const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`);
+        if (listRes.ok) {
+          const listJson = await listRes.json();
+          const valid = (listJson.models || [])
+            .filter(m => (m.supportedGenerationMethods || []).includes("generateContent") && m.name.includes("flash"))
+            .map(m => m.name);
+          if (valid.length > 0) {
+            candidateModels = [...new Set([...valid, ...candidateModels])];
+          }
+        }
+      } catch (e) {}
 
-      for (const modelName of models) {
+      let errorsLog = [];
+
+      for (const fullModelName of candidateModels) {
         try {
-          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
+          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/${fullModelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
           const aiRes = await fetch(geminiUrl, {
             method: "POST",
             headers: {
@@ -108,13 +121,13 @@ export default {
               }
             });
           }
-          lastErrorDetail = aiJson;
+          errorsLog.push({ model: fullModelName, error: aiJson?.error?.message || aiJson });
         } catch (err) {
-          lastErrorDetail = err.message;
+          errorsLog.push({ model: fullModelName, error: err.message });
         }
       }
 
-      return new Response(JSON.stringify({ error: "Gemini API call failed", detail: lastErrorDetail }), {
+      return new Response(JSON.stringify({ error: "All models failed", tried: errorsLog }), {
         status: 502,
         headers: { "Content-Type": "application/json" }
       });
