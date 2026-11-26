@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>台股 簡單!｜大肥魚 & 哈基米理財小助手</title>
-  <link rel="icon" type="image/png" href="./favicon.png">
+  <link id="faviconLink" rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230284c7'/><text x='50' y='72' font-size='64' text-anchor='middle'>🐋</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -289,7 +289,7 @@
           <span>🔒</span> 本機隱私保護機制
         </div>
         <p class="theme-text-muted leading-relaxed">
-          您在「我的持股診斷室」輸入的股票代號與金額只會儲存在<strong>您自己的瀏覽器</strong>中，絕不會上傳至公開網路。
+          您在「我的持股診斷室」輸入的股票代號與股數只會儲存在<strong>您自己的瀏覽器</strong>中，絕不會上傳至公開網路。
         </p>
       </div>
     </aside>
@@ -436,7 +436,7 @@
       </div>
 
       <!-- ================================================================ -->
-      <!-- 分頁二：我的持股診斷室                                             -->
+      <!-- 分頁二：我的持股診斷室（支援忘記買入成本，自動以輸入當日市價為基準）    -->
       <!-- ================================================================ -->
       <div id="tabViewPortfolio" style="display:none;" class="space-y-6">
 
@@ -448,7 +448,7 @@
                 <span>💼</span>
                 <span id="portfolioHeaderTitle">大肥魚的個人持股診斷室</span>
               </h2>
-              <p class="theme-text-muted text-xs mt-0.5">輸入您已買進的股票代號、股數與投入金額，即時追蹤損益與紀律買賣建議</p>
+              <p class="theme-text-muted text-xs mt-0.5">輸入股數即可追蹤！若忘記當初買價可將成本留白，系統會自動以輸入當日現價作為追蹤基準</p>
             </div>
 
             <!-- 備份與還原小工具 -->
@@ -467,7 +467,7 @@
           <!-- 4 張關鍵財務指標卡 -->
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5 mt-4">
             <div class="theme-soft-box rounded-2xl p-3.5 border">
-              <div class="theme-text-muted text-xs">總投入成本</div>
+              <div class="theme-text-muted text-xs">追蹤基準總金額</div>
               <div id="pfTotalCost" class="theme-text-strong text-lg sm:text-xl font-black mt-1">NT$ 0</div>
             </div>
             <div class="theme-soft-box rounded-2xl p-3.5 border">
@@ -475,39 +475,41 @@
               <div id="pfTotalValue" class="theme-text-strong text-lg sm:text-xl font-black mt-1">NT$ 0</div>
             </div>
             <div class="theme-soft-box rounded-2xl p-3.5 border">
-              <div class="theme-text-muted text-xs">預估淨損益（已扣稅費）</div>
+              <div class="theme-text-muted text-xs">基準日起算預估損益</div>
               <div id="pfTotalProfit" class="text-lg sm:text-xl font-black mt-1">NT$ 0</div>
             </div>
             <div class="theme-soft-box rounded-2xl p-3.5 border">
-              <div class="theme-text-muted text-xs">整體總報酬率</div>
+              <div class="theme-text-muted text-xs">基準日起算報酬率</div>
               <div id="pfTotalReturnPct" class="text-lg sm:text-xl font-black mt-1">0.00%</div>
             </div>
           </div>
         </section>
 
-        <!-- 區塊 B：新增／更新我的持股表單 -->
+        <!-- 區塊 B：新增／更新我的持股表單（成本改為選填） -->
         <section class="maid-card rounded-3xl p-5 md:p-6">
           <h3 class="theme-text-main text-sm font-black mb-3 flex items-center gap-2">
             <span class="theme-gradient-badge w-5 h-5 rounded-full text-[11px] flex items-center justify-center">+</span>
-            新增或加碼一筆持股紀錄（若輸入相同代號會自動幫您計算平均成本）
+            新增或加碼一筆持股紀錄（忘記買價可直接留白，以今日為起點追蹤！）
           </h3>
 
           <form onsubmit="handleAddHolding(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3.5 items-end">
             <div class="lg:col-span-3">
-              <label class="theme-text-muted block text-xs font-bold mb-1">股票代號（上市/上櫃皆可）</label>
-              <input id="holdCodeInput" type="text" required placeholder="例如：00878 或 2330"
+              <label class="theme-text-muted block text-xs font-bold mb-1">股票代號（必填）</label>
+              <input id="holdCodeInput" type="text" required placeholder="例如：0050 或 00878"
                 class="theme-input w-full px-3.5 py-2 text-sm font-black border-2 rounded-xl focus:outline-none uppercase" />
             </div>
 
             <div class="lg:col-span-3">
-              <label class="theme-text-muted block text-xs font-bold mb-1">持有股數（1張 = 1000股）</label>
-              <input id="holdSharesInput" type="number" min="1" step="1" required placeholder="例如：500"
+              <label class="theme-text-muted block text-xs font-bold mb-1">持有股數（必填・1張=1000股）</label>
+              <input id="holdSharesInput" type="number" min="1" step="1" required placeholder="例如：10"
                 class="theme-input w-full px-3.5 py-2 text-sm font-black border-2 rounded-xl focus:outline-none" />
             </div>
 
             <div class="lg:col-span-4">
-              <label class="theme-text-muted block text-xs font-bold mb-1">總投入成本金額（新台幣元）</label>
-              <input id="holdCostInput" type="number" min="1" step="1" required placeholder="例如：11300"
+              <label class="theme-text-muted block text-xs font-bold mb-1">
+                總投入成本金額 <span class="text-amber-500 font-black">（選填・忘記可留白）</span>
+              </label>
+              <input id="holdCostInput" type="number" min="1" step="1" placeholder="留白則自動以今日現價為基準"
                 class="theme-input w-full px-3.5 py-2 text-sm font-black border-2 rounded-xl focus:outline-none" />
             </div>
 
@@ -530,7 +532,7 @@
           </div>
         </section>
 
-        <!-- 區塊 C：選中持股的「即時走勢圖＋成本基準線」詳細看板 -->
+        <!-- 區塊 C：選中持股的「即時走勢圖＋基準線」詳細看板 -->
         <section id="selectedHoldingChartCard" style="display:none;" class="maid-card rounded-3xl p-5 md:p-6">
           <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b theme-divider">
             <div>
@@ -538,7 +540,7 @@
                 <span id="selHoldBadge" class="theme-primary-badge text-xs font-black px-2.5 py-0.5 rounded-lg">--</span>
                 <span id="selHoldName" class="theme-text-main text-lg font-black">--</span>
                 <span id="selHoldAvgCostTag" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-600 dark:text-amber-300 border border-amber-400/40">
-                  您的平均成本：NT$ --
+                  追蹤基準價：NT$ --
                 </span>
               </div>
               <p id="selHoldSummary" class="theme-text-muted text-xs mt-1">--</p>
@@ -558,7 +560,7 @@
 
           <div class="mt-4">
             <div class="flex items-center justify-between text-xs theme-text-muted mb-2">
-              <span>📈 走勢對照圖（<span class="text-amber-500 font-bold">橘黃色虛線 = 您的平均買進成本</span>）</span>
+              <span id="selHoldChartLegendHint">📈 走勢對照圖（<span class="text-amber-500 font-bold">橘黃色虛線 = 您的追蹤基準價</span>）</span>
               <span>紅漲綠跌（台灣股市標準）</span>
             </div>
             <div class="h-56 w-full">
@@ -616,7 +618,7 @@
         </div>
       </div>
       <p id="mascotSpeech" class="text-xs font-medium leading-relaxed">
-        主人您好呀～歡迎來到「台股 簡單!」左側分頁可以切換「我的持股診斷室」來幫您追蹤已買進的股票喔！
+        主人您好呀～歡迎來到「台股 簡單!」左側分頁可以切換「我的持股診斷室」，就算忘記當初買價也能直接輸入股數追蹤喔！
       </p>
       <div style="background-color: var(--bubble-bg); border-color: var(--bubble-border);" class="w-3 h-3 border-r-2 border-b-2 rotate-45 absolute -bottom-1.5 right-14"></div>
     </div>
@@ -712,30 +714,36 @@
           drop: (period, pct) => `主人別擔心！${period}大盤雖然跌了 ${pct}%，但這正是優質 ETF 辦特賣會的時候，我們分批承接就好！`
         },
         noteFooter: "ETF 本身已經幫主人買進一籃子股票，搭配近 30 日走勢圖觀察位階，逢低分批買進效果最好喔！",
-        diagnoseHolding: (name, pct, isETF) => {
+        diagnoseHolding: (name, pct, isETF, isTodayBaseline, baseDate) => {
+          const baseIntro = isTodayBaseline
+            ? `（以基準日 ${baseDate} 當時市價為起點追蹤）`
+            : `（以您的歷史買進成本計算）`;
+
           if (pct >= 20) {
             return {
               action: "🎉 建議分批停利（先賣出 1/3 鎖住獲利）",
               actionBadge: "tw-up-bg",
               pose: "happy",
               emoji: "💰",
-              detail: `哇～主人的 ${name} 已經賺了 +${pct.toFixed(2)}% 囉！大肥魚建議可以先賣出約 1/3 股數把獲利放進口袋，剩下的 2/3 繼續抱著參與上漲，這樣心態最穩健喔！`
+              detail: `哇～主人的 ${name} ${baseIntro}已經上漲 +${pct.toFixed(2)}% 囉！大肥魚建議可以先賣出約 1/3 股數把獲利放進口袋，剩下的 2/3 繼續抱著參與上漲，這樣心態最穩健喔！`
             };
           } else if (pct >= 8) {
             return {
-              action: "✨ 獲利穩健成長中（建議續抱讓利潤奔跑）",
+              action: "✨ 波段獲利成長中（建議續抱讓利潤奔跑）",
               actionBadge: "tw-up-bg",
               pose: "smile",
               emoji: "📈",
-              detail: `主人操作得真棒！${name} 目前穩健獲利 +${pct.toFixed(2)}%，還沒到過熱警戒區，建議繼續抱緊領息或等更大波段，不要太早賣飛囉～`
+              detail: `主人操作得真棒！${name} ${baseIntro}目前穩健上漲 +${pct.toFixed(2)}%，還沒到過熱警戒區，建議繼續抱緊領息或等更大波段，不要太早賣飛囉～`
             };
           } else if (pct > -6) {
             return {
-              action: "🍵 正常波動區間（無需動作・按計畫持有）",
+              action: isTodayBaseline ? "🧭 已建立今日追蹤基準（持續觀察後續波段）" : "🍵 正常波動區間（無需動作・按計畫持有）",
               actionBadge: "bg-sky-100 text-sky-900 border-sky-300",
               pose: "normal",
               emoji: "🍵",
-              detail: `${name} 目前損益為 ${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%，屬於股市每天正常的潮起潮落。主人泡杯茶放輕鬆，照著原本的定期定額步調就好！`
+              detail: isTodayBaseline
+                ? `大肥魚已為您記錄好 ${name} 在 ${baseDate} 的基準價位！接下來只要它相對今天漲超過 8%～20% 或跌破 6%，我就會立刻提醒主人停利或逢低加碼喔！`
+                : `${name} 目前損益為 ${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%，屬於股市每天正常的潮起潮落。主人泡杯茶放輕鬆，照著原本的定期定額步調就好！`
             };
           } else if (pct > -12) {
             return isETF
@@ -744,14 +752,14 @@
                   actionBadge: "tw-down-bg",
                   pose: "cheer",
                   emoji: "💪",
-                  detail: `主人的 ${name} 目前回檔 ${pct.toFixed(2)}%。因為它是分散風險的 ETF，大肥魚建議若手上還有預備金，可以買進幾股零股慢慢降低平均成本喔！`
+                  detail: `主人的 ${name} ${baseIntro}回檔了 ${pct.toFixed(2)}%。因為它是分散風險的 ETF，大肥魚建議若手上還有預備金，可以買進幾股零股慢慢降低平均成本喔！`
                 }
               : {
                   action: "🔍 單一個股回檔中（暫緩加倉・先觀察止跌）",
                   actionBadge: "tw-down-bg",
                   pose: "cheer",
                   emoji: "🛡️",
-                  detail: `唔～個股 ${name} 目前回檔 ${pct.toFixed(2)}%。個股波動比 ETF 大，大肥魚提醒主人先不要急著一次攤平，等股價站穩或確認公司基本面沒問題再考慮加倉喔！`
+                  detail: `唔～個股 ${name} ${baseIntro}回檔了 ${pct.toFixed(2)}%。個股波動比 ETF 大，大肥魚提醒主人先不要急著一次攤平，等股價站穩或確認公司基本面沒問題再考慮加倉喔！`
                 };
           } else {
             return isETF
@@ -760,14 +768,14 @@
                   actionBadge: "tw-down-bg",
                   pose: "cheer",
                   emoji: "🔥",
-                  detail: `主人別慌張！優質 ETF ${name} 出現 ${pct.toFixed(2)}% 的難得大折扣，只要是用閒錢投資，現在分批加碼累積股數，未來反彈時回報會很可觀喔！`
+                  detail: `主人別慌張！優質 ETF ${name} ${baseIntro}出現 ${pct.toFixed(2)}% 的難得大折扣，只要是用閒錢投資，現在分批加碼累積股數，未來反彈時回報會很可觀喔！`
                 }
               : {
-                  action: "⚠️ 虧損擴大警戒（檢視停損紀律・切勿盲目攤平）",
+                  action: "⚠️ 波段跌幅警戒（檢視基本面・切勿盲目攤平）",
                   actionBadge: "tw-down-bg",
                   pose: "cheer",
                   emoji: "⚠️",
-                  detail: `主人注意！個股 ${name} 已經下跌 ${Math.abs(pct).toFixed(2)}% 了。新手最怕對單一股票越跌越買，請先檢查這家公司是否出現利空，必要時要嚴格執行停損保護本金！`
+                  detail: `主人注意！個股 ${name} ${baseIntro}已經下跌 ${Math.abs(pct).toFixed(2)}% 了。新手最怕對單一股票越跌越買，請先檢查這家公司是否出現利空，必要時要嚴格執行停損保護本金！`
                 };
           }
         }
@@ -806,14 +814,18 @@
           drop: (period, pct) => `打起精神來！${period}大盤雖然修正了 ${pct}%，但歷史數據證明每次大回檔都是長期存股族撿便宜的黃金坑喔！`
         },
         noteFooter: "哈基米小叮嚀：不要每天被紅綠數字牽著走，盯緊近 30 日趨勢區間、分批布局才是真正的贏家思維喵！",
-        diagnoseHolding: (name, pct, isETF) => {
+        diagnoseHolding: (name, pct, isETF, isTodayBaseline, baseDate) => {
+          const baseIntro = isTodayBaseline
+            ? `（以基準日 ${baseDate} 當時市價為起點追蹤）`
+            : `（以您的歷史買進成本計算）`;
+
           if (pct >= 20) {
             return {
               action: "🚀 觸發星光停利訊號（建議先賣出 1/3 落袋）",
               actionBadge: "tw-up-bg",
               pose: "happy",
               emoji: "🌟",
-              detail: `喵哈哈！${name} 暴賺 +${pct.toFixed(2)}% 啦！本天才建議你先把 1/3 的獲利轉成現金收進口袋，剩下 2/3 設好移動停利繼續衝刺，這才是高勝率玩法喵！`
+              detail: `喵哈哈！${name} ${baseIntro}暴賺 +${pct.toFixed(2)}% 啦！本天才建議你先把 1/3 的獲利轉成現金收進口袋，剩下 2/3 設好移動停利繼續衝刺，這才是高勝率玩法喵！`
             };
           } else if (pct >= 8) {
             return {
@@ -821,15 +833,17 @@
               actionBadge: "tw-up-bg",
               pose: "smile",
               emoji: "😺",
-              detail: `哼哼～眼光不錯嘛！${name} 目前浮盈 +${pct.toFixed(2)}%，趨勢還在星光軌道上穩穩推進，現在賣掉太可惜了，繼續抱緊就對啦！`
+              detail: `哼哼～眼光不錯嘛！${name} ${baseIntro}目前上漲 +${pct.toFixed(2)}%，趨勢還在星光軌道上穩穩推進，現在賣掉太可惜了，繼續抱緊就對啦！`
             };
           } else if (pct > -6) {
             return {
-              action: "📡 雜訊波動範圍（按兵不動・維持紀律）",
+              action: isTodayBaseline ? "🛰️ 已鎖定今日基準點（星光雷達持續監控中）" : "📡 雜訊波動範圍（按兵不動・維持紀律）",
               actionBadge: "bg-purple-500/20 text-purple-200 border-purple-400/40",
               pose: "normal",
               emoji: "🔮",
-              detail: `${name} 目前報酬率 ${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%，在哈基米的量化模型裡只是微幅雜訊，不需要任何操作，去喝杯飲料吧喵～`
+              detail: isTodayBaseline
+                ? `哼哼～忘記當初買價也沒關係！哈基米已經幫你把 ${name} 在 ${baseDate} 的價格設成起跑線啦，之後只要波段漲跌達到門檻，本天才馬上提醒你出手喵！`
+                : `${name} 目前報酬率 ${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%，在哈基米的量化模型裡只是微幅雜訊，不需要任何操作，去喝杯飲料吧喵～`
             };
           } else if (pct > -12) {
             return isETF
@@ -838,14 +852,14 @@
                   actionBadge: "tw-down-bg",
                   pose: "cheer",
                   emoji: "⚡",
-                  detail: `${name} 回檔了 ${pct.toFixed(2)}%，但大盤型/高息型 ETF 根本不怕跌！動用一點備用資金分批撿便宜，你的平均成本線馬上就能往下壓低喔！`
+                  detail: `${name} ${baseIntro}回檔了 ${pct.toFixed(2)}%，但大盤型/高息型 ETF 根本不怕跌！動用一點備用資金分批撿便宜，你的平均成本線馬上就能往下壓低喔！`
                 }
               : {
                   action: "🛰️ 個股回測支撐（先觀察量能・別急著接刀）",
                   actionBadge: "tw-down-bg",
                   pose: "cheer",
                   emoji: "🔭",
-                  detail: `呼喵～個股 ${name} 修正了 ${pct.toFixed(2)}%。個股不像 ETF 有成分股保護，先別急著盲目加倉，等日線打出止跌訊號再出手也不遲！`
+                  detail: `呼喵～個股 ${name} ${baseIntro}修正了 ${pct.toFixed(2)}%。個股不像 ETF 有成分股保護，先別急著盲目加倉，等日線打出止跌訊號再出手也不遲！`
                 };
           } else {
             return isETF
@@ -854,14 +868,14 @@
                   actionBadge: "tw-down-bg",
                   pose: "cheer",
                   emoji: "💎",
-                  detail: `打起精神來！${name} 跌出 ${pct.toFixed(2)}% 的超級折價空間啦！只要你拿的是長期閒錢，分 2～3 批往下加倉，等行情回暖就是你大豐收的時候喵！`
+                  detail: `打起精神來！${name} ${baseIntro}跌出 ${pct.toFixed(2)}% 的超級折價空間啦！只要你拿的是長期閒錢，分 2～3 批往下加倉，等行情回暖就是你大豐收的時候喵！`
                 }
               : {
                   action: "🚨 個股風控警報（檢視基本面・嚴守停損線）",
                   actionBadge: "tw-down-bg",
                   pose: "cheer",
                   emoji: "🚨",
-                  detail: `警告喵！個股 ${name} 虧損已達 ${Math.abs(pct).toFixed(2)}%，千萬不要因為不甘心就一直加碼攤平，快檢查財報與產業趨勢是否反轉，該斷捨離時就要果斷！`
+                  detail: `警告喵！個股 ${name} ${baseIntro}跌幅已達 ${Math.abs(pct).toFixed(2)}%，千萬不要因為不甘心就一直加碼攤平，快檢查財報與產業趨勢是否反轉，該斷捨離時就要果斷！`
                 };
           }
         }
@@ -907,7 +921,7 @@
         viewPortfolio.style.display = 'block';
         renderPortfolioView();
         if (userHoldings.length === 0) {
-          mascotSpeak(`這裡是專屬於您的持股診斷室！在上方輸入您買進的股票代號與金額，${CHARACTERS[currentChar].name}就會幫您畫出成本對照線與買賣建議喔！`, "💼", "smile");
+          mascotSpeak(`這裡是專屬於您的持股診斷室！只要輸入股數，就算忘記買價也能直接按「加入並分析」，${CHARACTERS[currentChar].name}會以今日現價為起點幫您追蹤喔！`, "💼", "smile");
         }
       }
       updateTabButtonStyles();
@@ -951,6 +965,12 @@
     function quickFillCode(code) {
       document.getElementById('holdCodeInput').value = code;
       document.getElementById('holdSharesInput').focus();
+    }
+
+    function getTodayDateStr() {
+      const d = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())}`;
     }
 
     async function fetchAnyTwStock(cleanCode) {
@@ -1013,9 +1033,9 @@
       e.preventDefault();
       const code = document.getElementById('holdCodeInput').value.trim().toUpperCase();
       const shares = Math.floor(Number(document.getElementById('holdSharesInput').value));
-      const totalCost = Math.round(Number(document.getElementById('holdCostInput').value));
+      const rawCostStr = document.getElementById('holdCostInput').value.trim();
 
-      if (!code || shares <= 0 || totalCost <= 0) return;
+      if (!code || shares <= 0) return;
 
       const btn = document.getElementById('addHoldingBtn');
       const origText = btn.textContent;
@@ -1025,6 +1045,13 @@
 
       try {
         const liveInfo = await fetchAnyTwStock(code);
+        // 若使用者未填寫總投入成本，自動以「今日即時市價 × 持有股數」作為追蹤基準
+        const isTodayBaseline = !rawCostStr || Number(rawCostStr) <= 0;
+        const totalCost = isTodayBaseline
+          ? Math.round(liveInfo.price * shares)
+          : Math.round(Number(rawCostStr));
+        const todayDate = getTodayDateStr();
+
         const existingIdx = userHoldings.findIndex(h => h.code === code);
 
         if (existingIdx >= 0) {
@@ -1038,9 +1065,11 @@
             shares: newShares,
             totalCost: newCost,
             avgCost: round2(newCost / newShares),
+            isTodayBaseline: old.isTodayBaseline && isTodayBaseline,
+            baselineDate: old.baselineDate || todayDate,
             live: liveInfo
           };
-          mascotSpeak(`已為您合併加碼「${code} ${liveInfo.name}」！新的平均成本為 NT$ ${round2(newCost / newShares).toFixed(2)} 喔！`, "✨", "happy");
+          mascotSpeak(`已為您合併加碼「${code} ${liveInfo.name}」！目前共持有 ${formatShares(newShares)}，基準均價為 NT$ ${round2(newCost / newShares).toFixed(2)} 喔！`, "✨", "happy");
         } else {
           userHoldings.unshift({
             code,
@@ -1049,9 +1078,15 @@
             shares,
             totalCost,
             avgCost: round2(totalCost / shares),
+            isTodayBaseline,
+            baselineDate: todayDate,
             live: liveInfo
           });
-          mascotSpeak(`成功加入「${code} ${liveInfo.name}」！快看看下方的成本基準線走勢圖與診斷建議吧！`, "💖", "happy");
+          if (isTodayBaseline) {
+            mascotSpeak(`已為您加入「${code} ${liveInfo.name}」（${formatShares(shares)}），並自動以今日現價 NT$ ${liveInfo.price.toFixed(2)} 作為追蹤基準線囉！`, "🧭", "happy");
+          } else {
+            mascotSpeak(`成功加入「${code} ${liveInfo.name}」！快看看下方的成本基準線走勢圖與診斷建議吧！`, "💖", "happy");
+          }
         }
 
         selectedHoldingCode = code;
@@ -1062,7 +1097,7 @@
         document.getElementById('holdSharesInput').value = '';
         document.getElementById('holdCostInput').value = '';
       } catch (err) {
-        mascotSpeak(`唔～找不到代號「${code}」的台股報價，請確認是否為正確的台股上市/上櫃代號（例如 00878、2330）喔！`, "💦", "cheer");
+        mascotSpeak(`唔～找不到代號「${code}」的台股報價，請確認是否為正確的台股上市/上櫃代號（例如 0050、00878）喔！`, "💦", "cheer");
       } finally {
         btn.disabled = false;
         btn.textContent = origText;
@@ -1088,7 +1123,13 @@
           const isETF = target.code.startsWith('00');
           const netVal = calcNetSellValue(target.live.price, target.shares, isETF);
           const profitPct = target.totalCost > 0 ? ((netVal - target.totalCost) / target.totalCost) * 100 : 0;
-          const diag = CHARACTERS[currentChar].diagnoseHolding(`${target.code} ${target.name}`, profitPct, isETF);
+          const diag = CHARACTERS[currentChar].diagnoseHolding(
+            `${target.code} ${target.name}`,
+            profitPct,
+            isETF,
+            Boolean(target.isTodayBaseline),
+            target.baselineDate || "新增當日"
+          );
           mascotSpeak(diag.detail, diag.emoji, diag.pose);
         }
       }
@@ -1163,7 +1204,7 @@
             <div class="text-3xl">📭</div>
             <div class="theme-text-main font-black text-base">目前還沒有輸入任何持股紀錄喔！</div>
             <p class="theme-text-muted text-xs max-w-md mx-auto leading-relaxed">
-              請在上方表單填入您目前已購買的股票代號（例如 <strong class="theme-text-main">00878</strong> 或 <strong class="theme-text-main">2330</strong>）、持有股數與總投入金額，${charObj.name}就會立刻為您繪製走勢圖並提供專屬的賣出／加倉診斷！
+              請在上方表單填入您目前已購買的股票代號（例如 <strong class="theme-text-main">0050</strong> 或 <strong class="theme-text-main">00878</strong>）與持有股數，<strong>忘記買入價格可直接留白</strong>，${charObj.name}會以今日現價為基準幫您追蹤後續收益並提供買賣建議！
             </p>
           </div>
         `;
@@ -1182,8 +1223,11 @@
         const profitPct = item.totalCost > 0 ? (profit / item.totalCost) * 100 : 0;
         const isUp = profit >= 0;
         const isSelected = item.code === selectedHoldingCode;
+        const isTodayBase = Boolean(item.isTodayBaseline);
+        const baseDateStr = item.baselineDate || "新增當日";
 
-        const diag = charObj.diagnoseHolding(`${item.code} ${item.name}`, profitPct, isETF);
+        const diag = charObj.diagnoseHolding(`${item.code} ${item.name}`, profitPct, isETF, isTodayBase, baseDateStr);
+        const baseLabel = isTodayBase ? `基準價 (${baseDateStr})` : `平均成本`;
 
         const card = document.createElement('div');
         card.className = `maid-card rounded-3xl p-4 md:p-5 transition cursor-pointer ${isSelected ? (isDark ? 'ring-2 ring-purple-400' : 'ring-2 ring-blue-600') : 'hover:opacity-95'}`;
@@ -1198,12 +1242,13 @@
                 <span class="theme-soft-box theme-text-muted text-[11px] px-2 py-0.5 rounded-full border font-bold">
                   持有 ${formatShares(item.shares)}
                 </span>
+                ${isTodayBase ? `<span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-600 dark:text-sky-300 border border-sky-400/30">📅 以 ${baseDateStr} 為追蹤基準</span>` : ''}
                 ${isSelected ? '<span class="text-[11px] font-black px-2 py-0.5 rounded-full bg-amber-400 text-slate-950">📈 正在檢視走勢圖</span>' : ''}
               </div>
               <div class="theme-text-muted text-xs mt-1.5 flex flex-wrap gap-x-4 gap-y-1">
-                <span>平均成本：<strong class="theme-text-strong">NT$ ${item.avgCost.toFixed(2)}</strong></span>
+                <span>${baseLabel}：<strong class="theme-text-strong">NT$ ${item.avgCost.toFixed(2)}</strong></span>
                 <span>目前市價：<strong class="theme-text-strong">NT$ ${live.price.toFixed(2)}</strong>（今日 ${live.dayChgPct >= 0 ? '+' : ''}${live.dayChgPct}%）</span>
-                <span>投入總本金：<strong class="theme-text-strong">NT$ ${item.totalCost.toLocaleString()}</strong></span>
+                <span>基準總額：<strong class="theme-text-strong">NT$ ${item.totalCost.toLocaleString()}</strong></span>
               </div>
             </div>
 
@@ -1251,6 +1296,7 @@
       card.style.display = 'block';
       const isDark = currentChar === 'hakimi';
       const live = target.live;
+      const isTodayBase = Boolean(target.isTodayBaseline);
 
       const activeBtn = isDark ? 'bg-purple-600 text-white shadow-xs' : 'bg-blue-900 text-white shadow-xs';
       const inactiveBtn = isDark ? 'text-purple-200 hover:bg-white/10' : 'text-blue-900 hover:bg-white/60';
@@ -1259,12 +1305,14 @@
 
       document.getElementById('selHoldBadge').textContent = target.code;
       document.getElementById('selHoldName').textContent = target.name;
-      document.getElementById('selHoldAvgCostTag').textContent = `您的平均成本：NT$ ${target.avgCost.toFixed(2)}`;
+      document.getElementById('selHoldAvgCostTag').textContent = isTodayBase
+        ? `追蹤基準價 (${target.baselineDate || '今日'})：NT$ ${target.avgCost.toFixed(2)}`
+        : `您的平均成本：NT$ ${target.avgCost.toFixed(2)}`;
 
       const diffFromCost = round2(live.price - target.avgCost);
       const diffPct = target.avgCost > 0 ? round2((diffFromCost / target.avgCost) * 100) : 0;
       document.getElementById('selHoldSummary').textContent =
-        `目前現價 NT$ ${live.price.toFixed(2)}，相較於您的買進均價 ${diffFromCost >= 0 ? '高出' : '低於'} NT$ ${Math.abs(diffFromCost).toFixed(2)}（${diffFromCost >= 0 ? '+' : ''}${diffPct}%）`;
+        `目前現價 NT$ ${live.price.toFixed(2)}，相較於${isTodayBase ? '基準價' : '買進均價'} ${diffFromCost >= 0 ? '高出' : '低於'} NT$ ${Math.abs(diffFromCost).toFixed(2)}（${diffFromCost >= 0 ? '+' : ''}${diffPct}%）`;
 
       const labels = selectedHoldingRange === '1d' ? live.labels1d : live.labels1mo;
       const points = selectedHoldingRange === '1d' ? live.points1d : live.points1mo;
@@ -1296,7 +1344,7 @@
               pointHoverRadius: 5
             },
             {
-              label: '您的平均買進成本',
+              label: isTodayBase ? '追蹤基準價' : '您的平均買進成本',
               data: costLine,
               borderColor: '#f59e0b',
               borderWidth: 1.8,
@@ -1325,8 +1373,8 @@
     }
 
     function exportHoldings() {
-      const exportData = userHoldings.map(({ code, name, yahoo, shares, totalCost, avgCost }) => ({
-        code, name, yahoo, shares, totalCost, avgCost
+      const exportData = userHoldings.map(({ code, name, yahoo, shares, totalCost, avgCost, isTodayBaseline, baselineDate }) => ({
+        code, name, yahoo, shares, totalCost, avgCost, isTodayBaseline, baselineDate
       }));
       const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
@@ -1494,16 +1542,19 @@
     }
 
     function applyCharacterTheme(charObj) {
+      const fav = document.getElementById('faviconLink');
       if (charObj.id === 'hakimi') {
         document.body.classList.add('theme-hakimi');
         document.getElementById('brandIconBox').className = "w-10 h-10 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-indigo-700 border-2 border-white/80 text-white flex items-center justify-center font-black text-xl shadow-sm transition-all";
         document.getElementById('btnCharFish').className = "px-3 py-1 rounded-full text-xs font-bold text-white/75 hover:text-white transition flex items-center gap-1 cursor-pointer";
         document.getElementById('btnCharHakimi').className = "px-3 py-1 rounded-full text-xs font-black bg-purple-400 text-slate-950 shadow-xs transition flex items-center gap-1 cursor-pointer";
+        if (fav) fav.href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%237e22ce'/><text x='50' y='72' font-size='64' text-anchor='middle'>✨</text></svg>";
       } else {
         document.body.classList.remove('theme-hakimi');
         document.getElementById('brandIconBox').className = "w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-700 border-2 border-white/80 text-white flex items-center justify-center font-black text-xl shadow-sm transition-all";
         document.getElementById('btnCharFish').className = "px-3 py-1 rounded-full text-xs font-black bg-sky-400 text-slate-950 shadow-xs transition flex items-center gap-1 cursor-pointer";
         document.getElementById('btnCharHakimi').className = "px-3 py-1 rounded-full text-xs font-bold text-white/75 hover:text-white transition flex items-center gap-1 cursor-pointer";
+        if (fav) fav.href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230284c7'/><text x='50' y='72' font-size='64' text-anchor='middle'>🐋</text></svg>";
       }
 
       document.getElementById('brandIconBox').textContent = charObj.icon;
