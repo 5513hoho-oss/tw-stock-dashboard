@@ -49,7 +49,8 @@ export default {
       const posRatio = url.searchParams.get("posRatio") || "50";
       const charId = url.searchParams.get("char") || "fish";
 
-      if (!env.GEMINI_API_KEY) {
+      const apiKey = (env.GEMINI_API_KEY || "").trim();
+      if (!apiKey) {
         return new Response(JSON.stringify({ error: "GEMINI_API_KEY not configured" }), {
           status: 500,
           headers: { "Content-Type": "application/json" }
@@ -72,43 +73,51 @@ export default {
   "advice": "約80～110字的買前冷靜小提醒，結合它近一個月漲跌幅（${monthPct}%）與高低位階（${posRatio}%），提醒新手該用零股分批試水溫還是注意追高風險。"
 }`;
 
-      try {
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(env.GEMINI_API_KEY)}`;
-        const aiRes = await fetch(geminiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: {
-              temperature: 0.7,
-              responseMimeType: "application/json"
-            }
-          })
-        });
+      // 依錯誤提示使用最新模型 gemini-3.8-flash，並保留備援模型
+      const models = ["gemini-3.8-flash", "gemini-3.0-flash", "gemini-2.5-flash"];
+      let lastErrorDetail = null;
 
-        const aiJson = await aiRes.json();
-        const rawText = aiJson?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!rawText) {
-          return new Response(JSON.stringify({ error: "Empty AI response", detail: aiJson }), {
-            status: 502,
-            headers: { "Content-Type": "application/json" }
+      for (const modelName of models) {
+        try {
+          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
+          const aiRes = await fetch(geminiUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-goog-api-key": apiKey
+            },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: {
+                temperature: 0.7,
+                responseMimeType: "application/json"
+              }
+            })
           });
-        }
 
-        return new Response(rawText, {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            "Access-Control-Allow-Origin": "*",
-            "Cache-Control": "public, max-age=3600"
+          const aiJson = await aiRes.json();
+          const rawText = aiJson?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (rawText) {
+            const cleaned = rawText.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
+            return new Response(cleaned, {
+              status: 200,
+              headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "Access-Control-Allow-Origin": "*",
+                "Cache-Control": "public, max-age=3600"
+              }
+            });
           }
-        });
-      } catch (err) {
-        return new Response(JSON.stringify({ error: err.message }), {
-          status: 502,
-          headers: { "Content-Type": "application/json" }
-        });
+          lastErrorDetail = aiJson;
+        } catch (err) {
+          lastErrorDetail = err.message;
+        }
       }
+
+      return new Response(JSON.stringify({ error: "Gemini API call failed", detail: lastErrorDetail }), {
+        status: 502,
+        headers: { "Content-Type": "application/json" }
+      });
     }
 
     // 3. 其餘網址正常回傳靜態網頁檔案
